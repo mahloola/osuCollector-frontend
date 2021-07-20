@@ -11,6 +11,7 @@ import NavigationBar from './common/NavigationBar';
 import Footer from './common/Footer';
 import Subscribe from './subscribe/Subscribe';
 import Desktop from './desktop/Desktop';
+import Login from './login/Login';
 
 function App() {
 
@@ -36,6 +37,9 @@ function App() {
               </Route>
               <Route path='/download'>
                 <Desktop />
+              </Route>
+              <Route path='/login'>
+                <Login />
               </Route>
               <Route path='/collections/:id'>
                 <Collection />
