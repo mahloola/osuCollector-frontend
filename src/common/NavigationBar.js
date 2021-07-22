@@ -8,6 +8,7 @@ function NavigationBar() {
         console.log("lkjkdsjkfhds");
     }
     function handleLogin() {
+        console.log("HEYY");
         <Redirect to='/login'/>
     }
 
