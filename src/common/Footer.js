@@ -5,7 +5,7 @@ function Footer() {
 
     return (
         // fixed to the bottom by adding inline css
-        <footer class="bg-dark text-light p-3" style={{position: "absolute", left: "0", right: "0", bottom: "0"}}>
+        <footer class="bg-dark text-light p-3" style={{position: "fixed", bottom: "0", width: "100%"}}>
             <Container>
                 <Row>
                     <Col>

@@ -34,7 +34,8 @@ function NavigationBar() {
                             <Nav.Link>Subscribe</Nav.Link>
                         </LinkContainer>
                     </Nav>
-                    <Form onSubmit={handleSearch} inline>
+                    {/* hard coded 20% rightPadding to center the searchbar for now*/}
+                    <Form onSubmit={handleSearch} inline style={{margin: "auto", paddingRight: "20%"}}>
                         <FormControl type="text" placeholder="Collection" className="mr-sm-2" />
                         <i class="bi bi-search"></i>
                         <Button type="submit" variant="outline-primary">Search</Button>
