@@ -11,7 +11,7 @@ import NavigationBar from './common/NavigationBar';
 import Footer from './common/Footer';
 import Subscribe from './subscribe/Subscribe';
 import Desktop from './desktop/Desktop';
-import Login from './login/Login';
+import Login from './common/Login';
 
 function App() {
 

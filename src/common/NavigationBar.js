@@ -1,6 +1,9 @@
 import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Redirect } from 'react-router';
+import Login from './Login';
+import Logout from './Logout';
+import Profile from './Profile';
 
 function NavigationBar() {
 
@@ -9,7 +12,7 @@ function NavigationBar() {
     }
     function handleLogin() {
         console.log("HEYY");
-        <Redirect to='/login'/>
+        <Redirect to='/login' />
     }
 
     return (
@@ -36,9 +39,9 @@ function NavigationBar() {
                         <i class="bi bi-search"></i>
                         <Button type="submit" variant="outline-primary">Search</Button>
                     </Form>
-                    <Form onSubmit={handleLogin} inline>
-                        <Button type="submit" variant="outline-primary">Login</Button>
-                    </Form>
+                    <Login />
+                    <Logout />
+                    <Profile />
                 </Navbar.Collapse>
             </Navbar>
         </div>
