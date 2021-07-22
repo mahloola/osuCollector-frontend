@@ -1,8 +1,7 @@
 import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Redirect } from 'react-router';
-import Login from './Login';
-import Logout from './Logout';
+import Authentication from './Authentication';
 import Profile from './Profile';
 
 function NavigationBar() {
@@ -40,9 +39,14 @@ function NavigationBar() {
                         <i class="bi bi-search"></i>
                         <Button type="submit" variant="outline-primary">Search</Button>
                     </Form>
-                    <Login />
-                    <Logout />
+                    <Authentication/>
                     <Profile />
+                    {/* 
+                        Design plan:
+                        log in button on the top right when not signed in
+                        when signed in, display username + avatar with a dropdown menu 
+                        dropdown menu includes 'my profile', log out, etc 
+                    */}
                 </Navbar.Collapse>
             </Navbar>
         </div>

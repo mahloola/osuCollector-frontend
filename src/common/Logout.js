@@ -5,7 +5,7 @@ const Logout = () => {
     const { logout } = useAuth0();
     return (
         <div>
-            <Form onSubmit={logout} inline>
+            <Form onSubmit={logout} inline style={{paddingLeft: "1%", paddingRight: "1%"}}>
                 <Button type="submit" variant="outline-primary">Logout</Button>
             </Form>
         </div>
