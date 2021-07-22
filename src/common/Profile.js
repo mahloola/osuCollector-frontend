@@ -6,7 +6,7 @@ const Profile = () => {
     return (
         <div>
             hiii
-            
+            {JSON.stringify(user, null, 2)}
         </div>
     )
 }
