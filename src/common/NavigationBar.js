@@ -40,7 +40,6 @@ function NavigationBar() {
                         <Button type="submit" variant="outline-primary">Search</Button>
                     </Form>
                     <Authentication/>
-                    <Profile />
                     {/* 
                         Design plan:
                         log in button on the top right when not signed in

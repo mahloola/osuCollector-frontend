@@ -1,5 +1,6 @@
 import React from 'react';
-import { useState, useEffect, useHistory } from 'react';
+import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router';
 import { Spinner, Table } from 'react-bootstrap';
 import { Pagination } from 'react-bootstrap';
 
@@ -8,6 +9,7 @@ function Home() {
     const [loading, setLoading] = useState(true); // basically a flag
     const [collections, setCollections] = useState(null);
     const [page, setPage] = useState(1);
+    const history = useHistory();
     const perPage = 10;
 
     // run this code block when the second parameter (page) changes in value
@@ -52,7 +54,7 @@ function Home() {
                         <tbody>
                             {
                                 collections.map((collections) => (
-                                    <tr key={collections._id}>
+                                    <tr key={collections._id} onClick={() => { history.push(`/collections/${collections._id}`) }}>
                                         <td>{collections._id}</td>
                                         <td>{collections.name}</td>
                                         <td>{collections.uploader}</td>
