@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+# osuCollector
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## TODO
 
-In the project directory, you can run:
 
-### `npm start`
+- not all beatmaps are rendering in /collections/:id route, probably a lot of missing maps from the storage cache maybe see whats up with that
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### `Login Sessions`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- capture the auth token in the redirect URL, maybe storing that on the user's profile? i don't know how it's done. possibly make a GET route for that
+- send /api/v2/users/me request with the token in the request header. get the username and display it on the top right along with the avatar. make that a dropdown menu with Settings, My Collections, Logout, etc.
+- implement logging out somehow idk how to do that lol
+- implement refresh token
 
-### `npm test`
+### `Upload Route`
+- this route already kinda exists, but the uploader is hardcoded to FunOrange, so this should be fixed when login sessions are a thing
+- render all the collections of the user and checkboxes to allow the user to CHOOSE WHICH ONES THEY WANT TO UPLOAD
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### `Pagination`
 
-### `npm run build`
+- fix API routes to use query parameters rather than path parameters
+- implement pagination using 'startFrom' and 'count' query parameters
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### `Collection ID`
+- idk if IDs like '60b9a194c579296e10e40d45' are sustainable so possibly add an actual ID to the collection schema and start storing that
+- DO THIS BEFORE LAUNCH !!!
+- it would be cool for users to easily determine collection statistics through a simplified ID, e.g. what was the first uploaded collection ever
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `Bugs`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### `Design`
+- get a cool background image/gif for the webpage I kinda want something dark and relaxing with a repeating pattern. possibly ask david to make something
+- remake navbar to not be the basic bootstrap one cuz it sucks. make it fatter, different color, and bigger text. change font too
+- redesign /collections/:id to fit the example design on the diagram page thing funorange made
+- make collections redirect to beatmaps
 
-### `npm run eject`
+## Features
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### `Recent`
+- render all collections that exist on the database, reverse sorted by date
+- clicking a collection redirects you to its information listing, including all of its beatmaps with their data
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### `Collection Details`
+- collection information is displayed on /collections/:id where id is the "\_id" property of the collection. e.g. 60b9a194c579296e10e40d45
