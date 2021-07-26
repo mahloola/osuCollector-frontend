@@ -1,11 +1,6 @@
 # osuCollector
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## TODO
-
-
-- not all beatmaps are rendering in /collections/:id route, probably a lot of missing maps from the storage cache maybe see whats up with that
 
 ### `Login Sessions`
 
@@ -18,10 +13,20 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - this route already kinda exists, but the uploader is hardcoded to FunOrange, so this should be fixed when login sessions are a thing
 - render all the collections of the user and checkboxes to allow the user to CHOOSE WHICH ONES THEY WANT TO UPLOAD
 
+### `Adding Collections`
+- the user will have a download option next to all collections, as well as a checkbox
+- check if the user has an associated 'collections.db' file
+- update their collections.db file to include all of the selected collections
+- figure out how to store the user's collections.db: should it check for updates every time they log on? how should this work
+- all together this is prob the hardest feature to implement but it's the main thing osuCollector has to offer so that would be insane
+
 ### `Pagination`
 
 - fix API routes to use query parameters rather than path parameters
 - implement pagination using 'startFrom' and 'count' query parameters
+
+### `Searchbar`
+- allow users to search for a collection via
 
 ### `Collection ID`
 - idk if IDs like '60b9a194c579296e10e40d45' are sustainable so possibly add an actual ID to the collection schema and start storing that
@@ -29,12 +34,21 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - it would be cool for users to easily determine collection statistics through a simplified ID, e.g. what was the first uploaded collection ever
 
 ### `Bugs`
+- not all beatmaps are rendering in /collections/:id route, probably a lot of missing maps from the storage cache maybe see whats up with that
 
 ### `Design`
 - get a cool background image/gif for the webpage I kinda want something dark and relaxing with a repeating pattern. possibly ask david to make something
 - remake navbar to not be the basic bootstrap one cuz it sucks. make it fatter, different color, and bigger text. change font too
 - redesign /collections/:id to fit the example design on the diagram page thing funorange made
 - make collections redirect to beatmaps
+
+### `Subscription`
+- can be done at the very end of the project
+- figure out how to handle transactions
+
+### `User Tutorial`
+- also do at the very end
+- use the homepage to explain how osuCollector works in layman terms
 
 ## Features
 
