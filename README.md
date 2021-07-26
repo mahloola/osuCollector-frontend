@@ -38,7 +38,7 @@
 - it would be cool for users to easily determine collection statistics through a simplified ID, e.g. what was the first uploaded collection ever
 
 ### `Bugs`
-- not all beatmaps are rendering in /collections/:id route, probably a lot of missing maps from the storage cache maybe see whats up with that
+- not all beatmaps are rendering in /collections/:id route, probably a lot of missing maps from the storage cache even tho we're supposed to have 'half of all osu maps' maybe see whats up with that
 
 ### `Design`
 - get a cool background image/gif for the webpage I kinda want something dark and relaxing with a repeating pattern. possibly ask david to make something
