@@ -1,6 +1,4 @@
-# osuCollector
-
-## TODO
+# TODO
 
 ### `Environment Variables`
 - start using environment variables. we should probably do this asap LOL
@@ -54,7 +52,7 @@
 - also do at the very end
 - use the homepage to explain how osuCollector works in layman terms
 
-## Features
+# Features
 
 ### `Recent`
 - render all collections that exist on the database, reverse sorted by date
