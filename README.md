@@ -2,6 +2,10 @@
 
 ## TODO
 
+### `Environment Variables`
+- start using environment variables. we should probably do this asap LOL
+- things to store: OAuth details, osu API key (if we even need one)
+
 ### `Login Sessions`
 
 - capture the auth token in the redirect URL, maybe storing that on the user's profile? i don't know how it's done. possibly make a GET route for that
