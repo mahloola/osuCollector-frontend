@@ -16,7 +16,7 @@
 - fix /recent API route to use query parameters rather than path parameters because that's the convention + its easier and better in some ways
 - implement pagination using 'startFrom' and 'count' query parameters
 - i haven't done this because idk how to use query params with app.route (that's what the API is using right now)
-- 
+
 ### `Upload Route`
 - this route already kinda exists, but the uploader is hardcoded to FunOrange, so this should be fixed when login sessions are a thing
 - render all the collections of the user and checkboxes to allow the user to CHOOSE WHICH ONES THEY WANT TO UPLOAD
