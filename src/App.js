@@ -1,17 +1,17 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
-import Home from './home/Home';
-import About from './about/About';
-import Collection from './collection/Collection';
-import NotFound from './notfound/NotFound';
-import Popular from './popular/Popular';
-import Recent from './recent/Recent';
-import NavigationBar from './common/NavigationBar';
-import Footer from './common/Footer';
-import Subscribe from './subscribe/Subscribe';
-import Desktop from './desktop/Desktop';
-import Login from './common/Login';
+import Home from './components/home/Home';
+import About from './components/about/About';
+import Collection from './components/collection/Collection';
+import NotFound from './components/notfound/NotFound';
+import Popular from './components/popular/Popular';
+import Recent from './components/recent/Recent';
+import NavigationBar from './components/common/NavigationBar';
+import Footer from './components/common/Footer';
+import Subscribe from './components/subscribe/Subscribe';
+import Desktop from './components/desktop/Desktop';
+import Login from './components/common/Login';
 
 function App() {
 

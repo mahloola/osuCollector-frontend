@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Card, Table, Spinner } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom'
-import config from '../config.json'
+import { getCollection, getCollectionBeatmaps } from '../../utils/api';
 
 function Collection() {
 
@@ -14,8 +14,7 @@ function Collection() {
 
     // GET collection
     useEffect(() => {
-        fetch(`${config.API_HOST}/api/collections/${id}`)
-            .then(res => res.json())
+        getCollection(id)
             .then(data => {
                 setLoading(false);
                 setCollection(data);
@@ -25,8 +24,7 @@ function Collection() {
 
     // GET collection beatmaps
     useEffect(() => {
-        fetch(`${config.API_HOST}/api/collections/${id}/beatmaps`)
-            .then(res => res.json())
+        getCollectionBeatmaps(id)
             .then(data => {
                 setLoading(false);
                 setBeatmaps(data);

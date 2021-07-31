@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { Spinner, Table } from 'react-bootstrap';
 import { Pagination } from 'react-bootstrap';
-import config from '../config.json'
+import { getRecentCollections } from '../../utils/api'
 
 function Recent() {
 
@@ -17,8 +17,7 @@ function Recent() {
     useEffect(() => {
         setLoading(true);
         // GET recent collections
-        fetch(`${config.API_HOST}/api/collections/recent`)
-            .then(res => res.json())
+        getRecentCollections()
             .then(data => {
                 setLoading(false);
                 setCollections(data);
