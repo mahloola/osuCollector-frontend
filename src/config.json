@@ -1,3 +1,4 @@
 {
+  "OAUTH_CALLBACK": "https://map-collector-314202.uc.r.appspot.com/authentication",
   "API_HOST": "https://osucollectorapi.herokuapp.com"
 }
