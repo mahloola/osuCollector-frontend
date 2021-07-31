@@ -5,7 +5,7 @@ import { decodeUtf8 } from './utf8-decoder'
 /*
 {
   name: string,
-  beatmaps: { beatmapMd5: string, beatmapId: number }[]
+  beatmapMd5s: string[]
 }
 */
 function parseCollectionDb(buffer) {
@@ -40,12 +40,7 @@ function parseCollectionDb(buffer) {
 
     collections.push({
       name: collectionName,
-      beatmaps: beatmapMd5s.map(md5 => {
-        return {
-          beatmapMd5: md5,
-          beatmapId: -1
-        }
-      })
+      beatmaps: beatmapMd5s
     })
   }
   return collections

@@ -1,5 +1,23 @@
 import React from 'react';
 import './Home.css';
+import { parseCollectionDb } from '../../utils/collectionsDb'
+import { uploadCollections } from '../../utils/api'
+
+function onCollectionDbSelected(e) {
+    const file = e.target.files[0];
+    if (file.name !== 'collection.db') {
+      console.log('Error: user did not select a collection.db file');
+      return;
+    }
+    let reader = new FileReader(); 
+    reader.onload = async () => {
+        const collections = parseCollectionDb(reader.result);
+        console.log(collections);
+        const result = await uploadCollections(collections);
+        console.log(result);
+    }
+    reader.readAsArrayBuffer(file);
+}
 
 function Home() {
 
@@ -31,6 +49,7 @@ function Home() {
                     July 25, 2021
                 </div>
             </div>
+            <input type="file" accept=".db" class="file-input" onChange={onCollectionDbSelected}/>
         </div>
 
     )

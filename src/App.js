@@ -1,5 +1,5 @@
 import { Col, Container, Row } from 'react-bootstrap';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import Home from './components/home/Home';
 import About from './components/about/About';

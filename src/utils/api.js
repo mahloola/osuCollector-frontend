@@ -17,8 +17,23 @@ async function getCollectionBeatmaps(id) {
   return await res.json()
 }
 
+async function uploadCollections(collections) {
+  const response = await fetch(`${config.API_HOST}/api/collections/upload`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(collections)
+  });
+  if (response.status === 200)
+    return response.json();
+  else
+    throw new Error(`/api/collections/upload responded with ${response.status}: ${response.body}`)
+}
+
 export {
   getRecentCollections,
   getCollection,
-  getCollectionBeatmaps
+  getCollectionBeatmaps,
+  uploadCollections
 }
