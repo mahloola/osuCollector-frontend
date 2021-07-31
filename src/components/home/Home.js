@@ -1,7 +1,7 @@
 import React from 'react';
 import './Home.css';
 import { parseCollectionDb } from '../../utils/collectionsDb'
-import { uploadCollections } from '../../utils/api'
+import * as api from '../../utils/api';
 
 function onCollectionDbSelected(e) {
     const file = e.target.files[0];
@@ -13,7 +13,7 @@ function onCollectionDbSelected(e) {
     reader.onload = async () => {
         const collections = parseCollectionDb(reader.result);
         console.log(collections);
-        const result = await uploadCollections(collections);
+        const result = await api.uploadCollections(collections);
         console.log(result);
     }
     reader.readAsArrayBuffer(file);
