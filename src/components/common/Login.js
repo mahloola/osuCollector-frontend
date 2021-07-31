@@ -3,10 +3,11 @@ import { Redirect, Link } from 'react-router-dom';
 import config from '../../config/config'
 
 function Login() {
+    const clientId = config.get('CLIENT_ID')
     const callback = encodeURIComponent(config.get('OAUTH_CALLBACK'))
     return (
         <>
-            <a href={ `https://osu.ppy.sh/oauth/authorize?client_id=7512&response_type=code&redirect_uri=${callback}` }>
+            <a href={ `https://osu.ppy.sh/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${callback}` }>
                 <Button type="submit" variant="outline-primary">Login</Button>
             </a>
         </>
