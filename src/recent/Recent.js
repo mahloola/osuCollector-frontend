@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { Spinner, Table } from 'react-bootstrap';
 import { Pagination } from 'react-bootstrap';
+import config from '../config.json'
 
 function Recent() {
 
@@ -15,8 +16,8 @@ function Recent() {
     // run this code block when the second parameter (page) changes in value
     useEffect(() => {
         setLoading(true);
-        // heroku API request (ITS SO SLOW)
-        fetch('https://osucollectorapi.herokuapp.com/api/collections/recent')
+        // GET recent collections
+        fetch(`${config.API_HOST}/api/collections/recent`)
             .then(res => res.json())
             .then(data => {
                 setLoading(false);

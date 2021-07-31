@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Card, Table, Spinner } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom'
+import config from '../config.json'
 
 function Collection() {
 
@@ -11,9 +12,9 @@ function Collection() {
     const [beatmaps, setBeatmaps] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // heroku API request (ITS SO SLOW)
+    // GET collection
     useEffect(() => {
-        fetch(`https://osucollectorapi.herokuapp.com/api/collections/${id}`)
+        fetch(`${config.API_HOST}/api/collections/${id}`)
             .then(res => res.json())
             .then(data => {
                 setLoading(false);
@@ -22,8 +23,9 @@ function Collection() {
             .catch(err => console.log('Unable to fetch collections: ', err));
     }, [])
 
+    // GET collection beatmaps
     useEffect(() => {
-        fetch(`https://osucollectorapi.herokuapp.com/api/collections/${id}/beatmaps`)
+        fetch(`${config.API_HOST}/api/collections/${id}/beatmaps`)
             .then(res => res.json())
             .then(data => {
                 setLoading(false);
