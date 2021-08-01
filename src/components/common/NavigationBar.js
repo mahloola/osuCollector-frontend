@@ -32,6 +32,10 @@ function NavigationBar() {
                             <Nav.Link>Popular</Nav.Link>
                         </LinkContainer> */}
 
+                        <LinkContainer to="/users">
+                            <Nav.Link>Users</Nav.Link>
+                        </LinkContainer>
+
                         <LinkContainer to="/subscribe">
                             <Nav.Link>Subscribe</Nav.Link>
                         </LinkContainer>

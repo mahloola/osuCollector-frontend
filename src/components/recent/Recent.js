@@ -38,7 +38,7 @@ function Recent() {
     }
 
     if (!loading) {
-        if (collections) {
+        if (Array.isArray(collections)) {
             return (
                 <div>
                     <br />
