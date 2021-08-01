@@ -5,7 +5,7 @@ import { decodeUtf8 } from './utf8-decoder'
 /*
 {
   name: string,
-  beatmapMd5s: string[]
+  beatmapChecksums: string[]
 }
 */
 function parseCollectionDb(buffer) {
@@ -31,16 +31,16 @@ function parseCollectionDb(buffer) {
     offset += 4
 
     // read each beatmap MD5 hash
-    let beatmapMd5s = []
+    let beatmapChecksums = []
     for (let i = 0; i < numBeatmaps; i++) {
         let [beatmapMd5, bytesParsed] = parsePeppyString(buffer, offset)
-        beatmapMd5s.push(beatmapMd5)
+        beatmapChecksums.push(beatmapMd5)
         offset += bytesParsed
     }
 
     collections.push({
       name: collectionName,
-      beatmaps: beatmapMd5s
+      beatmaps: beatmapChecksums
     })
   }
   return collections
