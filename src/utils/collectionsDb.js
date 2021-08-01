@@ -40,7 +40,7 @@ function parseCollectionDb(buffer) {
 
     collections.push({
       name: collectionName,
-      beatmaps: beatmapChecksums
+      beatmapChecksums: beatmapChecksums
     })
   }
   return collections
