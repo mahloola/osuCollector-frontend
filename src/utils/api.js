@@ -2,8 +2,8 @@ import config from '../config/config'
 
 // All these functions return parsed response bodies as promises
 
-async function getRecentCollections() {
-  const res = await fetch(`${config.get('API_HOST')}/api/collections/recent`)
+async function getRecentCollections(page) {
+  const res = await fetch(`${config.get('API_HOST')}/api/collections?page=${page}`)
   return await res.json()
 }
 
