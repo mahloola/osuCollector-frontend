@@ -54,7 +54,7 @@ function Recent() {
                         <tbody>
                             {
                                 collections.map((collections) => (
-                                    <tr key={collections.id} onClick={() => { history.push(`/collections/${collections._id}`) }}>
+                                    <tr key={collections.id} onClick={() => { history.push(`/collections/${collections.id}`) }}>
                                         <td>{collections.id}</td>
                                         <td>{collections.name}</td>
                                         <td>{collections.uploader.username}</td>

@@ -27,7 +27,7 @@ function Collection() {
         api.getCollectionBeatmaps(id)
             .then(data => {
                 setLoading(false);
-                setBeatmaps(data);
+                setBeatmaps(data.beatmaps);
                 console.log(beatmaps);
             })
             .catch(err => console.log('Unable to fetch collections: ', err));
@@ -47,9 +47,9 @@ function Collection() {
                         </Card.Title>
                         <Card.Subtitle class="d-flex justify-content-between">
                             <h3>
-                                Uploaded by {collection.uploader}
+                                Uploaded by {collection.uploader.username}
                                 <br />
-                                {collection.beatmaps.length} maps
+                                {collection.beatmapCount} maps
                             </h3>
                         </Card.Subtitle>
                         {/* MAPS */}
