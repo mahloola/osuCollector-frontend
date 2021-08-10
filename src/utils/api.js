@@ -31,9 +31,36 @@ async function uploadCollections(collections) {
     throw new Error(`/api/collections/upload responded with ${response.status}: ${response.body}`)
 }
 
+// Returns true on success
+async function favouriteCollection(collectionId) {
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/favourite`, {
+    "method": "POST"
+  })
+  if (response.status === 200) {
+    return true
+  } else {
+    console.log(response)
+    return false
+  }
+}
+
+async function unfavouriteCollection(collectionId) {
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/favourite`, {
+    "method": "DELETE"
+  })
+  if (response.status === 200) {
+    return true
+  } else {
+    console.log(response)
+    return false
+  }
+}
+
 export {
   getRecentCollections,
   getCollection,
   getCollectionBeatmaps,
-  uploadCollections
+  uploadCollections,
+  favouriteCollection,
+  unfavouriteCollection
 }

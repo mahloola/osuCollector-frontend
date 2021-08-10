@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Card, Table, Spinner } from 'react-bootstrap';
+import { Card, Table, Spinner, Button } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom'
 import * as api from '../../utils/api';
 
@@ -52,6 +52,17 @@ function Collection() {
                                 {collection.beatmapCount} maps
                             </h3>
                         </Card.Subtitle>
+                        {/*TODO: change this; this is only for testing*/}
+                        <Button
+                            onClick={async () => api.favouriteCollection(collection.id)}
+                            variant="outline-primary">
+                            Add to favourites
+                        </Button>
+                        <Button
+                            onClick={async () => api.unfavouriteCollection(collection.id)}
+                            variant="outline-danger">
+                            Remove from favourites
+                        </Button>
                         {/* MAPS */}
                         <Table striped bordered hover>
                             <thead>
