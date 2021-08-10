@@ -1,22 +1,25 @@
 import config from '../config/config'
 
-// All these functions return parsed response bodies as promises
-
+// Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema
 async function getRecentCollections(page) {
   const res = await fetch(`${config.get('API_HOST')}/api/collections?page=${page}`)
   return await res.json()
 }
 
+// Returns CollectionData object: https://osucollector.com/docs.html#responses-getCollectionById-200-schema
 async function getCollection(id) {
   const res = await fetch(`${config.get('API_HOST')}/api/collections/${id}`)
   return await res.json()
 }
 
+// Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollectionBeatmaps-200-schema
 async function getCollectionBeatmaps(id) {
   const res = await fetch(`${config.get('API_HOST')}/api/collections/${id}/beatmaps`)
   return await res.json()
 }
 
+// TODO: return value is garbage, don't use it
+// throws error on upload failure
 async function uploadCollections(collections) {
   const response = await fetch(`${config.get('API_HOST')}/api/collections/upload`, {
     method: 'POST',
@@ -45,6 +48,7 @@ async function favouriteCollection(collectionId) {
   }
 }
 
+// Returns true on success
 async function unfavouriteCollection(collectionId) {
   const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/favourite`, {
     "method": "DELETE"
