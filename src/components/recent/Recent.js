@@ -21,7 +21,6 @@ function Recent() {
             .then(data => {
                 setLoading(false);
                 setCollections(data.collections);
-                console.log(collections);
             })
             .catch(err => console.log('Unable to fetch collections: ', err));
     }, [page])

@@ -28,7 +28,6 @@ function Collection() {
             .then(data => {
                 setLoading(false);
                 setBeatmaps(data.beatmaps);
-                console.log(beatmaps);
             })
             .catch(err => console.log('Unable to fetch collections: ', err));
     }, []);

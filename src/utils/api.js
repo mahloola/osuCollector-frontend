@@ -37,6 +37,7 @@ async function favouriteCollection(collectionId) {
     "method": "POST"
   })
   if (response.status === 200) {
+    console.log(`collection ${collectionId} added to favourites`)
     return true
   } else {
     console.log(response)
@@ -49,6 +50,7 @@ async function unfavouriteCollection(collectionId) {
     "method": "DELETE"
   })
   if (response.status === 200) {
+    console.log(`collection ${collectionId} removed from favourites`)
     return true
   } else {
     console.log(response)
