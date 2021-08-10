@@ -17,11 +17,10 @@ function Recent() {
     useEffect(() => {
         setLoading(true);
         // GET recent collections
-        getRecentCollections()
+        getRecentCollections(page)
             .then(data => {
                 setLoading(false);
-                setCollections(data);
-                console.log(collections);
+                setCollections(data.collections);
             })
             .catch(err => console.log('Unable to fetch collections: ', err));
     }, [page])
@@ -54,11 +53,11 @@ function Recent() {
                         <tbody>
                             {
                                 collections.map((collections) => (
-                                    <tr key={collections._id} onClick={() => { history.push(`/collections/${collections._id}`) }}>
-                                        <td>{collections._id}</td>
+                                    <tr key={collections.id} onClick={() => { history.push(`/collections/${collections.id}`) }}>
+                                        <td>{collections.id}</td>
                                         <td>{collections.name}</td>
-                                        <td>{collections.uploader}</td>
-                                        <td>{(collections.beatmaps).length}</td>
+                                        <td>{collections.uploader.username}</td>
+                                        <td>{collections.beatmapCount}</td>
                                     </tr>
                                 ))
                             }
