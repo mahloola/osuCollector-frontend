@@ -3,7 +3,7 @@ import config from '../config/config'
 // All these functions return parsed response bodies as promises
 
 async function getRecentCollections() {
-  const res = await fetch(`${config.get('API_HOST')}/api/collections/recent`)
+  const res = await fetch(`${config.get('API_HOST')}/api/collections?sortBy=dateLastModified`)
   return await res.json()
 }
 
