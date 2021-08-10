@@ -62,6 +62,12 @@ async function unfavouriteCollection(collectionId) {
   }
 }
 
+// Returns an array of CollectionData objects: https://osucollector.com/docs.html#responses-getUserFavourites-200-schema
+async function getUserFavourites(userId) {
+  const res = await fetch(`${config.get('API_HOST')}/api/${userId}/favourites`)
+  return await res.json()
+}
+
 export {
   getRecentCollections,
   getCollection,
