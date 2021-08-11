@@ -1,8 +1,31 @@
 import config from '../config/config'
 
 // Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema
-async function getRecentCollections(page) {
-  const res = await fetch(`${config.get('API_HOST')}/api/collections?page=${page}`)
+async function getRecentCollections(page, perPage=undefined) {
+  const queryParams = [
+    `page=${page}`,
+    perPage ? `&perPage=${perPage}` : ''
+  ].join('')
+  const res = await fetch(`${config.get('API_HOST')}/api/collections?${queryParams}`)
+  return await res.json()
+}
+
+// TODO
+// range: 'day' or 'week' or 'month' or 'year' or 'alltime'
+async function getPopularCollections(page, perPage=undefined, range='day') {
+  let queryParams = `page=${page}`
+  if (perPage)
+    queryParams += `&perPage=${perPage}`
+}
+
+// Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema
+async function searchCollections(queryString, page, perPage=undefined) {
+  const queryParams = [
+    `search=${queryString}`,
+    `&page=${page}`,
+    perPage ? `&perPage=${perPage}` : ''
+  ].join('')
+  const res = await fetch(`${config.get('API_HOST')}/api/collections?${queryParams}`)
   return await res.json()
 }
 
@@ -70,9 +93,12 @@ async function getUserFavourites(userId) {
 
 export {
   getRecentCollections,
+  getPopularCollections,
+  searchCollections,
   getCollection,
   getCollectionBeatmaps,
   uploadCollections,
   favouriteCollection,
-  unfavouriteCollection
+  unfavouriteCollection,
+  getUserFavourites
 }
