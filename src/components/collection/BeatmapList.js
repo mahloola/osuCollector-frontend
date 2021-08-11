@@ -20,8 +20,8 @@ const BeatmapList = ({ beatmaps }) => {
                             <td>[{beatmap.version}]</td>
                             <td>{beatmap.difficulty_rating}</td>
                             <td>
-                                <Button variant='outline-secondary' href={`https://osu.ppy.sh/b/${beatmap.id}`}>Website</Button>{' '}
-                                <Button variant='outline-primary' href={`osu://b/${beatmap.id}`}>Direct</Button>
+                                <Button variant='outline-secondary' size='sm' href={`https://osu.ppy.sh/b/${beatmap.id}`}>Website</Button>{' '}
+                                <Button variant='outline-primary' size='sm' href={`osu://b/${beatmap.id}`}>Direct</Button>
                             </td>
                         </tr>
                     )

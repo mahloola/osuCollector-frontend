@@ -63,7 +63,7 @@ function Recent() {
                         <Pagination.Prev className={page > 1 ? '' : 'disabled'} onClick={() => goToPage(page - 1)} />
                         <Pagination.Item className='disabled'>{page}</Pagination.Item>
                         <Pagination.Next className={nextPage ? '' : 'disabled'} onClick={() => goToPage(nextPage)} />
-                        <Pagination.Next className={nextPage && lastPage ? '' : 'disabled'} onClick={() => goToPage(lastPage)} />
+                        <Pagination.Last className={nextPage && lastPage ? '' : 'disabled'} onClick={() => goToPage(lastPage)} />
                     </Pagination>
                 </div>
             </div>
