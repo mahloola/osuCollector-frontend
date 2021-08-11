@@ -1,17 +1,11 @@
 import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Redirect } from 'react-router';
 import Authentication from './Authentication';
-import Profile from './Profile';
 
 function NavigationBar() {
 
     function handleSearch() {
         console.log("lkjkdsjkfhds");
-    }
-    function handleLogin() {
-        console.log("HEYY");
-        <Redirect to='/login' />
     }
 
     return (
@@ -43,7 +37,7 @@ function NavigationBar() {
                     {/* hard coded 20% rightPadding to center the searchbar for now*/}
                     <Form onSubmit={handleSearch} inline style={{ margin: "auto", paddingRight: "20%" }}>
                         <FormControl type="text" placeholder="Collection" className="mr-sm-2" />
-                        <i class="bi bi-search"></i>
+                        <i className="bi bi-search"></i>
                         <Button type="submit" variant="outline-primary">Search</Button>
                     </Form>
                     <Authentication />

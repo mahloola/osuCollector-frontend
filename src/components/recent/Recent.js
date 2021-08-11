@@ -1,17 +1,20 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useHistory } from 'react-router';
-import { Spinner, Table } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { Pagination } from 'react-bootstrap';
 import { getRecentCollections } from '../../utils/api'
+import CollectionList from '../common/CollectionList';
 
 function Recent() {
 
     const [loading, setLoading] = useState(true); // basically a flag
     const [collections, setCollections] = useState(null);
     const [page, setPage] = useState(1);
-    const history = useHistory();
-    const perPage = 10;
+
+    // run this code when on initial page load
+    useEffect(() => {
+        console.log('onload')
+    })
 
     // run this code block when the second parameter (page) changes in value
     useEffect(() => {
@@ -21,8 +24,9 @@ function Recent() {
             .then(data => {
                 setLoading(false);
                 setCollections(data.collections);
-            })
-            .catch(err => console.log('Unable to fetch collections: ', err));
+            }).catch(err =>
+                console.log('Unable to fetch collections: ', err)
+            );
     }, [page])
 
     function previousPage() {
@@ -41,30 +45,9 @@ function Recent() {
             return (
                 <div>
                     <br />
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Collection</th>
-                                <th>Uploader</th>
-                                <th>Beatmap Count</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                collections.map((collections) => (
-                                    <tr key={collections.id} onClick={() => { history.push(`/collections/${collections.id}`) }}>
-                                        <td>{collections.id}</td>
-                                        <td>{collections.name}</td>
-                                        <td>{collections.uploader.username}</td>
-                                        <td>{collections.beatmapCount}</td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </Table>
-                    <div class="d-flex justify-content-center">
-                        <Pagination class="text-center" size="lg">
+                    <CollectionList collections={collections}></CollectionList>
+                    <div className="d-flex justify-content-center">
+                        <Pagination className="text-center" size="lg">
                             {/* <Pagination.First onClick={setPage(1)}/> */}
                             <Pagination.Prev onClick={previousPage} />
                             <Pagination.Item>{page}</Pagination.Item>
@@ -85,7 +68,7 @@ function Recent() {
     }
     else {
         return (
-            <div class="d-flex justify-content-center">
+            <div className="d-flex justify-content-center">
                 <Spinner animation="border" />
             </div>
         )

@@ -13,9 +13,9 @@ async function getRecentCollections(page, perPage=undefined) {
 // TODO
 // range: 'day' or 'week' or 'month' or 'year' or 'alltime'
 async function getPopularCollections(page, perPage=undefined, range='day') {
-  let queryParams = `page=${page}`
-  if (perPage)
-    queryParams += `&perPage=${perPage}`
+  // let queryParams = `page=${page}`
+  // if (perPage)
+  //   queryParams += `&perPage=${perPage}`
 }
 
 // Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema

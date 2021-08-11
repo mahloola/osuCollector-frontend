@@ -20,7 +20,7 @@ function Collection() {
                 setCollection(data);
             })
             .catch(err => console.log('Unable to fetch collections: ', err));
-    }, [])
+    }, [id])
 
     // GET collection beatmaps
     useEffect(() => {
@@ -30,7 +30,7 @@ function Collection() {
                 setBeatmaps(data.beatmaps);
             })
             .catch(err => console.log('Unable to fetch collections: ', err));
-    }, []);
+    }, [id]);
 
 
 
@@ -44,7 +44,7 @@ function Collection() {
                                 {collection.name}
                             </h1>
                         </Card.Title>
-                        <Card.Subtitle class="d-flex justify-content-between">
+                        <Card.Subtitle className="d-flex justify-content-between">
                             <h3>
                                 Uploaded by {collection.uploader.username}
                                 <br />
@@ -93,7 +93,7 @@ function Collection() {
         else {
             return (
                 <div>
-                    <div class="d-flex justify-content-center">
+                    <div className="d-flex justify-content-center">
                         <Spinner animation="border" />
                     </div>
                 </div>
