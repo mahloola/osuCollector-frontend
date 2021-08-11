@@ -26,7 +26,7 @@ function Home() {
             <h1>
                 News
             </h1>
-            <br />
+            <br/>
             <div className="news">
                 <h3>
                     We are going live.

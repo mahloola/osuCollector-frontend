@@ -17,7 +17,7 @@ function About() {
                         Currently there is little support for collection sharing/editing (they are encoded into one collections.db file).
                         <br/>
                         osu!collector is run by <a href="https://twitter.com/mahloola" style={{textDecoration: "none"}}>myself</a> (mahloola) working on the front end and <a href="https://twitter.com/FunOrange42" style={{textDecoration: "none"}}>FunOrange</a> working on the back end.
-                        <br />
+                        <br/>
                         I sure hope we can finish this in a reasonable amount of time 😭
                         </h5>
                         

@@ -3,10 +3,10 @@ import config from '../config/config'
 // Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema
 async function getRecentCollections(page, perPage=undefined) {
   const queryParams = [
-    `page=${page}`,
+    `?page=${page}`,
     perPage ? `&perPage=${perPage}` : ''
   ].join('')
-  const res = await fetch(`${config.get('API_HOST')}/api/collections?${queryParams}`)
+  const res = await fetch(`${config.get('API_HOST')}/api/collections${queryParams}`)
   return await res.json()
 }
 
@@ -21,11 +21,11 @@ async function getPopularCollections(page, perPage=undefined, range='day') {
 // Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema
 async function searchCollections(queryString, page, perPage=undefined) {
   const queryParams = [
-    `search=${queryString}`,
+    `?search=${queryString}`,
     `&page=${page}`,
     perPage ? `&perPage=${perPage}` : ''
   ].join('')
-  const res = await fetch(`${config.get('API_HOST')}/api/collections?${queryParams}`)
+  const res = await fetch(`${config.get('API_HOST')}/api/collections${queryParams}`)
   return await res.json()
 }
 
@@ -36,8 +36,14 @@ async function getCollection(id) {
 }
 
 // Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollectionBeatmaps-200-schema
-async function getCollectionBeatmaps(id) {
-  const res = await fetch(`${config.get('API_HOST')}/api/collections/${id}/beatmaps`)
+async function getCollectionBeatmaps(id, page, perPage=undefined, sortBy=undefined, orderBy=undefined) {
+  const queryParams = [
+    `?page=${page}`,
+    perPage ? `&perPage=${perPage}` : '',
+    sortBy ? `&sortBy=${sortBy}` : '',
+    orderBy ? `&orderBy=${orderBy}` : ''
+  ].join('')
+  const res = await fetch(`${config.get('API_HOST')}/api/collections/${id}/beatmaps${queryParams}`)
   return await res.json()
 }
 

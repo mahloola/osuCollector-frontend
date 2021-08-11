@@ -18,7 +18,7 @@ function Subscribe() {
                     </Card.Subtitle>
                 </Card.Body>
             </Card>
-            <br />
+            <br/>
             <h3>
                 <Link to='/download'>Download</Link>
             </h3>

@@ -1,113 +1,121 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Card, Table, Spinner, Button } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom'
+import { Card, Pagination, Spinner, Button } from 'react-bootstrap';
 import * as api from '../../utils/api';
+import { useQuery } from '../../utils/hooks';
+import BeatmapList from './BeatmapList';
 
 function Collection() {
 
     let { id } = useParams();
     const [collection, setCollection] = useState(null);
-    const [beatmaps, setBeatmaps] = useState(null);
+    const [page, setPage] = useState(0);
+    const [beatmapPage, setBeatmapPage] = useState(null);
     const [loading, setLoading] = useState(true);
+    const query = useQuery();
+    const history = useHistory();
 
-    // GET collection
+    // run this code on initial load
     useEffect(() => {
-        api.getCollection(id)
-            .then(data => {
-                setLoading(false);
-                setCollection(data);
-            })
-            .catch(err => console.log('Unable to fetch collections: ', err));
-    }, [id])
+        // GET collection
+        api.getCollection(id).then(collection => {
+            setCollection(collection);
+            // get page from query params
+            setPage(query.get('page') || 1);
+        }).catch(err => {
+            console.log('Unable to fetch collections: ', err)
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
-    // GET collection beatmaps
+    // GET beatmaps
     useEffect(() => {
-        api.getCollectionBeatmaps(id)
-            .then(data => {
-                setLoading(false);
-                setBeatmaps(data.beatmaps);
-            })
-            .catch(err => console.log('Unable to fetch collections: ', err));
-    }, [id]);
+        if (page <= 0)
+            return
+        api.getCollectionBeatmaps(id, page).then(beatmapPage => {
+            setLoading(false);
+            setBeatmapPage(beatmapPage);
+        }).catch(err => {
+            console.log('Unable to fetch collections: ', err)
+        });
+    }, [id, page]);
 
-
-
-    if (!loading) {
-        if (collection != null && beatmaps != null) {
-            return (
-                <div>
-                    <Card style={{ padding: "20px" }}>
-                        <Card.Title>
-                            <h1>
-                                {collection.name}
-                            </h1>
-                        </Card.Title>
-                        <Card.Subtitle className="d-flex justify-content-between">
-                            <h3>
-                                Uploaded by {collection.uploader.username}
-                                <br />
-                                {collection.beatmapCount} maps
-                            </h3>
-                        </Card.Subtitle>
-                        {/*TODO: change this; this is only for testing*/}
-                        <Button
-                            onClick={async () => api.favouriteCollection(collection.id)}
-                            variant="outline-primary">
-                            Add to favourites
-                        </Button>
-                        <Button
-                            onClick={async () => api.unfavouriteCollection(collection.id)}
-                            variant="outline-danger">
-                            Remove from favourites
-                        </Button>
-                        {/* MAPS */}
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Artist - Title</th>
-                                    <th>Difficulty</th>
-                                    <th>Star Rating</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {beatmaps.map(function (beatmap, i) {
-                                    return (
-                                        <tr onClick={() => { <Redirect to="osu.ppy.sh" /> }}>
-                                            <td>{i + 1}</td>
-                                            <td>{beatmap.beatmapset.artist} - {beatmap.beatmapset.title}</td>
-                                            <td>{beatmap.version}</td>
-                                            <td>{beatmap.difficulty_rating}</td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </Table>
-                    </Card>
-                    <br /><br />
-                </div>
-            )
-        }
-        else {
-            return (
-                <div>
-                    <div className="d-flex justify-content-center">
-                        <Spinner animation="border" />
-                    </div>
-                </div>
-            )
-        }
+    const goToPage = (page) => {
+        history.push(`/collections/${id}?page=${page}`);
+        setPage(page);
     }
-    else {
+
+    if (loading) {
         return (
             <div>
-                {/* Data not found! */}
+                <div className="d-flex justify-content-center">
+                    <Spinner animation="border" />
+                </div>
             </div>
-
         )
     }
+
+    if (!collection) {
+        return (
+            <h1>
+                Collection not found!
+            </h1>
+        )
+    }
+
+    const nextPage = beatmapPage ? beatmapPage.nextPage : 0;
+    const lastPage = beatmapPage ? beatmapPage.lastPage : 0;
+    return (
+        <div>
+            <Card style={{ padding: "20px" }}>
+                <Card.Title>
+                    <h1>
+                        {collection.name}
+                    </h1>
+                </Card.Title>
+                <Card.Subtitle className="d-flex justify-content-between">
+                    <h3>
+                        Uploaded by {collection.uploader.username}
+                        <br/>
+                        {collection.beatmapCount} maps
+                    </h3>
+                </Card.Subtitle>
+                {/*TODO: change this; this is only for testing*/}
+                <Button
+                    onClick={async () => api.favouriteCollection(collection.id)}
+                    variant="outline-primary">
+                    Add to favourites
+                </Button>
+                <Button
+                    onClick={async () => api.unfavouriteCollection(collection.id)}
+                    variant="outline-danger">
+                    Remove from favourites
+                </Button>
+                {/* MAPS */}
+                {beatmapPage ? (
+                    <>
+                        <BeatmapList beatmaps={beatmapPage.beatmaps}></BeatmapList>
+                        <div className="d-flex justify-content-center">
+                            <Pagination className="text-center" size="lg">
+                                <Pagination.First className={page > 1 ? '' : 'disabled'} onClick={() => goToPage(1)} />
+                                <Pagination.Prev className={page > 1 ? '' : 'disabled'} onClick={() => goToPage(page - 1)} />
+                                <Pagination.Item active={true}>{page}</Pagination.Item>
+                                <Pagination.Next className={nextPage ? '' : 'disabled'} onClick={() => goToPage(nextPage)} />
+                                <Pagination.Next className={nextPage && lastPage  ? '' : 'disabled'} onClick={() => goToPage(lastPage)} />
+                            </Pagination>
+                        </div>
+                    </>
+                ) : (
+                    <div>
+                        <div className="d-flex justify-content-center">
+                            <Spinner animation="border" />
+                        </div>
+                    </div>
+                )}
+            </Card>
+            <br/><br/>
+        </div>
+    )
 }
 
 export default Collection;

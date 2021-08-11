@@ -11,8 +11,8 @@ const CollectionList = ({ collections }) => {
                     <th>#</th>
                     <th>Collection</th>
                     <th>Uploader</th>
-                    <th>Beatmap Count</th>
                     <th>Favourites</th>
+                    <th>Beatmap Count</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,8 +22,8 @@ const CollectionList = ({ collections }) => {
                             <td>{collections.id}</td>
                             <td>{collections.name}</td>
                             <td>{collections.uploader.username}</td>
-                            <td>{collections.beatmapCount}</td>
                             <td>{collections.favourites}</td>
+                            <td>{collections.beatmapCount}</td>
                         </tr>
                     ))
                 }
