@@ -77,7 +77,7 @@ function Collection() {
                     <h3>
                         Uploaded by {collection.uploader.username}
                         <br/>
-                        {collection.beatmapCount} maps
+                        {collection.beatmapCount} maps {collection.unsubmittedBeatmapCount > 0 ? `(${collection.unsubmittedBeatmapCount} unsubmitted diffs not shown)` : ''}
                     </h3>
                 </Card.Subtitle>
                 {/*TODO: change this; this is only for testing*/}
