@@ -91,6 +91,18 @@ async function unfavouriteCollection(collectionId) {
   }
 }
 
+// Only returns the 'user' property of this object: https://osucollector.com/docs.html#responses-getOwnUser-200-schema
+// If user is not logged in, will return null
+
+// (schema might not show in above link, if that's the case open openapi.yaml in swagger editor)
+// https://osucollector.com/openapi.yaml
+// https://editor.swagger.io/
+async function getOwnUser() {
+  const res = await fetch(`${config.get('API_HOST')}/api/users/me`)
+  const data = await res.json()
+  return data.loggedIn ? data.user : null
+}
+
 // Returns an array of CollectionData objects: https://osucollector.com/docs.html#responses-getUserFavourites-200-schema
 async function getUserFavourites(userId) {
   const res = await fetch(`${config.get('API_HOST')}/api/${userId}/favourites`)
@@ -106,5 +118,6 @@ export {
   uploadCollections,
   favouriteCollection,
   unfavouriteCollection,
+  getOwnUser,
   getUserFavourites
 }

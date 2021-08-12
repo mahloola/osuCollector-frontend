@@ -1,3 +1,5 @@
+do not read this, it's very outdated and we're not maintaining this todo list
+
 # TODO
 
 ### `Login Sessions`
