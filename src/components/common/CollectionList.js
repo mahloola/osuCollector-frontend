@@ -1,5 +1,6 @@
 import { useHistory } from 'react-router';
 import { Table } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 const CollectionList = ({ collections }) => {
     const history = useHistory();
@@ -30,6 +31,10 @@ const CollectionList = ({ collections }) => {
             </tbody>
         </Table>
     )
+}
+
+CollectionList.propTypes = {
+    collections: PropTypes.arrayOf(PropTypes.object)
 }
 
 export default CollectionList;

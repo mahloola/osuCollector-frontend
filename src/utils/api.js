@@ -10,18 +10,22 @@ async function getRecentCollections(page, perPage=undefined) {
   return await res.json()
 }
 
-// TODO
-// range: 'day' or 'week' or 'month' or 'year' or 'alltime'
-async function getPopularCollections(page, perPage=undefined, range='day') {
-  // let queryParams = `page=${page}`
-  // if (perPage)
-  //   queryParams += `&perPage=${perPage}`
+// range: 'today' or 'week' or 'month' or 'year' or 'alltime'
+// Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema
+async function getPopularCollections(range='today', page, perPage=undefined) {
+  const queryParams = [
+    `?range=${range}`,
+    `&page=${page}`,
+    perPage ? `&perPage=${perPage}` : ''
+  ].join('')
+  const res = await fetch(`${config.get('API_HOST')}/api/collections/popular${queryParams}`)
+  return await res.json()
 }
 
 // Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema
 async function searchCollections(queryString, page, perPage=undefined) {
   const queryParams = [
-    `?search=${queryString}`,
+    `?search=${encodeURIComponent(queryString)}`,
     `&page=${page}`,
     perPage ? `&perPage=${perPage}` : ''
   ].join('')
