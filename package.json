@@ -42,7 +42,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "hhttps://osucollector.com",
+  "proxy": "https://osucollector.com",
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-plugin-react": "^7.24.0"
