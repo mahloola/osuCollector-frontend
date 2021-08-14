@@ -1,5 +1,6 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { Route, Switch } from 'react-router-dom';
+import { getOwnUser } from './utils/api.js';
 
 import Home from './components/home/Home';
 import About from './components/about/About';
@@ -12,12 +13,19 @@ import Footer from './components/common/Footer';
 import Subscribe from './components/subscribe/Subscribe';
 import Desktop from './components/desktop/Desktop';
 import Login from './components/common/Login';
+import { useEffect, useState } from 'react';
 
 function App() {
 
+  const [ userSession, setUserSession ] = useState(null);
+  useEffect(async() => {
+    let user = await getOwnUser();
+    setUserSession(user);
+  }, []);
+
   return (
     <div className="App">
-      <NavigationBar />
+      <NavigationBar user={userSession}/>
       <br/>
       <Container>
         <Row>

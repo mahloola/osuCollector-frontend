@@ -2,7 +2,7 @@ import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import Authentication from './Authentication';
 
-function NavigationBar() {
+function NavigationBar({ user }) {
 
     function handleSearch() {
         console.log("lkjkdsjkfhds");
@@ -40,7 +40,7 @@ function NavigationBar() {
                         <i className="bi bi-search"></i>
                         <Button type="submit" variant="outline-primary">Search</Button>
                     </Form>
-                    <Authentication />
+                    <Authentication user={user}/>
                     {/* 
                         Design plan:
                         log in button on the top right when not signed in

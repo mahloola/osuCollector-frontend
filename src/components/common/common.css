@@ -1,0 +1,27 @@
+.user-badge {
+    background-color: gray;
+    border-radius: 50px;
+    text-decoration: none;
+}
+
+.user-badge:hover {
+    text-decoration: none;
+    background-color: darkgray;
+}
+
+.user-badge:hover, .user-badge:hover span {
+    color: dimgray;
+}
+
+.user-badge span {
+    padding: 10px 15px 10px 10px;
+    color: white;
+    vertical-align: text-top;   
+}
+
+.user-badge .avatar-img {
+    height: 40px;
+    width: 40px;
+    margin: 5px;
+    object-fit: cover;
+}
