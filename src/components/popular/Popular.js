@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Spinner, Pagination, Button, ButtonGroup } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { getPopularCollections } from '../../utils/api'
 import { useQuery } from '../../utils/hooks';
 import CollectionList from '../common/CollectionList';
@@ -23,6 +23,7 @@ function Popular() {
 
     // run this code when page changes
     useEffect(() => {
+        console.log('page or dateRange triggered');
         if (page <= 0)
             return;
         getPopularCollections(dateRange, page)
@@ -34,6 +35,18 @@ function Popular() {
                 console.log('Unable to fetch collections: ', err);
             });
     }, [page, dateRange])
+
+    const dateRangeClicked = (dateRange) => {
+        setDateRange(dateRange);
+        setPage(1);
+        history.push(`/popular?range=${dateRange}`)
+    }
+
+    const todayClicked = () => dateRangeClicked('today')
+    const weekClicked = () => dateRangeClicked('week')
+    const monthClicked = () => dateRangeClicked('month')
+    const yearClicked = () => dateRangeClicked('year')
+    const allTimeClicked = () => dateRangeClicked('alltime')
 
     const goToPage = (dateRange, page) => {
         history.push(`/popular?range=${dateRange}&page=${page}`);
@@ -55,21 +68,11 @@ function Popular() {
                     Popular Collections
                 </h1>
                 <ButtonGroup className='mb-3'>
-                    <Link to='/popular?range=today'>
-                        <Button size='sm' variant='outline-secondary'>today</Button>
-                    </Link>
-                    <Link to='/popular?range=week'>
-                        <Button size='sm' variant='outline-secondary'>this week</Button>
-                    </Link>
-                    <Link to='/popular?range=month'>
-                        <Button size='sm' variant='outline-secondary'>this month</Button>
-                    </Link>
-                    <Link to='/popular?range=year'>
-                        <Button size='sm' variant='outline-secondary'>this year</Button>
-                    </Link>
-                    <Link to='/popular?range=alltime'>
-                        <Button size='sm' variant='outline-secondary'>ALL TIME</Button>
-                    </Link>
+                    <Button onClick={todayClicked} size='sm' variant='outline-secondary'>today</Button>
+                    <Button onClick={weekClicked} size='sm' variant='outline-secondary'>this week</Button>
+                    <Button onClick={monthClicked} size='sm' variant='outline-secondary'>this month</Button>
+                    <Button onClick={yearClicked} size='sm' variant='outline-secondary'>this year</Button>
+                    <Button onClick={allTimeClicked} size='sm' variant='outline-secondary'>ALL TIME</Button>
                 </ButtonGroup>
                 <br/>
                 <CollectionList collections={collectionPage.collections}></CollectionList>
