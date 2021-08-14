@@ -1,5 +1,6 @@
 import { Redirect } from 'react-router-dom'
 import { Button, Table } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 const BeatmapList = ({ beatmaps }) => {
     return (
@@ -15,7 +16,7 @@ const BeatmapList = ({ beatmaps }) => {
             <tbody>
                 {beatmaps.map(function (beatmap) {
                     return (
-                        <tr onClick={() => { <Redirect to="osu.ppy.sh" /> }}>
+                        <tr key={beatmap.id} onClick={() => { <Redirect to="osu.ppy.sh" /> }}>
                             <td>{beatmap.beatmapset.artist} - {beatmap.beatmapset.title}</td>
                             <td>[{beatmap.version}]</td>
                             <td>{beatmap.difficulty_rating}</td>
@@ -30,4 +31,9 @@ const BeatmapList = ({ beatmaps }) => {
         </Table>
     )
 }
+
+BeatmapList.propTypes = {
+    beatmaps: PropTypes.arrayOf(PropTypes.object)
+}
+
 export default BeatmapList;

@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^5.0.2",
     "config": "^3.3.6",
+    "prop-types": "^15.7.2",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.1",
@@ -41,5 +42,9 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://72.39.80.182"
+  "proxy": "http://72.39.80.182",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.24.0"
+  }
 }
