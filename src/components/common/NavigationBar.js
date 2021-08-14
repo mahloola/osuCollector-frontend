@@ -21,10 +21,9 @@ function NavigationBar() {
                             <Nav.Link>Recent</Nav.Link>
                         </LinkContainer>
 
-                        {/* popular route (uncomment this later when likes are implemented) */}
-                        {/* <LinkContainer to="/popular">
+                        <LinkContainer to="/popular?range=alltime">
                             <Nav.Link>Popular</Nav.Link>
-                        </LinkContainer> */}
+                        </LinkContainer>
 
                         <LinkContainer to="/users">
                             <Nav.Link>Users</Nav.Link>
@@ -35,8 +34,8 @@ function NavigationBar() {
                         </LinkContainer>
                     </Nav>
                     {/* hard coded 20% rightPadding to center the searchbar for now*/}
-                    <Form onSubmit={handleSearch} inline style={{ margin: "auto", paddingRight: "20%" }}>
-                        <FormControl type="text" placeholder="Collection" className="mr-sm-2" />
+                    <Form onSubmit={handleSearch} inline style={{ margin: "auto", paddingRight: "35%" }}>
+                        <FormControl type="text" placeholder="tech, sotarks, camellia" className="mr-sm-2" />
                         <i className="bi bi-search"></i>
                         <Button type="submit" variant="outline-primary">Search</Button>
                     </Form>
