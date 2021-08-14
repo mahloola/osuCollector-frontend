@@ -2,17 +2,17 @@ import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import Authentication from './Authentication';
 import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { useState } from 'react';
-function NavigationBar({ setSearchText }) {
+function NavigationBar() {
 
     const [searchBarInput, setSearchBarInput] = useState('');
     const history = useHistory()
 
     const searchSubmit = (event) => {
         event.preventDefault();
-        setSearchText(searchBarInput)
         history.push(`/all?search=${encodeURIComponent(searchBarInput)}`);
+        window.location.reload()
         return false;
     }
 
@@ -71,9 +71,9 @@ function NavigationBar({ setSearchText }) {
     )
 }
 
-NavigationBar.propTypes = {
-    searchText: PropTypes.string,
-    setSearchText: PropTypes.func.isRequired
-}
+// NavigationBar.propTypes = {
+//     searchText: PropTypes.string,
+//     setSearchText: PropTypes.func.isRequired
+// }
 
 export default NavigationBar;
