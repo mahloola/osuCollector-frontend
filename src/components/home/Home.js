@@ -1,4 +1,3 @@
-import React from 'react';
 import './Home.css';
 import { parseCollectionDb } from '../../utils/collectionsDb'
 import * as api from '../../utils/api';
@@ -37,7 +36,7 @@ function Home() {
                     We are going live.
                 </h3>
                 <h6>
-                    Hey guys what's up guys back at it again at Krispy Kreme!
+                    Hey guys what&apos;s up guys back at it again at Krispy Kreme!
                 </h6>
                 <div className="text-muted date">
                     July 25, 2021
@@ -48,7 +47,7 @@ function Home() {
                     kjjkj
                 </h3>
                 <h6>
-                    Congratulations! If you're reading this you lost the game.
+                    Congratulations! If you&apos;re reading this you lost the game.
                 </h6>
                 <div className="text-muted date">
                     July 25, 2021
