@@ -15,6 +15,7 @@ import Subscribe from './components/subscribe/Subscribe';
 import Desktop from './components/desktop/Desktop';
 import Login from './components/common/Login';
 import All from './components/all/All';
+import Users from './components/users/Users';
 
 function App() {
 
@@ -47,6 +48,9 @@ function App() {
                             </Route>
                             <Route path='/recent'>
                                 <Recent />
+                            </Route>
+                            <Route path='/users'>
+                                <Users />
                             </Route>
                             <Route path='/subscribe'>
                                 <Subscribe />

@@ -5,6 +5,16 @@ import { searchCollections } from '../../utils/api'
 import { useQuery } from '../../utils/hooks';
 import CollectionList from '../common/CollectionList';
 
+function parseQuery(queryString) {
+    var query = {};
+    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+    }
+    return query;
+}
+
 function All({ searchText }) {
 
     const [loading, setLoading] = useState(true); // basically a flag
@@ -19,6 +29,15 @@ function All({ searchText }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    // run this code when url location changes
+    useEffect(() => {
+        // eslint-disable-next-line no-unused-vars
+        history.listen((location) => {
+            const queryParams = parseQuery(location.search)
+            setPage(queryParams.page || 1);
+        })
+    }, [history])
+
     // run this code when searchText or page changes
     useEffect(() => {
         if (page <= 0)
@@ -28,11 +47,6 @@ function All({ searchText }) {
         searchCollections(searchText, page).then(collectionPage => {
             setLoading(false);
             setCollectionPage(collectionPage);
-            if (searchText.trim() === '') {
-                history.push(`/all?page=${page}`)
-            } else {
-                history.push(`/all?search=${encodeURIComponent(searchText)}&page=${page}`)
-            }
         }).catch(err => {
             setLoading(false);
             console.log('Unable to fetch collections: ', err);

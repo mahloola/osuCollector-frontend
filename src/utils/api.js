@@ -95,9 +95,18 @@ async function unfavouriteCollection(collectionId) {
   }
 }
 
+// Returns PaginatedUserData object: TODO: add link
+async function getUsers(page, perPage=undefined) {
+  const queryParams = [
+    `?page=${page}`,
+    perPage ? `&perPage=${perPage}` : ''
+  ].join('')
+  const res = await fetch(`${config.get('API_HOST')}/api/users${queryParams}`)
+  return await res.json()
+}
+
 // Only returns the 'user' property of this object: https://osucollector.com/docs.html#responses-getOwnUser-200-schema
 // If user is not logged in, will return null
-
 // (schema might not show in above link, if that's the case open openapi.yaml in swagger editor)
 // https://osucollector.com/openapi.yaml
 // https://editor.swagger.io/
@@ -122,6 +131,7 @@ export {
   uploadCollections,
   favouriteCollection,
   unfavouriteCollection,
+  getUsers,
   getOwnUser,
   getUserFavourites
 }
