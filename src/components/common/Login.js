@@ -1,5 +1,4 @@
-import { Form, Button } from 'react-bootstrap';
-import { Redirect, Link } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 import config from '../../config/config'
 
 function Login() {
