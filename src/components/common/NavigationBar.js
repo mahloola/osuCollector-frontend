@@ -2,7 +2,7 @@ import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import Authentication from './Authentication';
 import { useHistory } from 'react-router-dom';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 function NavigationBar({ user }) {
@@ -76,5 +76,8 @@ function NavigationBar({ user }) {
 //     searchText: PropTypes.string,
 //     setSearchText: PropTypes.func.isRequired
 // }
+NavigationBar.propTypes = {
+    user: PropTypes.object,
+}
 
 export default NavigationBar;
