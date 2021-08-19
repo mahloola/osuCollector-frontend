@@ -3,10 +3,12 @@ import Image from 'react-bootstrap/Image';
 
 const UserBadge = ({ user }) => {
     return (
-        <a className="user-badge" href='/'>
-            <Image className="avatar-img" src={user.avatar_url + "/50x50"} roundedCircle />
-            <span>{user.username}</span>
-        </a>
+        <div className="user-badge" >
+            <a href='/'>
+                <Image className="avatar-img" src={user.avatar_url + "/50x50"} roundedCircle />
+                <span>{user.username}</span>
+            </a>
+        </div>
     )
 }
 

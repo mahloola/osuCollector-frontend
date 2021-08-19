@@ -1,4 +1,4 @@
-import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
+import { Nav, Navbar, Form, FormControl, Button, InputGroup } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -25,8 +25,8 @@ function NavigationBar({ user }) {
                     <Navbar.Brand>osu!Collector</Navbar.Brand>
                 </LinkContainer>
                 <Navbar.Toggle aria-controls='basic-navbar-nav' />
-                <Navbar.Collapse id='basic-navbar-nav'>
-                    <Nav className='mr-auto'>
+                <Navbar.Collapse id='basic-navbar-nav' className='justify-content-between'>
+                    <Nav>
                         <LinkContainer to='/recent'>
                             <Nav.Link>Recent</Nav.Link>
                         </LinkContainer>
@@ -42,23 +42,27 @@ function NavigationBar({ user }) {
                         <LinkContainer to='/subscribe'>
                             <Nav.Link>Subscribe</Nav.Link>
                         </LinkContainer>
+
                     </Nav>
-
-                    {/* hard coded 20% rightPadding to center the searchbar for now*/}
-                    <Form
-                        onSubmit={searchSubmit}
-                        inline
-                        className='col-xs-3'
-                        style={{ margin: 'auto', paddingRight: '35%' }}>
-
-                        <FormControl
-                            onChange={(e) => setSearchBarInput(e.target.value)}
-                            type='text'
-                            placeholder='tech, sotarks, camellia'
-                            className='mr-sm-2' />
-
-                        <Button type='submit' variant={searchBarInput.trim() === '' ? 'outline-primary' : 'primary'} {...{disabled: searchBarInput.trim() === ''}}>Search</Button>
+                    
+                    <Form onSubmit={searchSubmit} className='mx-4 w-25'>
+                        <InputGroup>
+                            <FormControl
+                                onChange={(e) => setSearchBarInput(e.target.value)}
+                                type='search'
+                                style={{borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}
+                                placeholder='tech, sotarks, camellia'/>
+                            <Button
+                                type='submit'
+                                variant={searchBarInput.trim() === '' ? 'outline-primary' : 'primary'}
+                                {...{disabled: searchBarInput.trim() === ''}}>
+                                Search
+                            </Button>
+                        </InputGroup>
                     </Form>
+
+                    <div>
+                    <Button className="mx-3">Upload</Button>
 
                     {user ? <UserBadge user={user}/> : user === null ? <Login/> : null}
                     {/* 
@@ -67,6 +71,7 @@ function NavigationBar({ user }) {
                         when signed in, display username + avatar with a dropdown menu 
                         dropdown menu includes 'my profile', log out, etc 
                     */}
+                    </div>
                 </Navbar.Collapse>
             </Navbar>
         </div>
