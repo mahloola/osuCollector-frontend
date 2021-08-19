@@ -1,9 +1,10 @@
 import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import Authentication from './Authentication';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import UserBadge from './UserBadge';
+import Login from './Login';
 
 function NavigationBar({ user }) {
 
@@ -59,7 +60,7 @@ function NavigationBar({ user }) {
                         <Button type='submit' variant={searchBarInput.trim() === '' ? 'outline-primary' : 'primary'} {...{disabled: searchBarInput.trim() === ''}}>Search</Button>
                     </Form>
 
-                    <Authentication user={user}/>
+                    {user ? <UserBadge user={user}/> : user === null ? <Login/> : null}
                     {/* 
                         Design plan:
                         log in button on the top right when not signed in

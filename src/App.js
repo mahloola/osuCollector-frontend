@@ -20,7 +20,8 @@ import Users from './components/users/Users';
 
 function App() {
 
-    const [userSession, setUserSession] = useState(null);
+    // undefined (loading) -> [{...} OR null]
+    const [userSession, setUserSession] = useState(undefined);
     // searchText is shared between NavigationBar and All
     const [searchText, setSearchText] = useState('')
     const query = useQuery();
