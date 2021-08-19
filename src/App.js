@@ -1,5 +1,6 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { Route, Switch } from 'react-router-dom';
+import { getOwnUser } from './utils/api.js';
 import { useState, useEffect } from 'react';
 import { useQuery } from './utils/hooks';
 
@@ -19,19 +20,27 @@ import Users from './components/users/Users';
 
 function App() {
 
+    // undefined (loading) -> [{...} OR null]
+    const [userSession, setUserSession] = useState(undefined);
     // searchText is shared between NavigationBar and All
     const [searchText, setSearchText] = useState('')
     const query = useQuery();
 
-    // get query params on initial page load
-    useEffect(() => {
-        setSearchText(query.get('search') || '');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(async () => {
+  }, []);
+  
+  // get query params on initial page load
+  useEffect(async () => {
+      // store logged in user object in app level state
+      let user = await getOwnUser();
+      setUserSession(user);
+      setSearchText(query.get('search') || '');
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
         <div className="App">
-            <NavigationBar setSearchText={setSearchText} />
+            <NavigationBar setSearchText={setSearchText} user={userSession}/>
             <br />
             <Container>
                 <Row>
