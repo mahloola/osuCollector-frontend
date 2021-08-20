@@ -53,10 +53,13 @@ function Home() {
                     July 25, 2021
                 </div>
             </div>
-            <input type="file" accept=".db" className="file-input" onChange={onCollectionDbSelected}/>
-            <Button onClick={getOwnUser}>api.getOwnUser</Button>
+            {process.env.NODE_ENV !== 'production' &&
+            <>
+                <input type="file" accept=".db" className="file-input" onChange={onCollectionDbSelected}/>
+                <Button onClick={getOwnUser}>api.getOwnUser</Button>
+            </>
+            }
         </div>
-
     )
 }
 

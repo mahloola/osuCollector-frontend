@@ -14,7 +14,7 @@ import NavigationBar from './components/common/NavigationBar';
 import Footer from './components/common/Footer';
 import Subscribe from './components/subscribe/Subscribe';
 import Desktop from './components/desktop/Desktop';
-import Login from './components/common/Login';
+import LoginButton from './components/common/LoginButton';
 import All from './components/all/All';
 import Users from './components/users/Users';
 
@@ -68,10 +68,10 @@ function App() {
                                 <Desktop />
                             </Route>
                             <Route path='/login'>
-                                <Login />
+                                <LoginButton />
                             </Route>
                             <Route path='/collections/:id'>
-                                <Collection />
+                                <Collection user={userSession}/>
                             </Route>
                             <Route path='/About'>
                                 <About />

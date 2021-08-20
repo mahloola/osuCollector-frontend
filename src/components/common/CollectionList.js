@@ -6,10 +6,9 @@ const CollectionList = ({ collections }) => {
     const history = useHistory();
 
     return (
-        <Table striped bordered hover>
+        <Table bordered hover>
             <thead>
                 <tr>
-                    <th>#</th>
                     <th>Collection</th>
                     <th>Uploader</th>
                     <th>Favourites</th>
@@ -18,13 +17,12 @@ const CollectionList = ({ collections }) => {
             </thead>
             <tbody>
                 {
-                    collections.map((collections) => (
-                        <tr key={collections.id} onClick={() => { history.push(`/collections/${collections.id}`) }}>
-                            <td>{collections.id}</td>
-                            <td>{collections.name}</td>
-                            <td>{collections.uploader.username}</td>
-                            <td>{collections.favourites}</td>
-                            <td>{collections.beatmapCount}</td>
+                    collections.map((collection) => (
+                        <tr key={collection.id} onClick={() => { history.push(`/collections/${collection.id}`) }}>
+                            <td>{collection.name}</td>
+                            <td>{collection.uploader.username}</td>
+                            <td>{collection.favourites} {collection.favouritedByUser && '❤️'}</td>
+                            <td>{collection.beatmapCount}</td>
                         </tr>
                     ))
                 }

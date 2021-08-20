@@ -7,7 +7,7 @@ const UserList = ({ users }) => {
     console.log(users)
 
     return (
-        <Table striped bordered hover>
+        <Table bordered hover>
             <thead>
                 <tr>
                     <th>Username</th>
