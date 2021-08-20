@@ -6,7 +6,7 @@ const CollectionList = ({ collections }) => {
     const history = useHistory();
 
     return (
-        <Table striped bordered hover>
+        <Table bordered hover>
             <thead>
                 <tr>
                     <th>#</th>

@@ -2,7 +2,7 @@ import { Button } from 'react-bootstrap';
 import config from '../../config/config'
 import './common.css';
 
-function Login() {
+function LoginButton() {
     const clientId = config.get('CLIENT_ID')
     const callback = encodeURIComponent(config.get('OAUTH_CALLBACK'))
     return (
@@ -12,4 +12,4 @@ function Login() {
     )
 }
 
-export default Login;
+export default LoginButton;
