@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const BeatmapList = ({ beatmaps }) => {
 
     return (
-        <Table striped bordered hover>
+        <Table bordered hover>
             <thead>
                 <tr>
                     
@@ -19,10 +19,11 @@ const BeatmapList = ({ beatmaps }) => {
             <tbody>
                 {beatmaps.map(beatmap => 
                     <tr key={beatmap.id} onClick={() => { <Redirect to="osu.ppy.sh" /> }}>
-                        <img
-                            src={beatmap.beatmapset.covers.card}
-                            className='p-0'
-                            style={{objectFit: 'cover', width: '100%', height: 44}}/>
+                        <td className='p-0'>
+                            <img
+                                src={beatmap.beatmapset.covers.card}
+                                style={{objectFit: 'cover', width: '100%', height: 44}}/>
+                        </td>
                         <td>{beatmap.beatmapset.artist} - {beatmap.beatmapset.title}</td>
                         <td>[{beatmap.version}]</td>
                         <td>{beatmap.difficulty_rating}</td>
