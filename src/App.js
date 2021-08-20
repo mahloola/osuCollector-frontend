@@ -71,7 +71,7 @@ function App() {
                                 <LoginButton />
                             </Route>
                             <Route path='/collections/:id'>
-                                <Collection />
+                                <Collection user={userSession}/>
                             </Route>
                             <Route path='/About'>
                                 <About />

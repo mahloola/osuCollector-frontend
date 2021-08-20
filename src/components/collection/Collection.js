@@ -1,11 +1,13 @@
 import { useParams, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Card, Pagination, Spinner, Button } from 'react-bootstrap';
+import { Card, Pagination, Spinner } from 'react-bootstrap';
 import * as api from '../../utils/api';
 import { useQuery } from '../../utils/hooks';
 import BeatmapList from './BeatmapList';
+import LikeButton from '../common/LikeButton';
+import PropTypes from 'prop-types'
 
-function Collection() {
+function Collection({ user }) {
 
     let { id } = useParams();
     const [collection, setCollection] = useState(null);
@@ -14,12 +16,31 @@ function Collection() {
     const [loading, setLoading] = useState(true);
     const query = useQuery();
     const history = useHistory();
+    const [favourited, setFavourited] = useState(false)
+
+    const likeButtonClicked = () => {
+        if (!collection) return;
+        if (!user) {
+            alert('You must be logged in to favourite collections');
+            return;
+        }
+
+        const liked = !collection.favouritedByUser
+        collection.favouritedByUser = liked;
+        setFavourited(liked)
+        if (liked) {
+            api.favouriteCollection(collection.id)
+        } else {
+            api.unfavouriteCollection(collection.id)
+        }
+    }
 
     // run this code on initial load
     useEffect(() => {
         // GET collection
         api.getCollection(id).then(collection => {
             setCollection(collection);
+            setFavourited(collection.favouritedByUser)
             // get page from query params
             setPage(query.get('page') || 1);
         }).catch(err => {
@@ -68,29 +89,20 @@ function Collection() {
     return (
         <div>
             <Card style={{ padding: "20px" }}>
-                <Card.Title>
-                    <h1>
-                        {collection.name}
-                    </h1>
-                </Card.Title>
+                <div className="d-flex flex-row">
+                    <Card.Title>
+                        <h1>
+                            {collection.name}
+                        </h1>
+                    </Card.Title>
+                    <LikeButton liked={favourited} onClick={likeButtonClicked}/>
+                </div>
                 <Card.Subtitle className="d-flex justify-content-between">
-                    <h3>
-                        Uploaded by {collection.uploader.username}
-                        <br/>
-                        {collection.beatmapCount} maps {collection.unsubmittedBeatmapCount > 0 ? `(${collection.unsubmittedBeatmapCount} unsubmitted diffs not shown)` : ''}
-                    </h3>
+                    <h5>
+                        {collection.beatmapCount} maps uploaded by {collection.uploader.username}
+                        {collection.unsubmittedBeatmapCount > 0 ? ` (${collection.unsubmittedBeatmapCount} unsubmitted diffs not shown)` : ''}
+                    </h5>
                 </Card.Subtitle>
-                {/*TODO: change this; this is only for testing*/}
-                <Button
-                    onClick={async () => api.favouriteCollection(collection.id)}
-                    variant="outline-primary">
-                    Add to favourites
-                </Button>
-                <Button
-                    onClick={async () => api.unfavouriteCollection(collection.id)}
-                    variant="outline-danger">
-                    Remove from favourites
-                </Button>
                 {/* MAPS */}
                 {beatmapPage ? (
                     <>
@@ -116,6 +128,10 @@ function Collection() {
             <br/><br/>
         </div>
     )
+}
+
+Collection.propTypes = {
+    user: PropTypes.object
 }
 
 export default Collection;
