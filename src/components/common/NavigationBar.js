@@ -64,20 +64,16 @@ function NavigationBar({ user }) {
                     </Form>
 
                     <div>
-                    {process.env.NODE_ENV !== 'production' &&
-                        // TODO: check if user is logged in
-                        <Button className="mx-3" onClick={() => setUploadModalIsOpen(true)}>
-                            Upload
-                        </Button>
-                    }
+                        {/* TODO: check if user is logged in */}
+                        <Button className="mx-3" onClick={() => setUploadModalIsOpen(true)}> Upload </Button>
 
-                    {user ? <UserBadge user={user}/> : user === null ? <LoginButton/> : null}
-                    {/* 
-                        Design plan:
-                        log in button on the top right when not signed in
-                        when signed in, display username + avatar with a dropdown menu 
-                        dropdown menu includes 'my profile', log out, etc 
-                    */}
+                        {user ? <UserBadge user={user}/> : user === null ? <LoginButton/> : null}
+                        {/* 
+                            Design plan:
+                            log in button on the top right when not signed in
+                            when signed in, display username + avatar with a dropdown menu 
+                            dropdown menu includes 'my profile', log out, etc 
+                        */}
                     </div>
                 </Navbar.Collapse>
             </Navbar>
