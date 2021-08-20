@@ -11,12 +11,12 @@ import NotFound from './components/notfound/NotFound';
 import Popular from './components/popular/Popular';
 import Recent from './components/recent/Recent';
 import NavigationBar from './components/common/NavigationBar';
-import Footer from './components/common/Footer';
 import Subscribe from './components/subscribe/Subscribe';
 import Desktop from './components/desktop/Desktop';
 import LoginButton from './components/common/LoginButton';
 import All from './components/all/All';
 import Users from './components/users/Users';
+import './App.css';
 
 function App() {
 
@@ -84,7 +84,7 @@ function App() {
                 </Row>
             </Container>
             <br />
-            <Footer />
+            
         </div>
     );
 }
