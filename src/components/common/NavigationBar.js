@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import UserBadge from './UserBadge';
-import Login from './Login';
+import LoginButton from './LoginButton';
 import Modal from './Modal';
 
 function NavigationBar({ user }) {
@@ -71,7 +71,7 @@ function NavigationBar({ user }) {
                         </Button>
                     }
 
-                    {user ? <UserBadge user={user}/> : user === null ? <Login/> : null}
+                    {user ? <UserBadge user={user}/> : user === null ? <LoginButton/> : null}
                     {/* 
                         Design plan:
                         log in button on the top right when not signed in
