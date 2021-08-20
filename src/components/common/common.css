@@ -1,7 +1,10 @@
 .user-badge {
+    display: inline-flex;
+    align-items: center;
     background-color: gray;
     border-radius: 50px;
     text-decoration: none;
+    text-shadow: 1px 1px 2px #000000;
 }
 
 .user-badge:hover {
@@ -9,8 +12,12 @@
     background-color: darkgray;
 }
 
-.user-badge:hover, .user-badge:hover span {
+/* .user-badge:hover, .user-badge:hover span {
     color: dimgray;
+} */
+
+.user-badge a {
+    text-decoration: none;
 }
 
 .user-badge span {
@@ -20,8 +27,8 @@
 }
 
 .user-badge .avatar-img {
-    height: 40px;
-    width: 40px;
-    margin: 5px;
+    height: 32px;
+    width: 32px;
+    margin: 4px;
     object-fit: cover;
 }
