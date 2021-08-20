@@ -2,7 +2,6 @@ import './Home.css';
 import { parseCollectionDb } from '../../utils/collectionsDb'
 import * as api from '../../utils/api';
 import { Button } from 'react-bootstrap';
-import { node } from 'prop-types';
 
 function onCollectionDbSelected(e) {
     const file = e.target.files[0];
@@ -61,7 +60,6 @@ function Home() {
             </>
             }
         </div>
-
     )
 }
 
