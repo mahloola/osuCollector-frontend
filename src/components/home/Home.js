@@ -2,6 +2,7 @@ import './Home.css';
 import { parseCollectionDb } from '../../utils/collectionsDb'
 import * as api from '../../utils/api';
 import { Button } from 'react-bootstrap';
+import { node } from 'prop-types';
 
 function onCollectionDbSelected(e) {
     const file = e.target.files[0];
@@ -53,8 +54,12 @@ function Home() {
                     July 25, 2021
                 </div>
             </div>
-            <input type="file" accept=".db" className="file-input" onChange={onCollectionDbSelected}/>
-            <Button onClick={getOwnUser}>api.getOwnUser</Button>
+            {process.env.NODE_ENV !== 'production' &&
+            <>
+                <input type="file" accept=".db" className="file-input" onChange={onCollectionDbSelected}/>
+                <Button onClick={getOwnUser}>api.getOwnUser</Button>
+            </>
+            }
         </div>
 
     )
