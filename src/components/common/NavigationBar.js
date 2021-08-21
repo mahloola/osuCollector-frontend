@@ -2,22 +2,69 @@ import { Nav, Navbar, Form, FormControl, Button, InputGroup, Card, Row, Col, But
 import { LinkContainer } from 'react-router-bootstrap';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import UserBadge from './UserBadge';
 import LoginButton from './LoginButton';
 import Modal from './Modal';
+import {useDropzone} from 'react-dropzone';
+import { parseCollectionDb } from '../../utils/collectionsDb'
+import * as api from '../../utils/api';
 
 function NavigationBar({ user }) {
 
     const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
     const [searchBarInput, setSearchBarInput] = useState('');
+    const [collections, setCollections] = useState([]);
+    const [selected, setSelected] = useState([]);
     const history = useHistory()
+
+    const onDrop = useCallback((acceptedFiles) => {
+        let file = acceptedFiles[0];
+        console.log(file);
+        let reader = new FileReader(); 
+        reader.onload = async () => {
+            console.log('reader');
+            setCollections(parseCollectionDb(reader.result));
+            console.log('collections', collections);
+        }
+        reader.readAsArrayBuffer(file);
+    }, [])
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop});
 
     const searchSubmit = (event) => {
         event.preventDefault();
         history.push(`/all?search=${encodeURIComponent(searchBarInput)}`);
         window.location.reload()
         return false;
+    }
+
+    const handleChange = ({ target }) => {
+        console.log('change');
+        const { value, checked } = target;
+        if(checked == true) {
+            setSelected((old) => [...old, value]);
+        } else {
+            setSelected((old) => old.filter((col) => col != parseInt(value)));
+        }
+        console.log(selected);
+    }
+
+    const checkAll = () => {
+        console.log('checkAll');
+        if(selected.length == collections.length) {
+            setSelected([]);
+        } else {
+            setSelected(collections.map((col, index) => index));
+        }
+        console.log(selected);
+    }
+
+    const submit = async () => {
+        console.log('submit');
+        const selectedCollections = collections.filter((col, index) => selected.includes(index.toString()));
+        console.log(selectedCollections);
+        const result = await api.uploadCollections(selectedCollections);
+        console.log(result);
     }
 
     return (
@@ -83,31 +130,44 @@ function NavigationBar({ user }) {
                 <pre className='bg-light my-2 py-1 px-3'><code>
                     C:\Users\jun\AppData\Local\osu!\collection.db
                 </code></pre>
-                <Form.Control type="file" />
-                <br/>
-                <h3>2. Select which collections to upload</h3>
-                <div className='mb-3' style={{height: 500, overflowY: 'scroll'}}>
-                    {['speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim'].map(name => 
-                        <Card key={`${name}`} className='shadow-sm mx-3 my-2 py-2 px-4'>
-                            <Row>
-                                <Col>
-                                    {name}
-                                </Col>
-                                <Col>
-                                    20 beatmaps
-                                </Col>
-                                <Col xs={1}>
-                                    <Form.Check/>
-                                </Col>
-                            </Row>
-                        </Card>
-                    )}
-                </div>
-                <ButtonGroup>
-                    <Button>Select All</Button>
-                    <Button variant='secondary'>Cancel</Button>
-                    <Button>Upload</Button>
-                </ButtonGroup>
+                <Form>
+                    <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    {
+                        isDragActive ?
+                        <p>Drop the files here ...</p> :
+                        <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
+                    }
+                    </div>
+                    <br/>
+                    { collections.length > 0 && 
+                        <div>
+                            <h3>2. Select which collections to upload</h3>
+                            <div className='mb-3' style={{height: 500, overflowY: 'scroll'}}>
+                                {collections.map((collection, index) => 
+                                    <Card key={index} className='shadow-sm mx-3 my-2 py-2 px-4'>
+                                        <Row>
+                                            <Col>
+                                                {collection.name}
+                                            </Col>
+                                            <Col>
+                                                20 beatmaps
+                                            </Col>
+                                            <Col xs={1}>
+                                                <Form.Check checked={selected.find(value => parseInt(value) == index) !== undefined} value={index} onChange={handleChange}/>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                )}
+                            </div>
+                            <ButtonGroup>
+                                <Button onClick={checkAll}>{ selected.length == collections.length ? 'Deselect All' : 'Select All'}</Button>
+                                <Button variant='secondary'>Cancel</Button>
+                                <Button onClick={submit}>Upload</Button>
+                            </ButtonGroup>
+                        </div>
+                    }
+                </Form>
             </Modal>
         </div>
     )
