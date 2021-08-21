@@ -88,9 +88,11 @@ function NavigationBar({ user }) {
                             <Nav.Link>Users</Nav.Link>
                         </LinkContainer>
 
-                        <LinkContainer to='/subscribe'>
-                            <Nav.Link>Subscribe</Nav.Link>
-                        </LinkContainer>
+                        {process.env.NODE_ENV !== 'production' &&
+                            <LinkContainer to='/subscribe'>
+                                <Nav.Link>Subscribe</Nav.Link>
+                            </LinkContainer>
+                        }
 
                     </Nav>
                     

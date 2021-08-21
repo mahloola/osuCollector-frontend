@@ -92,7 +92,10 @@ function App() {
                 </Row>
             </Container>
             <br />
-            <Footer />
+            {process.env.NODE_ENV !== 'production' &&
+                <Footer />
+            }
+
         </div>
     );
 }
