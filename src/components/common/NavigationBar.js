@@ -1,12 +1,12 @@
-import { Nav, Navbar, Form, FormControl, Button, InputGroup, Card, Row, Col, ButtonGroup } from 'react-bootstrap';
+import { Nav, Navbar, Form, FormControl, Button, InputGroup } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import UserBadge from './UserBadge';
 import LoginButton from './LoginButton';
-import Modal from './Modal';
-
+import UploadModal from './UploadModal';
+import './common.css';
 function NavigationBar({ user }) {
 
     const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
@@ -19,6 +19,7 @@ function NavigationBar({ user }) {
         window.location.reload()
         return false;
     }
+
 
     return (
         <div>
@@ -41,9 +42,11 @@ function NavigationBar({ user }) {
                             <Nav.Link>Users</Nav.Link>
                         </LinkContainer>
 
-                        <LinkContainer to='/subscribe'>
-                            <Nav.Link>Subscribe</Nav.Link>
-                        </LinkContainer>
+                        {process.env.NODE_ENV !== 'production' &&
+                            <LinkContainer to='/subscribe'>
+                                <Nav.Link>Subscribe</Nav.Link>
+                            </LinkContainer>
+                        }
 
                     </Nav>
                     
@@ -64,8 +67,16 @@ function NavigationBar({ user }) {
                     </Form>
 
                     <div>
-                        {/* TODO: check if user is logged in */}
-                        <Button className="mx-3" onClick={() => setUploadModalIsOpen(true)}> Upload </Button>
+                        <Button
+                            className="mx-3"
+                            onClick={() => {
+                                if (user)
+                                    setUploadModalIsOpen(true)
+                                else
+                                    alert('Please log in!')
+                            }}>
+                            Upload
+                        </Button>
 
                         {user ? <UserBadge user={user}/> : user === null ? <LoginButton/> : null}
                         {/* 
@@ -77,38 +88,7 @@ function NavigationBar({ user }) {
                     </div>
                 </Navbar.Collapse>
             </Navbar>
-            <Modal open={uploadModalIsOpen} onClose={() => setUploadModalIsOpen(false)} >
-                <h3>1. Open <a href='https://osu.ppy.sh/wiki/en/osu%21_File_Formats/Db_%28file_format%29#collection.db'>collection.db</a></h3>
-                collection.db is a file that contains all of your osu! collections. It is located in your osu! install folder. Example: 
-                <pre className='bg-light my-2 py-1 px-3'><code>
-                    C:\Users\jun\AppData\Local\osu!\collection.db
-                </code></pre>
-                <Form.Control type="file" />
-                <br/>
-                <h3>2. Select which collections to upload</h3>
-                <div className='mb-3' style={{height: 500, overflowY: 'scroll'}}>
-                    {['speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim', 'speed', 'aim'].map(name => 
-                        <Card key={`${name}`} className='shadow-sm mx-3 my-2 py-2 px-4'>
-                            <Row>
-                                <Col>
-                                    {name}
-                                </Col>
-                                <Col>
-                                    20 beatmaps
-                                </Col>
-                                <Col xs={1}>
-                                    <Form.Check/>
-                                </Col>
-                            </Row>
-                        </Card>
-                    )}
-                </div>
-                <ButtonGroup>
-                    <Button>Select All</Button>
-                    <Button variant='secondary'>Cancel</Button>
-                    <Button>Upload</Button>
-                </ButtonGroup>
-            </Modal>
+            <UploadModal uploadModalIsOpen={uploadModalIsOpen} setUploadModalIsOpen={setUploadModalIsOpen}/>
         </div>
     )
 }

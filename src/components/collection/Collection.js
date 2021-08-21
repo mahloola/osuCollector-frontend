@@ -1,11 +1,11 @@
-import { useParams, useHistory } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Card, Pagination, Spinner } from 'react-bootstrap';
 import * as api from '../../utils/api';
 import { useQuery } from '../../utils/hooks';
 import BeatmapList from './BeatmapList';
 import LikeButton from '../common/LikeButton';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 function Collection({ user }) {
 
@@ -99,7 +99,7 @@ function Collection({ user }) {
                 </div>
                 <Card.Subtitle className="d-flex justify-content-between">
                     <h5>
-                        {collection.beatmapCount} maps uploaded by {collection.uploader.username}
+                        {collection.beatmapCount} maps uploaded by <Link to={`/users/${collection.uploader.id}/uploads`}>{collection.uploader.username}</Link>
                         {collection.unsubmittedBeatmapCount > 0 ? ` (${collection.unsubmittedBeatmapCount} unsubmitted diffs not shown)` : ''}
                     </h5>
                 </Card.Subtitle>

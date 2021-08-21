@@ -1,0 +1,15 @@
+.dragon-drop {
+    cursor: pointer;
+    border: dashed 2px lightgray;
+    padding: 50px;
+    text-align: center;
+}
+
+.upload-buttons {
+    float: right;
+}
+
+.upload-buttons .btn {
+    margin-left: 5px;
+    margin-right: 5px;
+}

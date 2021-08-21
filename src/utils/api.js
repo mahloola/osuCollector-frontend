@@ -95,7 +95,7 @@ async function unfavouriteCollection(collectionId) {
   }
 }
 
-// Returns PaginatedUserData object: TODO: add link
+// Returns PaginatedUserData object: TODO: add link to docs
 async function getUsers(page, perPage=undefined) {
   const queryParams = [
     `?page=${page}`,
@@ -103,6 +103,17 @@ async function getUsers(page, perPage=undefined) {
   ].join('')
   const res = await fetch(`${config.get('API_HOST')}/api/users${queryParams}`)
   return await res.json()
+}
+
+// Returns User object or null if 404: TODO: add link to docs
+async function getUser(userId) {
+  try {
+    const res = await fetch(`${config.get('API_HOST')}/api/users/${userId}`)
+    const user = await res.json()
+    return user
+  } catch {
+    return null
+  }
 }
 
 // Only returns the 'user' property of this object: https://osucollector.com/docs.html#responses-getOwnUser-200-schema
@@ -118,7 +129,13 @@ async function getOwnUser() {
 
 // Returns an array of CollectionData objects: https://osucollector.com/docs.html#responses-getUserFavourites-200-schema
 async function getUserFavourites(userId) {
-  const res = await fetch(`${config.get('API_HOST')}/api/${userId}/favourites`)
+  const res = await fetch(`${config.get('API_HOST')}/api/users/${userId}/favourites`)
+  return await res.json()
+}
+
+// Returns an array of CollectionData objects: TODO: add link to docs
+async function getUserUploads(userId) {
+  const res = await fetch(`${config.get('API_HOST')}/api/users/${userId}/uploads`)
   return await res.json()
 }
 
@@ -132,6 +149,8 @@ export {
   favouriteCollection,
   unfavouriteCollection,
   getUsers,
+  getUser,
   getOwnUser,
-  getUserFavourites
+  getUserFavourites,
+  getUserUploads
 }

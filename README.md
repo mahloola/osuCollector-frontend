@@ -2,7 +2,7 @@ do not read this, it's very outdated and we're not maintaining this todo list
 
 # TODO
 
-### `Login Sessions`
+### `Login Sessions` 
 
 - capture the auth token in the redirect URL, maybe storing that on the user's profile? i don't know how it's done. possibly make a GET route for that
 - send /api/v2/users/me request with the token in the request header. get the username and display it on the top right along with the avatar. make that a dropdown menu with Settings, My Collections, Logout, etc.

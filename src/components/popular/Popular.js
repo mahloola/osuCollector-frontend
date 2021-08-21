@@ -23,7 +23,6 @@ function Popular() {
 
     // run this code when page changes
     useEffect(() => {
-        console.log('page or dateRange triggered');
         if (page <= 0)
             return;
         getPopularCollections(dateRange, page)
