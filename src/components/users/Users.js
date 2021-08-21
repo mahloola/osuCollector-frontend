@@ -21,7 +21,6 @@ function Users() {
 
     // run this code when page changes
     useEffect(() => {
-        console.log('page or dateRange triggered');
         if (page <= 0)
             return;
         getUsers(page).then(paginatedUserData => {

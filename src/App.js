@@ -58,7 +58,7 @@ function App() {
                             <Route path='/recent'>
                                 <Recent />
                             </Route>
-                            <Route path='/users'>
+                            <Route exact path='/users'>
                                 <Users />
                             </Route>
                             <Route path='/subscribe'>
