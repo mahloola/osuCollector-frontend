@@ -117,8 +117,16 @@ function NavigationBar({ user }) {
                     </Form>
 
                     <div>
-                        {/* TODO: check if user is logged in */}
-                        <Button className="mx-3" onClick={() => setUploadModalIsOpen(true)}> Upload </Button>
+                        <Button
+                            className="mx-3"
+                            onClick={() => {
+                                if (user)
+                                    setUploadModalIsOpen(true)
+                                else
+                                    alert('Please log in!')
+                            }}>
+                            Upload
+                        </Button>
 
                         {user ? <UserBadge user={user}/> : user === null ? <LoginButton/> : null}
                         {/* 
