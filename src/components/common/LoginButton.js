@@ -1,6 +1,5 @@
 import { Button } from 'react-bootstrap';
 import config from '../../config/config'
-import './common.css';
 
 function LoginButton() {
     const clientId = config.get('CLIENT_ID')

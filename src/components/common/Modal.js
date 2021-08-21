@@ -13,7 +13,6 @@ const OVERLAY_STYLES = {
 
 const MODAL_STYLES = {
     position: 'fixed',
-    height: '90%',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',

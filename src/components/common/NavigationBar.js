@@ -1,4 +1,4 @@
-import { Nav, Navbar, Form, FormControl, Button, InputGroup, Card, Row, Col, ButtonGroup } from 'react-bootstrap';
+import { Nav, Navbar, Form, FormControl, Button, InputGroup, Card, Row, Col } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -9,6 +9,8 @@ import Modal from './Modal';
 import {useDropzone} from 'react-dropzone';
 import { parseCollectionDb } from '../../utils/collectionsDb'
 import * as api from '../../utils/api';
+import './common.css';
+import './uploadModal.css'
 
 function NavigationBar({ user }) {
 
@@ -16,10 +18,12 @@ function NavigationBar({ user }) {
     const [searchBarInput, setSearchBarInput] = useState('');
     const [collections, setCollections] = useState([]);
     const [selected, setSelected] = useState([]);
+    const [file, setFile] = useState(null);
     const history = useHistory()
 
     const onDrop = useCallback((acceptedFiles) => {
         let file = acceptedFiles[0];
+        setFile(file);
         console.log(file);
         let reader = new FileReader(); 
         reader.onload = async () => {
@@ -126,21 +130,25 @@ function NavigationBar({ user }) {
                     </div>
                 </Navbar.Collapse>
             </Navbar>
-            {/* TODO: extract this to a UploadCollectionModal component */}
-            <Modal open={uploadModalIsOpen} onClose={() => setUploadModalIsOpen(false)} >
+            <Modal className="upload-modal" open={uploadModalIsOpen} onClose={() => setUploadModalIsOpen(false)} >
                 <h3>1. Open collection.db</h3>
                 collection.db is a file that contains all of your osu! collections. It is located in your osu! install folder. Example: 
                 <pre className='bg-light my-2 py-1 px-3'><code>
                     C:\Users\jun\AppData\Local\osu!\collection.db
                 </code></pre>
+                <br></br>
                 <Form>
-                    <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    {
-                        isDragActive ?
-                        <p>Drop the files here ...</p> :
-                        <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
-                    }
+                    <div className="dragon-drop" {...getRootProps()}>
+                        <input {...getInputProps()} />
+                        {
+                            file != null ? 
+                                file.name 
+                                :
+                                isDragActive ?
+                                    <p>Drop the file here ...</p> 
+                                    :
+                                    <p>Choose a file or drag it here.</p>
+                        }
                     </div>
                     <br/>
                     { collections.length > 0 && 
@@ -163,11 +171,12 @@ function NavigationBar({ user }) {
                                     </Card>
                                 )}
                             </div>
-                            <ButtonGroup>
+                            <br></br>
+                            <div className="upload-buttons">
                                 <Button onClick={checkAll}>{ selected.length == collections.length ? 'Deselect All' : 'Select All'}</Button>
-                                <Button variant='secondary'>Cancel</Button>
+                                {/* <Button variant='secondary'>Cancel</Button> */}
                                 <Button onClick={submit}>Upload</Button>
-                            </ButtonGroup>
+                            </div>
                         </div>
                     }
                 </Form>
