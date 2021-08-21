@@ -20,7 +20,7 @@ const CollectionList = ({ collections }) => {
                     collections.map((collection) => (
                         <tr key={collection.id} onClick={() => { history.push(`/collections/${collection.id}`) }}>
                             <td>{collection.name}</td>
-                            <td>{collection.uploader.username}{collection.uploader.rank && `(#${collection.uploader.rank})`}</td>
+                            <td>{collection.uploader.username}{collection.uploader.rank && ` (#${collection.uploader.rank})`}</td>
                             <td>{collection.favourites} {collection.favouritedByUser && '❤️'}</td>
                             <td>{collection.beatmapCount}</td>
                         </tr>
