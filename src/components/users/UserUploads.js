@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { getUserFavourites } from '../../utils/api'
 import CollectionList from '../common/CollectionList';
 import * as api from '../../utils/api'
 
-function UserFavourites() {
+function UserUploads() {
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -13,14 +12,14 @@ function UserFavourites() {
     // run this code on initial page load
     useEffect(async () => {
 
-        // get user id from path, eg. /users/123/favourites
-        const match = window.location.pathname.match(/^\/users\/(\d+)\/favourites/g)
+        // get user id from path, eg. /users/123/uploads
+        const match = window.location.pathname.match(/^\/users\/(\d+)\/uploads/g)
         if (!match) { 
             alert('User not found.')
             setLoading(false)
             return
         }
-        const userId = Number(match[0].replace('/users/', '').replace('/favourites', '').trim())
+        const userId = Number(match[0].replace('/users/', '').replace('/uploads', '').trim())
 
         // get user from database
         const user = await api.getUser(userId)
@@ -31,11 +30,11 @@ function UserFavourites() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    // run this code when page changes
+    // get collections when user changes
     useEffect(() => {
         if (!user)
             return;
-        getUserFavourites(user.id)
+        api.getUserUploads(user.id)
             .then(collections => {
                 setLoading(false);
                 setCollections(collections);
@@ -56,7 +55,7 @@ function UserFavourites() {
         return (
             <div>
                 <h1>
-                    {user.osuweb.username}&apos;s Favourites
+                    {user.osuweb.username}&apos;s Uploads
                 </h1>
                 <h4>
                     {collections.length} collections
@@ -67,9 +66,9 @@ function UserFavourites() {
     }
     return (
         <h1>
-            No collections found!
+            This user has not uploaded any collections!
         </h1>
     )
 }
 
-export default UserFavourites;
+export default UserUploads;

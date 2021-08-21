@@ -133,6 +133,12 @@ async function getUserFavourites(userId) {
   return await res.json()
 }
 
+// Returns an array of CollectionData objects: TODO: add link to docs
+async function getUserUploads(userId) {
+  const res = await fetch(`${config.get('API_HOST')}/api/users/${userId}/uploads`)
+  return await res.json()
+}
+
 export {
   getRecentCollections,
   getPopularCollections,
@@ -145,5 +151,6 @@ export {
   getUsers,
   getUser,
   getOwnUser,
-  getUserFavourites
+  getUserFavourites,
+  getUserUploads
 }
