@@ -1,4 +1,5 @@
 .dragon-drop {
+    cursor: pointer;
     border: dashed 2px lightgray;
     padding: 50px;
     text-align: center;
