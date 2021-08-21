@@ -17,6 +17,7 @@ import Desktop from './components/desktop/Desktop';
 import LoginButton from './components/common/LoginButton';
 import All from './components/all/All';
 import Users from './components/users/Users';
+import UserFavourites from './components/users/UserFavourites.js';
 
 function App() {
 
@@ -60,6 +61,9 @@ function App() {
                             </Route>
                             <Route exact path='/users'>
                                 <Users />
+                            </Route>
+                            <Route path='/users/:id/favourites'>
+                                <UserFavourites />
                             </Route>
                             <Route path='/subscribe'>
                                 <Subscribe />

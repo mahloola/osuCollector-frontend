@@ -124,8 +124,9 @@ function NavigationBar({ user }) {
                     </div>
                 </Navbar.Collapse>
             </Navbar>
+            {/* TODO: extract this to a UploadCollectionModal component */}
             <Modal open={uploadModalIsOpen} onClose={() => setUploadModalIsOpen(false)} >
-                <h3>1. Open <a href='https://osu.ppy.sh/wiki/en/osu%21_File_Formats/Db_%28file_format%29#collection.db'>collection.db</a></h3>
+                <h3>1. Open collection.db</h3>
                 collection.db is a file that contains all of your osu! collections. It is located in your osu! install folder. Example: 
                 <pre className='bg-light my-2 py-1 px-3'><code>
                     C:\Users\jun\AppData\Local\osu!\collection.db
