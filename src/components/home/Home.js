@@ -1,8 +1,40 @@
-import './Home.css';
-import * as api from '../../utils/api';
 import { useEffect, useState } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-import { Card } from 'react-bootstrap';
+import { Card, Col, Container, Row } from 'react-bootstrap';
+import * as api from '../../utils/api'
+import './Home.css';
+
+const imgUrls = [
+    'https://exo.pet/fm/construction_xtra_large.gif',
+    'https://i.imgur.com/wb4yOgu.gif ',
+    'https://i.imgur.com/tC7a2qk.gif',
+    'https://i.imgur.com/eRmAh9i.png',
+    'https://i.imgur.com/IHJ2ELP.gif',
+    'https://i.imgur.com/sbfZ0p5.gif',
+    'https://i.imgur.com/fuv6iyl.gif',
+    'https://i.imgur.com/3lMPMKS.gif',
+    'https://i.imgur.com/YkmDKe6.gif',
+    'https://upload.wikimedia.org/wikipedia/commons/1/19/Under_construction_graphic.gif'
+]
+
+function shuffle(array) {
+    var currentIndex = array.length, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
+const range = (min, max) => min + Math.floor(Math.random() * max);
 
 function Home() {
     const [metadata, setMetadata] = useState(null);
@@ -14,53 +46,59 @@ function Home() {
     return (
         <div>
             <h1>
-                Welcome to osu!Collector!
+                <Container>
+                    <Row>
+                        <Col xs={3}>
+                            <img
+                                src='https://i.imgur.com/4j8ywYf.png'
+                                style={{ zoom: 0.2, transform: 'rotate(230deg)' }} />
+                        </Col>
+                        <Col>
+                            <Card className="stats">
+                                <Card.Body>
+                                    <h5>
+                                        {metadata &&
+                                            <Container>
+                                                <Row>
+                                                    <Col>Total Users</Col>
+                                                    <Col>Total Collections</Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col>{metadata.userCount}</Col>
+                                                    <Col>{metadata.totalCollections}</Col>
+                                                </Row>
+                                            </Container>
+                                        }
+                                    </h5>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Container>
+                Home page is under construction, please use the links above!
+                <br />
+                <br />
             </h1>
-            <Card className="stats">
-                <Card.Body>
-                    <h5>
-                        {metadata &&
-                            <Container>
-                                <Row>
-                                    <Col>Total Users</Col>
-                                    <Col>Total Collections</Col>
-                                </Row>
-                                <Row>
-                                    <Col>{metadata.userCount}</Col>
-                                    <Col>{metadata.totalCollections}</Col>
-                                </Row>
-                            </Container>
-                        }
-                    </h5>
-                </Card.Body>
-            </Card>
-
-            {/* <h1>
-                News
-            </h1>
-            <br/>
-            <div className="news">
-                <h3>
-                    We are going live.
-                </h3>
-                <h6>
-                    Hey guys what&apos;s up guys back at it again at Krispy Kreme!
-                </h6>
-                <div className="text-muted date">
-                    July 25, 2021
-                </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {shuffle(imgUrls).map(url => (
+                    <img key={url} src={url} style={{height: range(100, 150)}}></img>
+                ))}
             </div>
-            <div className="news">
-                <h3>
-                    kjjkj
-                </h3>
-                <h6>
-                    Congratulations! If you&apos;re reading this you lost the game.
-                </h6>
-                <div className="text-muted date">
-                    July 25, 2021
-                </div>
-            </div> */}
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {shuffle(imgUrls).map(url => (
+                    <img key={url} src={url} style={{height: range(100, 150)}}></img>
+                ))}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {shuffle(imgUrls).map(url => (
+                    <img key={url} src={url} style={{height: range(100, 150)}}></img>
+                ))}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {shuffle(imgUrls).map(url => (
+                    <img key={url} src={url} style={{height: range(100, 150)}}></img>
+                ))}
+            </div>
         </div>
     )
 }
