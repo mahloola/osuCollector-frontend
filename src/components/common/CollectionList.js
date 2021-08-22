@@ -1,6 +1,7 @@
 import { useHistory } from 'react-router';
 import { Table } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import './CollectionList.css';
 
 const CollectionList = ({ collections }) => {
     const history = useHistory();
