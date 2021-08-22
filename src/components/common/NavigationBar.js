@@ -26,7 +26,7 @@ function NavigationBar({ user }) {
         <div>
             <Navbar bg='dark' variant='dark' expand='md'>
                 <LinkContainer to='/'>
-                    <Navbar.Brand>osu!Collector</Navbar.Brand>
+                    <Navbar.Brand>osu!<strong>Collector</strong></Navbar.Brand>
                 </LinkContainer>
                 <Navbar.Toggle aria-controls='basic-navbar-nav' />
                 <Navbar.Collapse id='basic-navbar-nav' className='justify-content-between'>
