@@ -1,33 +1,41 @@
 import './Home.css';
-import { parseCollectionDb } from '../../utils/collectionsDb'
 import * as api from '../../utils/api';
-import { Button } from 'react-bootstrap';
-
-function onCollectionDbSelected(e) {
-    const file = e.target.files[0];
-    if (file.name !== 'collection.db') {
-      console.log('Error: user did not select a collection.db file');
-      return;
-    }
-    let reader = new FileReader(); 
-    reader.onload = async () => {
-        const collections = parseCollectionDb(reader.result);
-        console.log(collections);
-        const result = await api.uploadCollections(collections);
-        console.log(result);
-    }
-    reader.readAsArrayBuffer(file);
-}
-
-async function getOwnUser() {
-    console.log(await api.getOwnUser())
-}
+import { useEffect, useState } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 
 function Home() {
+    const [metadata, setMetadata] = useState(null);
+
+    useEffect(async () => {
+        setMetadata(await api.getMetadata());
+    }, [])
 
     return (
         <div>
             <h1>
+                Welcome to osu!Collector!
+            </h1>
+            <Card className="stats">
+                <Card.Body>
+                    <h5>
+                        {metadata &&
+                            <Container>
+                                <Row>
+                                    <Col>Total Users</Col>
+                                    <Col>Total Collections</Col>
+                                </Row>
+                                <Row>
+                                    <Col>{metadata.userCount}</Col>
+                                    <Col>{metadata.totalCollections}</Col>
+                                </Row>
+                            </Container>
+                        }
+                    </h5>
+                </Card.Body>
+            </Card>
+
+            {/* <h1>
                 News
             </h1>
             <br/>
@@ -52,13 +60,7 @@ function Home() {
                 <div className="text-muted date">
                     July 25, 2021
                 </div>
-            </div>
-            {process.env.NODE_ENV !== 'production' &&
-            <>
-                <input type="file" accept=".db" className="file-input" onChange={onCollectionDbSelected}/>
-                <Button onClick={getOwnUser}>api.getOwnUser</Button>
-            </>
-            }
+            </div> */}
         </div>
     )
 }

@@ -16,6 +16,7 @@ import Desktop from './components/desktop/Desktop';
 import LoginButton from './components/common/LoginButton';
 import All from './components/all/All';
 import Users from './components/users/Users';
+import Footer from './components/common/Footer.js';
 import './App.css';
 import UserFavourites from './components/users/UserFavourites.js';
 import UserUploads from './components/users/UserUploads.js';
@@ -27,9 +28,6 @@ function App() {
     // searchText is shared between NavigationBar and All
     const [searchText, setSearchText] = useState('')
     const query = useQuery();
-
-  useEffect(async () => {
-  }, []);
   
   // get query params on initial page load
   useEffect(async () => {

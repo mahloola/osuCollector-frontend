@@ -139,6 +139,11 @@ async function getUserUploads(userId) {
   return await res.json()
 }
 
+async function getMetadata() {
+  const res = await fetch(`${config.get('API_HOST')}/api/metadata`)
+  return await res.json()
+}
+
 export {
   getRecentCollections,
   getPopularCollections,
@@ -152,5 +157,6 @@ export {
   getUser,
   getOwnUser,
   getUserFavourites,
-  getUserUploads
+  getUserUploads,
+  getMetadata
 }

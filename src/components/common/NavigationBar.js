@@ -6,6 +6,7 @@ import { useState } from 'react';
 import UserBadge from './UserBadge';
 import LoginButton from './LoginButton';
 import UploadModal from './UploadModal';
+import { CloudUpload } from 'react-bootstrap-icons';
 import './common.css';
 function NavigationBar({ user }) {
 
@@ -75,7 +76,7 @@ function NavigationBar({ user }) {
                                 else
                                     alert('Please log in!')
                             }}>
-                            Upload
+                            <CloudUpload className="mr-2"/>Upload
                         </Button>
 
                         {user ? <UserBadge user={user}/> : user === null ? <LoginButton/> : null}

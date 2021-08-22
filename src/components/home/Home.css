@@ -9,3 +9,7 @@
 .date {
     font-size: 0.9em;
 }
+
+.stats {
+    max-width: 45%;
+}
