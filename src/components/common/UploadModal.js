@@ -61,6 +61,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
         alert(`${selectedCollections.length} collections uploaded!`);
         history.push(`/recent`);
         setUploadModalIsOpen(false)
+        window.location.reload()
     }
 
     return (
