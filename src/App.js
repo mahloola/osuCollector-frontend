@@ -16,7 +16,6 @@ import Desktop from './components/desktop/Desktop';
 import LoginButton from './components/common/LoginButton';
 import All from './components/all/All';
 import Users from './components/users/Users';
-import Footer from './components/common/Footer.js';
 import './App.css';
 import UserFavourites from './components/users/UserFavourites.js';
 import UserUploads from './components/users/UserUploads.js';
@@ -90,10 +89,6 @@ function App() {
                 </Row>
             </Container>
             <br />
-            {process.env.NODE_ENV !== 'production' &&
-                <Footer />
-            }
-
         </div>
     );
 }

@@ -1,5 +1,4 @@
-import { Nav, Navbar, Form, FormControl, Button, InputGroup } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Form, FormControl, Button, InputGroup } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
@@ -8,6 +7,9 @@ import LoginButton from './LoginButton';
 import UploadModal from './UploadModal';
 import { CloudUpload } from 'react-bootstrap-icons';
 import './common.css';
+// import config from '../../config/config'
+
+import './NavigationBar.css';
 function NavigationBar({ user }) {
 
     const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
@@ -22,74 +24,67 @@ function NavigationBar({ user }) {
     }
 
 
+    // debug login
+    // const [userId, setUserId] = useState(2051389);
+    // function userIdChanged(e) {
+    //     setUserId(e.target.value)
+    // }
+    // function debugLogin() {
+    //     fetch(`${config.get('API_HOST')}/api/users/${userId}/debugLogin`, {
+    //         method: 'POST'
+    //     }).then((res) => {
+    //         if (res.status === 200) {
+    //             alert(`Logged in as user id ${userId}`)
+    //         } else {
+    //             alert(`${res.status}: ${res.statusText}`)
+    //         }
+    //     })
+    // }
+
     return (
-        <div>
-            <Navbar bg='dark' variant='dark' expand='md'>
-                <LinkContainer to='/'>
-                    <Navbar.Brand>osu!<strong>Collector</strong></Navbar.Brand>
-                </LinkContainer>
-                <Navbar.Toggle aria-controls='basic-navbar-nav' />
-                <Navbar.Collapse id='basic-navbar-nav' className='justify-content-between'>
-                    <Nav>
-                        <LinkContainer to='/recent'>
-                            <Nav.Link>Recent</Nav.Link>
-                        </LinkContainer>
+        <div id="navbar">
+            <a id="logo" href="/">
+                osu!<span id="collector">Collector</span>
+            </a>
 
-                        <LinkContainer to='/popular?range=alltime'>
-                            <Nav.Link>Popular</Nav.Link>
-                        </LinkContainer>
+            <ul>
+                <li><a href='/recent'>Recent</a></li>
+                <li><a href='/popular'>Popular</a></li>
+                <li><a href='/users'>Users</a></li>
+            </ul>
 
-                        <LinkContainer to='/users'>
-                            <Nav.Link>Users</Nav.Link>
-                        </LinkContainer>
+            <Form onSubmit={searchSubmit} className='mx-4 px-3 w-25 searchbar'>
+                <InputGroup>
+                    <FormControl
+                        onChange={(e) => setSearchBarInput(e.target.value)}
+                        type='search'
+                        style={{ borderTopLeftRadius: 10, borderBottomLeftRadius: 10 }}
+                        placeholder='tech, sotarks, camellia' />
+                    <Button
+                        type='submit'
+                        className={searchBarInput.trim() === '' ? 'searchBtn' : 'searchBtnEnabled'}
+                        {...{ disabled: searchBarInput.trim() === '' }}>
+                        Search
+                    </Button>
+                </InputGroup>
+            </Form>
 
-                        {process.env.NODE_ENV !== 'production' &&
-                            <LinkContainer to='/subscribe'>
-                                <Nav.Link>Subscribe</Nav.Link>
-                            </LinkContainer>
-                        }
+            <div id="navbarRightSide">
+                <Button
+                    className="mx-3 uploadBtn"
+                    onClick={() => {
+                        if (user)
+                            setUploadModalIsOpen(true)
+                        else
+                            alert('Please log in!')
+                    }}>
+                    <CloudUpload className="mr-2" />Upload
+                </Button>
 
-                    </Nav>
-                    
-                    <Form onSubmit={searchSubmit} className='mx-4 w-25'>
-                        <InputGroup>
-                            <FormControl
-                                onChange={(e) => setSearchBarInput(e.target.value)}
-                                type='search'
-                                style={{borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}
-                                placeholder='tech, sotarks, camellia'/>
-                            <Button
-                                type='submit'
-                                variant={searchBarInput.trim() === '' ? 'outline-primary' : 'primary'}
-                                {...{disabled: searchBarInput.trim() === ''}}>
-                                Search
-                            </Button>
-                        </InputGroup>
-                    </Form>
+                {user ? <UserBadge user={user} /> : user === null ? <LoginButton /> : null}
+            </div>
 
-                    <div>
-                        <Button
-                            className="mx-3"
-                            onClick={() => {
-                                if (user)
-                                    setUploadModalIsOpen(true)
-                                else
-                                    alert('Please log in!')
-                            }}>
-                            <CloudUpload className="mr-2"/>Upload
-                        </Button>
-
-                        {user ? <UserBadge user={user}/> : user === null ? <LoginButton/> : null}
-                        {/* 
-                            Design plan:
-                            log in button on the top right when not signed in
-                            when signed in, display username + avatar with a dropdown menu 
-                            dropdown menu includes 'my profile', log out, etc 
-                        */}
-                    </div>
-                </Navbar.Collapse>
-            </Navbar>
-            <UploadModal uploadModalIsOpen={uploadModalIsOpen} setUploadModalIsOpen={setUploadModalIsOpen}/>
+            <UploadModal uploadModalIsOpen={uploadModalIsOpen} setUploadModalIsOpen={setUploadModalIsOpen} />
         </div>
     )
 }

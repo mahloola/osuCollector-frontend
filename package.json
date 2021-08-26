@@ -16,6 +16,7 @@
     "react-bootstrap-icons": "^1.5.0",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.3.4",
+    "react-loading-dot": "^1.0.6",
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
