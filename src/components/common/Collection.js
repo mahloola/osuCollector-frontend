@@ -1,12 +1,24 @@
-import React from 'react'
+import { Card } from 'react-bootstrap';
 import './Collection.css';
+
+const { id } = this.props;
+const { beatmapCount } = this.props;
+const { collection } = this.props;
 
 const Collection = ({ collection }) => {
     return (
-        <div>
-            Hello from Collection!
-        </div>
+        <Card>
+            <Card.Body>
+                <Card.Title>
+                    {id}
+                </Card.Title>
+                <Card.Subtitle>
+                    {beatmapCount}
+                    {collection}
+                </Card.Subtitle>
+            </Card.Body>
+        </Card>
     )
 }
 
-export default Collection
+export default Collection;

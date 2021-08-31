@@ -1,8 +1,9 @@
 div #hero {
-    position: absolute;
-    top: 100px;
+    position: relative;
     font-size: 100px;
     font-weight: bold;
+    -ms-transform: translateY(50%);
+    transform: translateY(50%);
 }
 
 div #bg-hero {
