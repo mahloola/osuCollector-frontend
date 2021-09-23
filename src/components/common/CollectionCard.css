@@ -1,0 +1,80 @@
+
+
+.uploader-popup-window {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+  }
+
+.collection-card {
+    border: 1px solid black;
+    color: #222423 !important;
+    background-color: white !important;
+    max-width: 45% !important;
+    height: 4em;
+    margin: 1%;
+    border-radius: 10px;
+    padding: 10px;
+    
+}
+.collection-card:hover {
+
+    background-color: rgb(179, 179, 179);
+}
+
+.collection-uploader {
+    float: right;
+}
+
+.collection-uploader-avatar {
+    float: right;
+    max-height: 40px;
+    max-width: 40px;
+    border-radius: 30px;
+}
+.collection-uploader-avatar:hover {  
+    opacity: 0.4;
+}
+
+.collection-beatmapCount {
+    color: grey;
+}
+
+.collection-favourites-counter {
+    float: left;
+    text-align: center;
+    padding-right: 10px;
+    border-right: 1px solid #222423;
+    color: #222423;
+}
+
+.collection-favourite-button {
+    text-align: center;
+    color: #222423;
+}
+.collection-favourite-button:hover {
+    text-align: center;
+    color: #222423;
+}
+
+.collection-anchor {
+    text-decoration: none;
+    color: #222423;
+}
+.collection-anchor:hover {
+    text-decoration: none;
+    color: #222423;
+}
+
+.collection-container {
+    padding: 0 !important;
+}

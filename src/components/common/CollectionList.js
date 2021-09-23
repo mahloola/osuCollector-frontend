@@ -1,5 +1,5 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import Collection from './Collection';
+import Collection from './CollectionCard';
 import PropTypes from 'prop-types';
 import './CollectionList.css';
 
@@ -7,7 +7,7 @@ const CollectionList = ({ collections }) => {
 
     return (
 
-        <Container>
+        <Container className="collection-list-container">
             <Row>
             {
                 collections.map((collection) => (

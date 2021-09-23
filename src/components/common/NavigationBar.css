@@ -7,16 +7,26 @@ div #searchbar {
     max-width: 30%;
 }
 
-ul {
+.navbar-list {
     list-style-type: none;
 }
 
-ul>li {
+.navbar-item {
     float: left;
     font-weight: 700;
     text-align: center;
-    padding: 15px 30px;
+    padding: 10px 15px;
+    margin: 5px 15px;
     font-size: 17px;
+}
+.navbar-item:hover {
+    float: left;
+    font-weight: 700;
+    text-align: center;
+    padding: 10px 15px;
+    margin: 5px 15px;
+    font-size: 17px;
+    /* todo: add some kind of hover effect around */
 }
 
 ul>li>a {
@@ -27,7 +37,7 @@ ul>li>a {
 ul>li>a:hover {
     border-bottom: 2px solid white;
     color: white;
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 ul {
@@ -59,15 +69,17 @@ div #navbarRightSide {
     padding-top: 8px;
 }
 
-.uploadBtn {
+.navbar-button {
     background-color: #9bbdc6 !important;
     border-color: #cef5ff !important;
     font-weight: bold;
+    color: #fff !important;
 }
 
-.uploadBtn:hover {
+.navbar-button:hover {
     background-color: #cef5ff !important;
     border-color: #cef5ff !important;
+    color: #fff !important;
 }
 
 .searchBtn {

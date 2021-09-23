@@ -46,11 +46,10 @@ function NavigationBar({ user }) {
             <a id="logo" href="/">
                 osu!<span id="collector">Collector</span>
             </a>
-
-            <ul>
-                <li><a href='/recent'>Recent</a></li>
-                <li><a href='/popular'>Popular</a></li>
-                <li><a href='/users'>Users</a></li>
+            <ul className="navbar-list">
+                <li className="navbar-item"><a href='/recent'>Recent</a></li>
+                <li className="navbar-item"><a href='/popular'>Popular</a></li>
+                <li className="navbar-item"><a href='/users'>Users</a></li>
             </ul>
 
             <Form onSubmit={searchSubmit} className='mx-4 px-3 w-25 searchbar'>
@@ -71,7 +70,7 @@ function NavigationBar({ user }) {
 
             <div id="navbarRightSide">
                 <Button
-                    className="mx-3 uploadBtn"
+                    className="mx-3 navbar-button"
                     onClick={() => {
                         if (user)
                             setUploadModalIsOpen(true)

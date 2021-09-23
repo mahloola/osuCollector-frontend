@@ -67,11 +67,11 @@ function Popular() {
                     Popular Collections
                 </h1>
                 <ButtonGroup className='mb-3'>
-                    <Button onClick={todayClicked} size='sm' variant='outline-secondary'>today</Button>
-                    <Button onClick={weekClicked} size='sm' variant='outline-secondary'>this week</Button>
-                    <Button onClick={monthClicked} size='sm' variant='outline-secondary'>this month</Button>
-                    <Button onClick={yearClicked} size='sm' variant='outline-secondary'>this year</Button>
-                    <Button onClick={allTimeClicked} size='sm' variant='outline-secondary'>ALL TIME</Button>
+                    <Button onClick={todayClicked} size='sm' variant='outline-light'>today</Button>
+                    <Button onClick={weekClicked} size='sm' variant='outline-light'>this week</Button>
+                    <Button onClick={monthClicked} size='sm' variant='outline-light'>this month</Button>
+                    <Button onClick={yearClicked} size='sm' variant='outline-light'>this year</Button>
+                    <Button onClick={allTimeClicked} size='sm' variant='outline-light'>all time</Button>
                 </ButtonGroup>
                 <br/>
                 <CollectionList collections={collectionPage.collections}></CollectionList>
