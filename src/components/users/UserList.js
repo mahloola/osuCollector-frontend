@@ -7,9 +7,12 @@ import './UserList.css'
 
 const UserList = ({ users }) => {
 
-    const userFavouritesButton = (user) => {
+    const userFavouritesButton = (users) => {
         const disabled = !user.favourites || !user.favourites.length > 0
         return (
+            users.map((user) => (
+                <User key={user.id} collection={user}></User>
+            ))
             <LinkContainer to={`/users/${user.id}/favourites`}>
                 <Button
                     size='sm'
