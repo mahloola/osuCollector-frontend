@@ -1,4 +1,4 @@
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import Collection from './CollectionCard';
 import PropTypes from 'prop-types';
 import './CollectionList.css';
@@ -14,9 +14,6 @@ const CollectionList = ({ collections }) => {
                     <Collection key={collection.id} collection={collection}></Collection>
                 ))
             }
-            
-                <Col>
-                </Col>
             </Row>
         </Container>
 

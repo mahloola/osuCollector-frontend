@@ -1,0 +1,55 @@
+.user-card {
+    width: 33.33% !important;
+    margin: 0 0 10px 0;
+}
+
+.user-cover {
+    object-fit: cover;
+    height: 100px;
+    max-width: 100%;
+}
+
+.user-username {
+    text-decoration: none;
+    color: rgb(50, 50, 50);
+    font-size: 2em;
+}
+
+.user-body {
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.user-rank {
+    color: rgb(100, 100, 100);
+}
+
+.user-rank-left {
+    display: block;
+    align-items:center;
+}
+.user-rank-right {
+    display: block;
+    align-items:center;
+}
+.user-ranks {
+    font-size: 2em;
+}
+
+.user-avatar {
+    position: absolute;
+    top: 50px;
+    left: 38%;
+    height: 90px;
+    width: 90px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
+.user-links {
+    text-align: center;
+    padding: 10px;
+    border-top: 2px dotted rgb(210, 210, 210);
+    background: rgb(230, 230, 230);
+}
