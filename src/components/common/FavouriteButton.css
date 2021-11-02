@@ -1,0 +1,3 @@
+.favourite-button.btn:focus {
+  box-shadow: none;
+}

@@ -1,67 +1,15 @@
-div #hero {
-    position: relative;
-    font-size: 100px;
-    font-weight: bold;
-    -ms-transform: translateY(50%);
-    transform: translateY(50%);
+.news {
+    border-left: 2px solid rgb(179, 179, 179);
+    padding-left: 1em;
+    margin-left: 2em;
+    margin-bottom: 2em;
+    max-width: 50%;
 }
 
-div #bg-hero {
-    position: absolute;
-    left: -30%;
-    top: -80px;
-    text-shadow: -1px 0 #acd0da, 0 1px #acd0da, 1px 0 #acd0da, 0 -1px #acd0da;
-    color: #9bbdc6;
-    font-size: 300px;
+.date {
+    font-size: 0.9em;
 }
 
-div #osu-hero {
-    max-height: 110px;
-    margin: 0px;
-}
-div #osu-bg-hero {
-    max-height: 275px;
-    margin: 0px;
-}
-
-div #footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 15%;
-    background-color: #222423;
-}
-
-div #footerUsers {
-    position: fixed;
-    left: 30%;
-    padding-top: 1%;
-}
-
-div #footerCollections {
-    position: fixed;
-    right: 30%;
-    padding-top: 1%;
-}
-div #footerUsersHeader {
-    text-align: center;
-    font-size: 3rem;
-    font-weight: bold;
-}
-
-div #footerCollectionsHeader {
-    text-align: center;
-    font-size: 3rem;
-    font-weight: bold;
-}
-
-div #footerUsersSubheader {
-    text-align: center;
-    font-size: 1.2rem;
-}
-
-div #footerCollectionsSubheader {
-    text-align: center;
-    font-size: 1.2rem;
+.stats {
+    max-width: 45%;
 }

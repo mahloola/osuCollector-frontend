@@ -1,98 +1,99 @@
-import { useState, useEffect } from 'react';
-import { Spinner, Pagination, Button, ButtonGroup } from 'react-bootstrap';
+import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
+import { Card, Button, Container } from '../bootstrap-osu-collector'
 import { getPopularCollections } from '../../utils/api'
-import { useQuery } from '../../utils/hooks';
+import { useQuery } from '../../utils/hooks'
 import CollectionList from '../common/CollectionList';
 
 function Popular() {
 
-    const [loading, setLoading] = useState(true); // basically a flag
-    const [collectionPage, setCollectionPage] = useState(null);
-    const [dateRange, setDateRange] = useState('alltime');
-    const [page, setPage] = useState(0);
-    const query = useQuery();
-    const history = useHistory();
+    const [range, setRange] = useState('alltime')
+    const [collectionPage, setCollectionPage] = useState(null)
+    const [collections, setCollections] = useState(new Array(18).fill(null))
+    const query = useQuery()
+    const history = useHistory()
 
-    // get query params on initial page load
     useEffect(() => {
-        setDateRange(query.get('range') || 'alltime');
-        setPage(query.get('page') || 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        const queryParamRange = query.get('range')
+        if (queryParamRange) {
+            setRange(queryParamRange)
+        }
     }, [])
 
-    // run this code when page changes
     useEffect(() => {
-        if (page <= 0)
-            return;
-        getPopularCollections(dateRange, page)
-            .then(collectionPage => {
-                setLoading(false);
-                setCollectionPage(collectionPage);
-            }).catch(err => {
-                setLoading(false);
-                console.log('Unable to fetch collections: ', err);
-            });
-    }, [page, dateRange])
+        // retrieve the first page of results after date range is changed
+        getPopularCollections(range, undefined, 18).then(_collectionPage => {
+            setCollectionPage(_collectionPage)
+            setCollections(_collectionPage.collections)
+        })
+            .catch(err => {
+                console.log('Unable to fetch popular collections: ', err)
+                // An error occurred with the server. Please try refreshing the page
+                getPopularCollections(range, undefined, 18).then(_collectionPage => {
+                    setCollectionPage(_collectionPage)
+                    setCollections(_collectionPage.collections)
+                })
+                    .catch(err => {
+                        console.log('Unable to fetch popular collections: ', err)
+                    })
+            })
+    }, [range])
 
-    const dateRangeClicked = (dateRange) => {
-        setDateRange(dateRange);
-        setPage(1);
-        history.push(`/popular?range=${dateRange}`)
+    const loadMore = async () => {
+        try {
+            const _collectionPage = await getPopularCollections(range, collectionPage.nextPageCursor, 18)
+            setCollectionPage(_collectionPage)
+            setCollections([...collections, ..._collectionPage.collections])
+        } catch (err) {
+            console.log(err)
+        }
     }
 
-    const todayClicked = () => dateRangeClicked('today')
-    const weekClicked = () => dateRangeClicked('week')
-    const monthClicked = () => dateRangeClicked('month')
-    const yearClicked = () => dateRangeClicked('year')
-    const allTimeClicked = () => dateRangeClicked('alltime')
+    const dateRanges = [
+        { range: 'today', label: 'today' },
+        { range: 'week', label: 'this week' },
+        { range: 'month', label: 'this month' },
+        { range: 'year', label: 'this year' },
+        { range: 'alltime', label: 'all time' }
+    ]
 
-    const goToPage = (dateRange, page) => {
-        history.push(`/popular?range=${dateRange}&page=${page}`);
-        setPage(page);
-    }
-
-    if (loading) {
-        return (
-            <div className="d-flex justify-content-center">
-                <Spinner animation="border" />
-            </div>
-        )
-    } else if (collectionPage && Array.isArray(collectionPage.collections)) {
-        const nextPage = collectionPage.nextPage;
-        const lastPage = collectionPage.lastPage;
-        return (
-            <div>
-                <h1>
-                    Popular Collections
-                </h1>
-                <ButtonGroup className='mb-3'>
-                    <Button onClick={todayClicked} size='sm' variant='outline-light'>today</Button>
-                    <Button onClick={weekClicked} size='sm' variant='outline-light'>this week</Button>
-                    <Button onClick={monthClicked} size='sm' variant='outline-light'>this month</Button>
-                    <Button onClick={yearClicked} size='sm' variant='outline-light'>this year</Button>
-                    <Button onClick={allTimeClicked} size='sm' variant='outline-light'>all time</Button>
-                </ButtonGroup>
-                <br/>
-                <CollectionList collections={collectionPage.collections}></CollectionList>
-                <div className="d-flex justify-content-center">
-                    <Pagination className="text-center" size="lg">
-                        <Pagination.First className={page > 1 ? '' : 'disabled'} onClick={() => goToPage(dateRange, 1)} />
-                        <Pagination.Prev className={page > 1 ? '' : 'disabled'} onClick={() => goToPage(dateRange, page - 1)} />
-                        <Pagination.Item className='disabled'>{page}</Pagination.Item>
-                        <Pagination.Next className={nextPage ? '' : 'disabled'} onClick={() => goToPage(dateRange, nextPage)} />
-                        <Pagination.Last className={nextPage && lastPage ? '' : 'disabled'} onClick={() => goToPage(dateRange, lastPage)} />
-                    </Pagination>
-                </div>
-            </div>
-        )
-    } else {
-        return (
-            <h1>
-                No collections found!
-            </h1>
-        )
-    }
+    return (
+        <Container className='pt-4'>
+            <Card className='shadow-lg'>
+                <Card.Body>
+                    <div className="d-flex justify-content-left align-items-center p-2 pb-0" >
+                        <h2 className='mt-2 ml-2 mr-5'>
+                            <i className="fas fa-fire mr-3" style={{ color: 'orange' }} />
+                            Popular Collections
+                        </h2>
+                        <div>
+                            {dateRanges.map((opt, i) =>
+                                <Button
+                                    key={i}
+                                    className='mx-1'
+                                    disabled={range === opt.range}
+                                    onClick={() => {
+                                        setCollectionPage(null)
+                                        setCollections(new Array(18).fill(null))
+                                        history.push(`/popular?range=${opt.range}`)
+                                        setRange(opt.range)
+                                    }}
+                                    variant={range === opt.range ? 'danger' : 'outline-secondary'}
+                                >
+                                    {opt.label}
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                    <CollectionList
+                        collections={collections}
+                        hasMore={collectionPage?.hasMore}
+                        loadMore={loadMore}
+                    />
+                </Card.Body>
+            </Card>
+        </Container>
+    )
 }
 
-export default Popular;
+export default Popular

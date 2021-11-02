@@ -1,0 +1,39 @@
+.user-badge {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    background-color: gray;
+    border-radius: 50px;
+    text-decoration: none;
+    text-shadow: 1px 1px 2px #000000;
+}
+
+.user-badge-supporter {
+    background-color: #FF66AB;
+}
+
+.user-badge:hover {
+    text-decoration: none;
+    background-color: darkgray;
+}
+
+.user-badge-supporter:hover {
+    background-color: #ff91c2;
+}
+
+.user-badge a {
+    text-decoration: none;
+}
+
+.user-badge span {
+    padding: 0px 15px 0px 6px;
+    color: white;
+    vertical-align: text-top;   
+}
+
+.user-badge .avatar-img {
+    height: 30px;
+    width: 30px;
+    margin: 4px;
+    object-fit: cover;
+}

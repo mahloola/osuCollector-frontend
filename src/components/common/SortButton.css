@@ -1,0 +1,23 @@
+.sort-button-idle {
+  outline: none;
+  border: none;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+}
+
+.sort-button-idle:hover,
+.sort-button-idle:active {
+  background-color: #ddd;
+}
+
+.sort-button-active {
+  outline: none;
+  border: none;
+  background-color: #e6e6e6;
+  border-radius: 8px;
+}
+
+.sort-button-active:hover,
+.sort-button-active:active {
+  background-color: #eee;
+}

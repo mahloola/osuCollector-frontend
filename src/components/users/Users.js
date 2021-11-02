@@ -1,76 +1,90 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
-import { Spinner, Pagination } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { Alert, Card, Container, Col, Spinner, Pagination } from '../bootstrap-osu-collector';
 import { getUsers } from '../../utils/api'
-import { useQuery } from '../../utils/hooks';
-import UserList from './UserList';
+import ReactPlaceholder from 'react-placeholder/lib';
+import UserCard from './UserCard'
 
 function Users() {
 
-    const [loading, setLoading] = useState(true); // basically a flag
-    const [userResults, setUserResults] = useState(null)
-    const [page, setPage] = useState(0);
-    const query = useQuery();
-    const history = useHistory();
+    const [userResults, setUserResults] = useState(null);
+    const [users, setUsers] = useState(new Array(18).fill(null));
+    const [error, setError] = useState(null);
 
     // get query params on initial page load
     useEffect(() => {
-        setPage(query.get('page') || 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        getUsers(1).then(_userResults => {
+            setUserResults(_userResults)
+            setUsers(_userResults.users)
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    // run this code when page changes
-    useEffect(() => {
-        if (page <= 0)
-            return;
-        getUsers(page).then(paginatedUserData => {
-            setLoading(false);
-            setUserResults(paginatedUserData);
-        }).catch(err => {
-            setLoading(false);
-            console.log('Unable to fetch collections: ', err);
-        });
-    }, [page])
-
-    const goToPage = (page) => {
-        history.push(`/users?page=${page}`);
-        setPage(page);
+    const loadMore = async () => {
+        try {
+            const _userResults = await getUsers(userResults.nextPage)
+            setUserResults(_userResults)
+            setUsers([...users, ..._userResults.users])
+        } catch (err) {
+            setError(err)
+        }
     }
 
-    if (loading) {
-        return (
-            <div className="d-flex justify-content-center">
-                <Spinner animation="border" />
-            </div>
-        )
-    } else if (userResults && Array.isArray(userResults.users)) {
-        const nextPage = userResults.nextPage;
-        const lastPage = userResults.lastPage;
-        return (
-            <div>
-                <h1>
-                    Users
-                </h1>
-                <br/>
-                <UserList users={userResults.users}></UserList>
-                <div className="d-flex justify-content-center">
-                    <Pagination className="text-center" size="lg">
-                        <Pagination.First className={page > 1 ? '' : 'disabled'} onClick={() => goToPage(1)} />
-                        <Pagination.Prev className={page > 1 ? '' : 'disabled'} onClick={() => goToPage(page - 1)} />
-                        <Pagination.Item className='disabled'>{page}</Pagination.Item>
-                        <Pagination.Next className={nextPage ? '' : 'disabled'} onClick={() => goToPage(nextPage)} />
-                        <Pagination.Last className={nextPage && lastPage ? '' : 'disabled'} onClick={() => goToPage(lastPage)} />
-                    </Pagination>
-                </div>
-            </div>
-        )
-    } else {
-        return (
-            <h1>
-                No users
-            </h1>
-        )
-    }
+    return (
+        <Container className='pt-4'>
+            <Card className='shadow-lg'>
+                <Card.Body>
+                    <h2 className='mt-2 ml-3'>
+                        Users 
+                    </h2>
+                    {error ?
+                        <Alert variant='danger'>
+                            <p>
+                                Sorry, an error occurred with the server. Please try refreshing the page. Error details:
+                            </p>
+                            <p>{error.toString()}</p>
+                        </Alert>
+                        :
+                        <Container className='p-2'>
+                            <InfiniteScroll
+                                dataLength={users.length}
+                                next={loadMore}
+                                hasMore={userResults !== null}
+                                loader={
+                                    <div className="d-flex justify-content-center p-2" >
+                                        <Spinner animation="border" />
+                                    </div>
+                                }
+                                endMessage={
+                                    <p className='text-muted' style={{ textAlign: 'center' }}>
+                                        <b>Nothing more to show.</b>
+                                    </p>
+                                }
+                                className='row'
+                            >
+                                {users.map((user, i) =>
+                                    <Col lg={6} xl={3} className='p-0 my-3' key={i}>
+                                        <ReactPlaceholder
+                                            ready={user !== null}
+                                            showLoadingAnimation
+                                            type='rect'
+                                            className='mx-auto'
+                                            style={{ width: '90%', height: '235px' }}
+                                        >
+                                            {user &&
+                                                <UserCard user={user}></UserCard>
+                                            }
+                                        </ReactPlaceholder>
+                                    </Col>
+                                )}
+                            </InfiniteScroll>
+                        </Container>
+                    }
+                </Card.Body>
+            </Card>
+        </Container>
+    )
 }
 
 export default Users;
