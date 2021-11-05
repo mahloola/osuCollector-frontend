@@ -1,6 +1,8 @@
 import { useContext } from 'react'
 import Chart from 'react-google-charts'
 import { ThemeContext } from 'styled-components';
+import './BarGraph.css'
+
 
 const BarGraph = ({ chartEvents, data, enableInteractivity=false, height }) => {
     const theme = useContext(ThemeContext)
