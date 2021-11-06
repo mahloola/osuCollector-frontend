@@ -32,34 +32,29 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
         console.log('change');
         const { value, checked } = target;
         if (checked == true) {
-            setSelected((old) => [...old, value]);
+            setSelected([value]);
         } else {
-            setSelected((old) => old.filter((col) => col != parseInt(value)));
-        }
-        console.log(selected);
-    }
-
-    const checkAll = () => {
-        console.log('checkAll');
-        if (selected.length == collections.length) {
             setSelected([]);
-        } else {
-            setSelected(collections.map((col, index) => index));
         }
-        console.log(selected);
     }
 
     const submit = async () => {
-        console.log('submit');
         const selectedCollections = collections.filter((col, index) => selected.includes(index.toString()));
+        if (selectedCollections.filter(coll => coll.beatmapChecksums.length > 2000).length > 0) {
+            alert('This collection is too big (max collection size: 2000)')
+            return
+        }
         console.log(selectedCollections);
         setUploading(true);
-        const result = await api.uploadCollections(selectedCollections);
-        console.log(result);
+        try {
+            await api.uploadCollections(selectedCollections);
+            alert(`${selectedCollections.length} collections uploaded!`);
+            history.push(`/recent`);
+        } catch (err) {
+            alert(err.message + '\n\n' + 'If this is your first time seeing this, you can try uploading the collection again.');
+        }
         setUploading(false);
-        alert(`${selectedCollections.length} collections uploaded!`);
-        history.push(`/recent`);
-        setUploadModalIsOpen(false)
+        setUploadModalIsOpen(false);
     }
 
     return (
@@ -70,7 +65,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
             size='lg'
             centered
         >
-            <Modal.Body className='p-5'>
+            <Modal.Body className='px-5 py-4'>
                 <h3>1. Open collection.db</h3>
                 collection.db is a file that contains all of your osu! collections. It is located in your osu! install folder. Example:
                 <pre className='bg-light my-2 py-1 px-3'><code>
@@ -93,8 +88,8 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
                     <br />
                     {collections.length > 0 &&
                         <div>
-                            <h3>2. Select which collections to upload</h3>
-                            <div className='mb-3' style={{ height: 500, overflowY: 'scroll' }}>
+                            <h3>2. Select which collection to upload</h3>
+                            <div style={{ height: 420, overflowY: 'scroll' }}>
                                 {collections.map((collection, index) =>
                                     <Card key={index} className='shadow-sm mx-3 my-2 py-2 px-4'>
                                         <Row>
@@ -113,8 +108,6 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
                             </div>
                             <br></br>
                             <div className='upload-buttons'>
-                                <Button onClick={checkAll}>{selected.length == collections.length ? 'Deselect All' : 'Select All'}</Button>
-                                {/* <Button variant='secondary'>Cancel</Button> */}
                                 <Button
                                     style={{ width: '11em' }}
                                     onClick={submit}>
