@@ -117,6 +117,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                                     </div>
                                     <Button
                                         href={beatmap.url}
+                                        target='blank'
                                         variant='outline-secondary'
                                         className='ms-auto px-2 py-0 mr-1'
                                         size='sm'
@@ -208,6 +209,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                                             </b>
                                             <Button
                                                 href={beatmap.url}
+                                                target='blank'
                                                 variant='outline-secondary'
                                                 className='ms-auto px-2 py-0 mr-1'
                                                 size='sm'
