@@ -6,7 +6,7 @@ import ReactPlaceholder from 'react-placeholder';
 import "react-placeholder/lib/reactPlaceholder.css";
 import CollectionCard from '../common/CollectionCard';
 import { LinkContainer } from 'react-router-bootstrap';
-// import { Alert } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 
 function Home() {
     const [metadata, setMetadata] = useState(null);
@@ -26,6 +26,9 @@ function Home() {
     return (
         <Container className='pt-4 pb-4'>
             <Row>
+                <Alert variant='success' className='text-center'>
+                    Beatmap downloads are working again. If any issues arise, please visit the <a href='https://discord.gg/WZMQjwF5Vr'>osu!Collector discord</a>.
+                </Alert>
                 <Col className='px-5 my-2' md={12} lg={9}>
                     <h2>
                         Welcome to osu!Collector!

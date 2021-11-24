@@ -17,6 +17,7 @@ import styled, { ThemeContext } from 'styled-components';
 import ModeCounters from '../common/ModeCounters';
 import BarGraph from '../common/BarGraph';
 import { LinkContainer } from 'react-router-bootstrap';
+import Comments from '../../../../osu-collector-frontend/src/components/collection/Comments';
 
 const groupBeatmapsets = beatmaps => {
     if (beatmaps?.length === 0) {
@@ -489,6 +490,9 @@ function Collection({ user }) {
                     }
                 </ReactPlaceholder>
             </Card>
+
+            {/* comments */}
+            <Comments comments={collection?.comments} user={user}/>
 
             {/* beatmaps */}
             <Card className='mt-4 shadow'>
