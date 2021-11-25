@@ -81,16 +81,19 @@ function Collection({ user }) {
     }
 
     // run this code on initial load
-    useEffect(() => {
+    const refreshCollection = () => {
         // GET collection
         api.getCollection(id).then(collection => {
-            setCollection(collection);
+            setCollection(collection)
             setFavourited(collection.favouritedByUser)
             setFavourites(collection.favourites)
         }).catch(err => {
             console.log('Unable to fetch collection: ', err)
             setCollection(null)
         });
+    }
+    useEffect(() => {
+        refreshCollection()
     }, [])
 
     useEffect(() => {
@@ -492,7 +495,12 @@ function Collection({ user }) {
             </Card>
 
             {/* comments */}
-            <Comments comments={collection?.comments} user={user}/>
+            <Comments
+                comments={collection?.comments}
+                collectionId={collection?.id}
+                user={user}
+                refreshCollection={refreshCollection}
+            />
 
             {/* beatmaps */}
             <Card className='mt-4 shadow'>

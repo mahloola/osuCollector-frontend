@@ -79,7 +79,7 @@ async function uploadCollections(collections) {
 // Returns true on success
 async function favouriteCollection(collectionId) {
   const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/favourite`, {
-    "method": "POST"
+    method: 'POST'
   })
   if (response.status === 200) {
     console.log(`collection ${collectionId} added to favourites`)
@@ -240,6 +240,58 @@ async function getInstallerURL() {
   return response.data
 }
 
+async function postComment(collectionId, message) {
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/comments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: message
+    })
+  })
+  if (response.status === 200)
+    return await response.text()
+  else
+    throw new Error(`POST /api/collections/${collectionId}/comments responded with ${response.status}: ${await response.text()}`)
+}
+
+async function likeComment(collectionId, commentId, remove=false) {
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/comments/${commentId}/like`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      remove: remove
+    })
+  })
+  if (response.status === 200)
+    return await response.text()
+  else
+    throw new Error(`POST /api/collections/${collectionId}/comments/${commentId}/like responded with ${response.status}: ${await response.text()}`)
+}
+
+async function deleteComment(collectionId, commentId) {
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/comments/${commentId}`, {
+    method: 'DELETE'
+  })
+  if (response.status === 200)
+    return await response.text()
+  else
+    throw new Error(`DELETE /api/collections/${collectionId}/comments/${commentId} responded with ${response.status}: ${await response.text()}`)
+}
+
+async function reportComment(collectionId, commentId) {
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/comments/${commentId}/report`, {
+    method: 'POST'
+  })
+  if (response.status === 200)
+    return await response.text()
+  else
+    throw new Error(`POST /api/collections/${collectionId}/comments/${commentId}/report responded with ${response.status}: ${await response.text()}`)
+}
+
 export {
   getRecentCollections,
   getPopularCollections,
@@ -262,5 +314,9 @@ export {
   createSubscription,
   cancelSubscription,
   unlinkTwitchAccount,
-  getInstallerURL
+  getInstallerURL,
+  postComment,
+  likeComment,
+  deleteComment,
+  reportComment
 }
