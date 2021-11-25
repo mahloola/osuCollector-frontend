@@ -199,7 +199,7 @@ function DesktopClient({ user, setUser }) {
                             <h1 className="display-5 fw-bold lh-1 mb-3">Help pay for server costs</h1>
                             <p className="lead text-secondary">
                                 I had to find some way to monetize this project so that it could continue running on its own.
-                                I also didn&apos;t want to put ads all over the site.
+                                I figured something in similar vein to osu! supporter would be the best approach.
                                 Any support you give us is greatly appreciated!
                             </p>
                         </div>

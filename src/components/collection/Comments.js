@@ -191,7 +191,7 @@ function Comments({ collectionId, comments, user, refreshCollection }) {
             return
         }
         // check for duplicates
-        const duplicateFound = comments.find(comment => comment.userId === user.id && comment.message.trim() === unsavedComment.trim())
+        const duplicateFound = comments?.find(comment => comment.userId === user.id && comment.message.trim() === unsavedComment.trim())
         if (duplicateFound) {
             alert('don\'t send the same comment twice')
             return
