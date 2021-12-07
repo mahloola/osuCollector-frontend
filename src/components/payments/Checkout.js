@@ -59,22 +59,21 @@ function Checkout() {
 
         // Collect the payment via Stripe
         setProcessingTo(3)
-        stripe.confirmCardPayment(clientSecret, {
+        const result = await stripe.confirmCardPayment(clientSecret, {
             payment_method: {
                 card: cardElement,
                 billing_details: {
                     email: email
                 }
-            }
-        }).then((result) => {
-            if (result.error) {
-                setCheckoutError(result.error.message)
-                setProcessingTo(0)
-            } else {
-                // Successful subscription payment
-                history.push('/payments/success')
-            }
+            },
+            setup_future_usage: 'off_session'
         })
+        if (result.error) {
+            setCheckoutError(result.error.message)
+            setProcessingTo(0)
+            return
+        }
+        history.push('/payments/success')
     }
 
     const cardElementOpts = {

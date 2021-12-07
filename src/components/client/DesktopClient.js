@@ -9,7 +9,8 @@ import downloadsPng from './downloads.png'
 import importPng from './import.png'
 import darkmodePng from './darkmode.png'
 import styled from 'styled-components'
-import { HeartFill } from 'react-bootstrap-icons'
+import { ExclamationTriangleFill, HeartFill } from 'react-bootstrap-icons'
+import moment from 'moment'
 
 const downloadInstaller = async () => {
     try {
@@ -106,10 +107,16 @@ function DesktopClient({ user, setUser }) {
         setUnlinkingTwitchAccount(false)
     }
 
+    // auto renew notice
+    const [autorenewNoticeVisible, setAutorenewNoticeVisible] = useState(false)
+
     // Current Status
     const linkedTwitchAccountStatus = user?.private?.linkedTwitchAccount?.displayName || 'Not linked'
     const twitchSubStatus = user?.isSubbedToFunOrange ? 'Subbed' : 'Not subbed'
     const userIsSubscribed = user?.isSubbedToFunOrange || new Date(user?.private?.subscriptionExpiryDate?._seconds * 1000) > new Date()
+    const expiryEvent = (Date.now() / 1000) > user?.private?.subscriptionExpiryDate?._seconds ? 'Ended' :
+        user?.private?.stripeSubscriptionId ? 'Renews' :
+            'Ends'
 
     const Divider = () => (
         <div style={{
@@ -306,71 +313,95 @@ function DesktopClient({ user, setUser }) {
                         </Card.Title>
                         <Card.Subtitle>
                             <p>You are <strong>{!userIsSubscribed && 'not'} currently supporting</strong> osu!Collector.</p>
-                            <Container>
-                                <Row className='align-items-center my-1'>
-                                    <Col xs={2} className='text-right'> Twitch account </Col>
-                                    <Col xs={3} className='pl-0'>
-                                        <Badge
-                                            variant={user?.private?.linkedTwitchAccount?.displayName ? 'info' : 'secondary'}
-                                            className='py-1 px-2 mr-2'
-                                        >
-                                            {linkedTwitchAccountStatus}
-                                        </Badge>
-                                        {user?.private?.linkedTwitchAccount?.displayName &&
-                                            <Button onClick={unlinkTwitchAccount} style={{ width: 60 }} size='sm' variant='outline-secondary'>
-                                                {unlinkingTwitchAccount ?
-                                                    <Spinner as='span' animation='grow' size='sm' role='status' aria-hidden='true' />
-                                                    :
-                                                    'Unlink'
-                                                }
-                                            </Button>
-                                        }
-                                    </Col>
-                                </Row>
-                                <Row className='align-items-center my-1'>
-                                    <Col xs={2} className='text-right'> Twitch Sub </Col>
-                                    <Col xs={10} className='pl-0'>
-                                        <Badge
-                                            variant={user?.isSubbedToFunOrange ? 'success' : 'secondary'}
-                                            className='py-1 px-2'
-                                        >
-                                            {twitchSubStatus}
-                                        </Badge>
+                            <Row>
+                                <Col xs={6}>
+                                    <Card className='shadow-sm p-3'>
+                                        <div className='mb-2 d-flex justify-content-start align-items-center'>
+                                            <div className='text-right mr-3' style={{ minWidth: 120 }}>
+                                                Twitch account
+                                            </div>
+                                            <div>
+                                                <Badge
+                                                    variant={user?.private?.linkedTwitchAccount?.displayName ? 'info' : 'secondary'}
+                                                    className='py-1 px-2 mr-2'
+                                                >
+                                                    {linkedTwitchAccountStatus}
+                                                </Badge>
+                                            </div>
+                                            {user?.private?.linkedTwitchAccount?.displayName &&
+                                                <Button onClick={unlinkTwitchAccount} style={{ width: 60, padding: '0 0 0 0' }} size='sm' variant='outline-secondary'>
+                                                    {unlinkingTwitchAccount ?
+                                                        <Spinner as='span' animation='grow' size='sm' role='status' aria-hidden='true' />
+                                                        :
+                                                        <small>Unlink</small>
+                                                    }
+                                                </Button>
+                                            }
+                                        </div>
+                                        <div className='d-flex justify-content-start align-items-center'>
+                                            <div className='text-right mr-3' style={{ minWidth: 120 }}>
+                                                Twitch Sub
+                                            </div>
+                                            <div>
+                                                <Badge
+                                                    variant={user?.isSubbedToFunOrange ? 'success' : 'secondary'}
+                                                    className='py-1 px-2'
+                                                >
+                                                    {twitchSubStatus}
+                                                </Badge>
+                                            </div>
+                                        </div>
                                         {user?.private?.error &&
-                                            <span className='ml-2 text-danger'>
+                                            <span className='mt-2 ml-2 text-danger'>
                                                 An error occurred. Please try to unlink and relink your twitch account.
                                             </span>
                                         }
-                                    </Col>
-                                </Row>
-                                <Row className='align-items-center my-1'>
-                                    <Col xs={2} className='text-right'> Paid Subscription </Col>
-                                    <Col xs='auto' className='pl-0'>
-                                        <Badge
-                                            variant={
-                                                paidSubscriptionStatus(user) === 'Active' ?
-                                                    'success'
-                                                    : paidSubscriptionStatus(user) === 'Active*' ?
-                                                        'warning'
-                                                        :
-                                                        'secondary'}
-                                            className='py-1 px-2'
-                                        >
-                                            {paidSubscriptionStatus(user)}
-                                        </Badge>
-                                    </Col>
-                                    {user?.private?.stripeSubscriptionId &&
-                                        <>
-                                            <Col xs='auto' className='pl-0'>
-                                                <Button onClick={() => setChangePaymentMethodVisible(true)} size='sm' variant='outline-secondary'>Change payment method</Button>
-                                            </Col>
-                                            <Col xs='auto' className='pl-0'>
-                                                <Button onClick={() => setCancelSubscriptionConfirmationVisible(true)} size='sm' variant='outline-danger'>Cancel Subscription</Button>
-                                            </Col>
-                                        </>
-                                    }
-                                </Row>
-                            </Container>
+                                    </Card>
+                                </Col>
+                                <Col xs={6}>
+                                    <Card className='shadow-sm p-3'>
+                                        <div className='d-flex justify-content-start align-items-center'>
+                                            <div className='text-right mr-3'>
+                                                Paid Subscription
+                                            </div>
+                                            <Badge
+                                                variant={
+                                                    paidSubscriptionStatus(user) === 'Active' ?
+                                                        'success'
+                                                        : paidSubscriptionStatus(user) === 'Active*' ?
+                                                            'warning'
+                                                            :
+                                                            'secondary'}
+                                                className='py-1 px-2 mr-3'
+                                            >
+                                                {paidSubscriptionStatus(user)}
+                                            </Badge>
+                                            {user?.private?.stripeSubscriptionId && paidSubscriptionStatus(user) === 'Inactive' &&
+                                                <ExclamationTriangleFill
+                                                    className='mr-2'
+                                                    style={{ color: '#ffd966', cursor: 'pointer' }}
+                                                    onClick={() => setAutorenewNoticeVisible(true)}
+                                                />
+                                            }
+                                            {user?.private?.subscriptionExpiryDate._seconds &&
+                                                <small className='text-muted'>
+                                                    {expiryEvent} on {moment.unix(user.private.subscriptionExpiryDate._seconds).format('MMMM Do YYYY')}
+                                                </small>
+                                            }
+                                        </div>
+                                        {user?.private?.stripeSubscriptionId &&
+                                            <div className='mt-3 d-flex justify-content-start'>
+                                                <Col xs='auto' className='pl-0'>
+                                                    <Button onClick={() => setChangePaymentMethodVisible(true)} size='sm' variant='outline-secondary'>Change payment method</Button>
+                                                </Col>
+                                                <Col xs='auto' className='pl-0'>
+                                                    <Button onClick={() => setCancelSubscriptionConfirmationVisible(true)} size='sm' variant='outline-danger'>Cancel Subscription</Button>
+                                                </Col>
+                                            </div>
+                                        }
+                                    </Card>
+                                </Col>
+                            </Row>
                         </Card.Subtitle>
                     </CardBody>
                 </Card>
@@ -468,6 +499,24 @@ function DesktopClient({ user, setUser }) {
                     <Modal.Body>If you would like to change payment method, please cancel your existing subscription, then subscribe with a new payment method once the old subscription ends.</Modal.Body>
                     <Modal.Footer>
                         <Button variant='secondary' onClick={() => setChangePaymentMethodVisible(false)}>
+                            Ok
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={autorenewNoticeVisible} onHide={() => setAutorenewNoticeVisible(false)} centered>
+                    <Modal.Body>
+                        We are currently experiencing an issue where subscriptions are not auto-renewing.
+                        <br/><br/>
+                        Customers who created a subscription before December 7th are affected by this issue.
+                        <br/><br/>
+                        If your subscription is over and has not auto-renewed, you can click Cancel Subscription,
+                        and then create a new subscription by clicking Buy Now! and checking out as before.
+                        <br/><br/>
+                        We are very sorry for the inconvenience.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant='secondary' onClick={() => setAutorenewNoticeVisible(false)}>
                             Ok
                         </Button>
                     </Modal.Footer>
