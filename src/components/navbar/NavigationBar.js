@@ -13,6 +13,9 @@ import './NavButton.css'
 import ReactPlaceholder from 'react-placeholder/lib';
 import { ThemeContext } from 'styled-components';
 import { useMediaQuery } from 'react-responsive'
+import * as api from '../../utils/api'
+
+
 
 const Medium = ({ children }) => useMediaQuery({ maxWidth: 992 - 1 }) ? children : null
 const Large = ({ children }) => useMediaQuery({ minWidth: 992 }) ? children : null
@@ -31,6 +34,7 @@ function NavigationBar({
 
     const theme = useContext(ThemeContext)
 
+    const [remoteCollections, setRemoteCollections] = useState([]);
     const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
     const [searchBarInput, setSearchBarInput] = useState('');
     const history = useHistory()
@@ -50,6 +54,11 @@ function NavigationBar({
         console.log(x)
         openInNewTab(`https://osu.ppy.sh/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${callback}&state=${x}`)
         history.push('/login/enterOtp')
+    }
+
+    const getRemoteCollections = async () => {
+        const collections = await api.getUserUploads(user.id)
+        setRemoteCollections(collections)
     }
 
     const loginButton = process.env.NODE_ENV === 'production' ?
@@ -111,10 +120,12 @@ function NavigationBar({
                             <Button
                                 className='ml-2'
                                 onClick={() => {
-                                    if (user)
+                                    if (user) {
+                                        getRemoteCollections()
                                         setUploadModalIsOpen(true)
-                                    else
+                                    } else {
                                         alert('Please log in!')
+                                    }
                                 }}>
                                 <div className='d-flex align-items-center'>
                                     <CloudUpload className='mr-2' />
@@ -204,7 +215,9 @@ function NavigationBar({
             </Navbar>
             <UploadModal
                 uploadModalIsOpen={uploadModalIsOpen}
-                setUploadModalIsOpen={setUploadModalIsOpen} />
+                setUploadModalIsOpen={setUploadModalIsOpen}
+                remoteCollections={remoteCollections}
+            />
         </div >
     )
 }

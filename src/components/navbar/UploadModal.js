@@ -1,19 +1,20 @@
-import { useState, useCallback } from 'react';
-import { Button, Card, Form, Row, Col, Spinner, Modal } from '../bootstrap-osu-collector';
+import { useState } from 'react';
+import { Badge, Button, Card, Form, Spinner, Modal, ModalBody } from '../bootstrap-osu-collector';
 import { useHistory } from 'react-router-dom';
-import { useDropzone } from 'react-dropzone';
-import { parseCollectionDb } from '../../utils/collectionsDb'
 import * as api from '../../utils/api';
 import './uploadModal.css'
+import moment from 'moment'
+import { useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { parseCollectionDb } from '../../utils/collectionsDb'
 
-// eslint-disable-next-line react/prop-types
-function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
+function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollections }) {
 
-    const [selected, setSelected] = useState([]);
+    const [selectedCollection, setSelectedCollection] = useState(null);
     const [uploading, setUploading] = useState(false);
-    const [file, setFile] = useState(null);
-    const [collections, setCollections] = useState([]);
     const history = useHistory();
+    const [file, setFile] = useState(null);
+    const [localCollections, setLocalCollections] = useState([]);
     const onDrop = useCallback((acceptedFiles) => {
         let file = acceptedFiles[0];
         setFile(file);
@@ -21,35 +22,43 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
         let reader = new FileReader();
         reader.onload = async () => {
             console.log('reader');
-            setCollections(parseCollectionDb(reader.result));
-            console.log('collections', collections);
+            setLocalCollections(parseCollectionDb(reader.result));
+            console.log('collections', localCollections);
         }
         reader.readAsArrayBuffer(file);
     }, [])
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-    const handleChange = ({ target }) => {
-        console.log('change');
-        const { value, checked } = target;
-        if (checked == true) {
-            setSelected([value]);
-        } else {
-            setSelected([]);
-        }
+    const onCheck = ({ target }) => {
+        const { value, checked } = target
+        setSelectedCollection(checked ? localCollections[value] : null)
+    }
+
+    const isUploaded = collection => remoteCollections
+        .map(c => c.name)
+        .includes(collection?.name)
+    
+    const getRemoteCollection = name => {
+        const c = remoteCollections.find(c => c.name === name)
+        console.log(c)
+        return c
     }
 
     const submit = async () => {
-        const selectedCollections = collections.filter((col, index) => selected.includes(index.toString()));
-        if (selectedCollections.filter(coll => coll.beatmapChecksums.length > 2000).length > 0) {
+        if (!selectedCollection) {
+            return
+        }
+        if (selectedCollection.beatmapChecksums.length > 2000) {
             alert('This collection is too big (max collection size: 2000)')
             return
         }
-        console.log(selectedCollections);
         setUploading(true);
         try {
-            await api.uploadCollections(selectedCollections);
-            alert(`${selectedCollections.length} collections uploaded!`);
-            history.push(`/recent`);
+            const collections = await api.uploadCollections([selectedCollection]);
+            alert(`Collection uploaded!`);
+            if (collections.length >= 1) {
+                history.push(`/collections/${collections[0].id}`);
+            }
         } catch (err) {
             alert(err.message + '\n\n' + 'If this is your first time seeing this, you can try uploading the collection again.');
         }
@@ -59,13 +68,12 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
 
     return (
         <Modal
-            // className="upload-modal"
             show={uploadModalIsOpen}
             onHide={() => setUploadModalIsOpen(false)}
-            size='lg'
+            size='xl'
             centered
         >
-            <Modal.Body className='px-5 py-4'>
+            <ModalBody className='px-5 py-4'>
                 <h3>1. Open collection.db</h3>
                 collection.db is a file that contains all of your osu! collections. It is located in your osu! install folder. Example:
                 <pre className='bg-light my-2 py-1 px-3'><code>
@@ -80,29 +88,45 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
                                 file.name
                                 :
                                 isDragActive ?
-                                    <p>Drop the file here ...</p>
+                                    <span>Drop the file here ...</span>
                                     :
-                                    <p>Choose a file or drag it here.</p>
+                                    <span>Choose a file or drag it here.</span>
                         }
                     </div>
                     <br />
-                    {collections.length > 0 &&
+                    {localCollections.length > 0 &&
                         <div>
-                            <h3>2. Select which collection to upload</h3>
-                            <div style={{ height: 420, overflowY: 'scroll' }}>
-                                {collections.map((collection, index) =>
-                                    <Card key={index} className='shadow-sm mx-3 my-2 py-2 px-4'>
-                                        <Row>
-                                            <Col>
-                                                {collection.name}
-                                            </Col>
-                                            <Col>
+                            <h3>2. Select a collection to upload or update</h3>
+                            <div style={{ height: '52vh', overflowY: 'scroll' }}>
+                                {localCollections.map((collection, index) =>
+                                    <Card $lightbg key={index} className='shadow-sm mx-2 my-2 py-2 px-4'>
+                                    <div className='d-flex text-right'>
+                                        <div className='flex-fill text-left'>
+                                            {collection.name}
+                                            <span className='text-muted ml-3'>
                                                 {collection.beatmapChecksums.length} beatmaps
-                                            </Col>
-                                            <Col xs={1}>
-                                                <Form.Check checked={selected.find(value => parseInt(value) == index) !== undefined} value={index} onChange={handleChange} />
-                                            </Col>
-                                        </Row>
+                                            </span>
+                                        </div>
+                                        {isUploaded(collection) &&
+                                            <>
+                                                <span className='text-muted ml-3'>
+                                                    <small>
+                                                    last updated {moment.unix(getRemoteCollection(collection.name).dateLastModified._seconds).fromNow()}
+                                                    </small>
+                                                </span>
+                                                <Badge className='mx-3' variant='info' style={{ minWidth: '50px', height: '24px', paddingTop: '6px' }}>
+                                                    Uploaded
+                                                </Badge>
+                                            </>
+                                        }
+                                        <div className='ml-2'>
+                                            <Form.Check
+                                                checked={selectedCollection?.name === collection.name}
+                                                value={index}
+                                                onChange={onCheck}
+                                            />
+                                        </div>
+                                    </div>
                                     </Card>
                                 )}
                             </div>
@@ -110,7 +134,10 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
                             <div className='upload-buttons'>
                                 <Button
                                     style={{ width: '11em' }}
-                                    onClick={submit}>
+                                    onClick={submit}
+                                    disabled={!selectedCollection}
+                                    variant={selectedCollection ? 'primary' : 'outline-secondary'}
+                                >
                                     {uploading ?
                                         <>
                                             <Spinner
@@ -120,17 +147,17 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen }) {
                                                 role='status'
                                                 className='mx-2'
                                                 aria-hidden='true' />
-                                            Uploading...
+                                            {isUploaded(selectedCollection) ? 'Updating...' : 'Uploading...'}
                                         </>
                                         :
-                                        'Upload'
+                                        isUploaded(selectedCollection) ? 'Update' : 'Upload'
                                     }
                                 </Button>
                             </div>
                         </div>
                     }
                 </Form>
-            </Modal.Body>
+            </ModalBody>
         </Modal>
     )
 }
