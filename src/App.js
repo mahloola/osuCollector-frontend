@@ -113,7 +113,7 @@ function App() {
                         setSearchText={setSearchText}
                         toggleTheme={toggleTheme}
                     />
-                <div style={{ minHeight: 'calc(100vh - 52px)' }}>
+                <div style={{ minHeight: 'calc(100vh - 56px)' }}>
                     <Switch>
                         <Route exact path='/'>
                             <Home />

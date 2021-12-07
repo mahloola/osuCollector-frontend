@@ -219,7 +219,7 @@ function DesktopClient({ user, setUser }) {
                 <Card className='shadow-sm mt-4 mb-5'>
                     <CardBody>
                         <Card.Title>
-                            <h3>
+                            <h3 id='download'>
                                 <strong>
                                     Download osu!Collector Desktop
                                 </strong>
