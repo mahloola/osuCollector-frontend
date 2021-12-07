@@ -383,7 +383,7 @@ function DesktopClient({ user, setUser }) {
                                                     onClick={() => setAutorenewNoticeVisible(true)}
                                                 />
                                             }
-                                            {user?.private?.subscriptionExpiryDate._seconds &&
+                                            {user?.private?.subscriptionExpiryDate?._seconds &&
                                                 <small className='text-muted'>
                                                     {expiryEvent} on {moment.unix(user.private.subscriptionExpiryDate._seconds).format('MMMM Do YYYY')}
                                                 </small>
@@ -419,12 +419,12 @@ function DesktopClient({ user, setUser }) {
                 </svg>
 
 
-                <Modal show={alreadySubbedModalVisible} onHide={() => setAlreadySubbedModalVisible(false)} size='lg'>
+                <Modal show={alreadySubbedModalVisible} onHide={() => setAlreadySubbedModalVisible(false)} size='lg' centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Warning</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        It looks like you are already subbed to my twitch account.<br />
+                        It looks like you are already subbed to FunOrange&apos;s Twitch channel.<br />
                         Are you sure you would like to support us for an additional $1.99/month?
                     </Modal.Body>
                     <Modal.Footer>
@@ -434,7 +434,7 @@ function DesktopClient({ user, setUser }) {
                     </Modal.Footer>
                 </Modal>
 
-                <Modal show={alreadySubbedModalVisible} onHide={() => setAlreadySubbedModalVisible(false)} size='lg'>
+                <Modal show={alreadySubbedModalVisible} onHide={() => setAlreadySubbedModalVisible(false)} size='lg' centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Warning</Modal.Title>
                     </Modal.Header>
@@ -452,7 +452,7 @@ function DesktopClient({ user, setUser }) {
                     </Modal.Footer>
                 </Modal>
 
-                <Modal show={alreadyPaidModalVisible} onHide={() => setAlreadyPaidModalVisible(false)}>
+                <Modal show={alreadyPaidModalVisible} onHide={() => setAlreadyPaidModalVisible(false)} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Error</Modal.Title>
                     </Modal.Header>
@@ -466,7 +466,7 @@ function DesktopClient({ user, setUser }) {
                     </Modal.Footer>
                 </Modal>
 
-                <Modal show={cancelSubscriptionConfirmationVisible} onHide={() => setCancelSubscriptionConfirmationVisible(false)}>
+                <Modal show={cancelSubscriptionConfirmationVisible} onHide={() => setCancelSubscriptionConfirmationVisible(false)} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Confirmation</Modal.Title>
                     </Modal.Header>
@@ -492,7 +492,7 @@ function DesktopClient({ user, setUser }) {
                     </Modal.Footer>
                 </Modal>
 
-                <Modal show={changePaymentMethodVisible} onHide={() => setChangePaymentMethodVisible(false)}>
+                <Modal show={changePaymentMethodVisible} onHide={() => setChangePaymentMethodVisible(false)} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Changing Your Payment Method</Modal.Title>
                     </Modal.Header>
