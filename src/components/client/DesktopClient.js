@@ -157,8 +157,11 @@ function DesktopClient({ user, setUser }) {
                                 osu!Collector Desktop feature
                             </p>
                             <p className="lead text-secondary">
-                                Download all the beatmaps in a collection with one click<br />
-                                (download mirror provided by <a href='https://beatconnect.io/'>beatconnect.io</a>)
+                                Download all the beatmaps in a collection with one click.<br />
+                                <small>
+                                    Downloads are hosted on our own servers.<br/>
+                                    No rate limits, stupid fast download speeds.
+                                </small>
                             </p>
                         </div>
                     </div>
