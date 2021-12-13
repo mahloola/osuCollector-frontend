@@ -44,54 +44,56 @@ function CollectionCard({ collection }) {
         >
             <Card $lightbg className={`mx-3 ${hovered ? 'shadow' : 'shadow-sm'}`}>
                 <LinkContainer to={`/collections/${collection.id}`}>
-
-                    {/* Difficulty Spread Graph */}
-                    <GraphContainer className='px-0 pt-0 pb-1' variant='top'>
-                        <BarGraph
-                            data={[
-                                ['', '', { role: 'style' }],
-                                ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(star =>
-                                    [star.toString(), difficultySpread[star], starToColor(star, theme.darkMode)]
-                                )
-                            ]}
-                            height={80}
-                        />
-                    </GraphContainer>
-
+                    <a className='nostyle'>
+                        {/* Difficulty Spread Graph */}
+                        <GraphContainer className='px-0 pt-0 pb-1' variant='top'>
+                            <BarGraph
+                                data={[
+                                    ['', '', { role: 'style' }],
+                                    ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(star =>
+                                        [star.toString(), difficultySpread[star], starToColor(star, theme.darkMode)]
+                                    )
+                                ]}
+                                height={80}
+                            />
+                        </GraphContainer>
+                    </a>
                 </LinkContainer>
                 <LinkContainer to={`/collections/${collection.id}`}>
-                    <Card.Body className='collection-card-clickable pt-3'>
-                        <div className='d-flex justify-content-between align-items-top'>
-                            <div style={{ width: '100%' }}>
-                                <ModeCounters
-                                    collection={collection}
-                                    className='mb-3'
-                                />
+                    <a className='nostyle'>
+                        <Card.Body className='collection-card-clickable pt-3'>
+                            <div className='d-flex justify-content-between align-items-top'>
+                                <div style={{ width: '100%' }}>
+                                    <ModeCounters
+                                        collection={collection}
+                                        className='mb-3'
+                                    />
+                                    <Card.Title>
+                                        <Truncate lines={1}>
+                                            {collection.name}
+                                        </Truncate>
+                                    </Card.Title>
+                                </div>
                                 <Card.Title>
-                                    <Truncate lines={1}>
-                                        {collection.name}
-                                    </Truncate>
+                                    <div className='pt-0 d-flex align-items-center'>
+                                        <i className='fas fa-heart mr-2' style={{ color: heartColour }}></i>
+                                        <small> {collection.favourites} </small>
+                                    </div>
                                 </Card.Title>
                             </div>
-                            <Card.Title>
-                                <div className='pt-0 d-flex align-items-center'>
-                                    <i className='fas fa-heart mr-2' style={{ color: heartColour }}></i>
-                                    <small> {collection.favourites} </small>
-                                </div>
-                            </Card.Title>
-                        </div>
-                        <Card.Text>
-                            {collection.description ?
-                                <Truncate lines={1}>
-                                    {collection.description}
-                                </Truncate>
-                                :
-                                <small className='text-muted'>
-                                    <i>no description</i>
-                                </small>
-                            }
-                        </Card.Text>
-                    </Card.Body>
+                            <Card.Text>
+                                {collection.description ?
+                                    <Truncate lines={1}>
+                                        {collection.description}
+                                    </Truncate>
+                                    :
+                                    <small className='text-muted'>
+                                        <i>no description</i>
+                                    </small>
+                                }
+                            </Card.Text>
+                        </Card.Body>
+                    </a>
                 </LinkContainer>
                 <ListGroup className='list-group-flush'>
                     <ListGroupItem $lightbg>
