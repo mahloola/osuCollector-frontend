@@ -9,12 +9,12 @@ import UserCard from './UserCard'
 function Users() {
 
     const [userResults, setUserResults] = useState(null);
-    const [users, setUsers] = useState(new Array(18).fill(null));
+    const [users, setUsers] = useState(new Array(24).fill(null));
     const [error, setError] = useState(null);
 
     // get query params on initial page load
     useEffect(() => {
-        getUsers(1).then(_userResults => {
+        getUsers(1, 24).then(_userResults => {
             setUserResults(_userResults)
             setUsers(_userResults.users)
         })
@@ -23,7 +23,7 @@ function Users() {
 
     const loadMore = async () => {
         try {
-            const _userResults = await getUsers(userResults.nextPage)
+            const _userResults = await getUsers(userResults.nextPage, 24)
             setUserResults(_userResults)
             setUsers([...users, ..._userResults.users])
         } catch (err) {

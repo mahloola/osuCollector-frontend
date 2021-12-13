@@ -10,7 +10,7 @@ import './MapsetCard.css'
 import MapsetCard from './MapsetCard';
 import SortButton from '../common/SortButton';
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { bpmToColor, checkUserIsSubscribed, starToColor } from '../../utils/misc';
+import { bpmToColor, starToColor } from '../../utils/misc';
 import EditableTextbox from '../common/EditableTextbox';
 import { TrashFill, ExclamationTriangleFill } from 'react-bootstrap-icons';
 import styled, { ThemeContext } from 'styled-components';
@@ -400,7 +400,7 @@ function Collection({ user }) {
                                     {/* buttons */}
                                     <div className='d-flex flex-row mb-4'>
                                         <Button className='mr-1' onClick={() => {
-                                            if (checkUserIsSubscribed(user)) {
+                                            if (user?.paidFeaturesAccess) {
                                                 alert('Please use the osu!Collector desktop client to access this feature.')
                                             } else {
                                                 history.push('/client')
@@ -409,7 +409,7 @@ function Collection({ user }) {
                                             Download beatmaps
                                         </Button>
                                         <Button className='mx-1' onClick={() => {
-                                            if (checkUserIsSubscribed(user)) {
+                                            if (user?.paidFeaturesAccess) {
                                                 alert('Please use the osu!Collector desktop client to access this feature.')
                                             } else {
                                                 history.push('/client')

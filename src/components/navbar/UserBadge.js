@@ -4,18 +4,17 @@ import { Dropdown } from '../bootstrap-osu-collector';
 import Image from 'react-bootstrap/Image';
 import { LinkContainer } from 'react-router-bootstrap';
 import './UserBadge.css';
-import { checkUserIsSubscribed } from '../../utils/misc';
 
 const UserBadge = ({ className, user }) => {
     const [show, setShow] = useState(false)
 
     return (
         <Dropdown className='d-flex align-items-center'>
-            <div className={'user-badge ' + (checkUserIsSubscribed(user) ? 'user-badge-supporter ' : '') + className} onClick={() => {
+            <div className={'user-badge ' + (user?.paidFeaturesAccess ? 'user-badge-supporter ' : '') + className} onClick={() => {
                 setShow(!show)
             }}>
                 <Image className='avatar-img' src={user.osuweb.avatar_url + '/50x50'} roundedCircle />
-                <span>{user.osuweb.username}</span>
+                <span className='noselect'>{user.osuweb.username}</span>
             </div>
             <div className={`dropdown-menu ${show ? 'show' : ''}`}>
                 <LinkContainer to={`/users/${user.id}/uploads`}>

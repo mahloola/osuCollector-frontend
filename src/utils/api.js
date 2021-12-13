@@ -60,7 +60,6 @@ async function getCollectionBeatmaps(id, cursor = undefined, perPage = undefined
   }, cancelCallback)
 }
 
-// TODO: return value is garbage, don't use it
 // throws error on upload failure
 async function uploadCollections(collections) {
   const response = await fetch(`${config.get('API_HOST')}/api/collections/upload`, {
@@ -189,6 +188,48 @@ async function submitOtp(otp, y) {
   })
 }
 
+async function linkPaypalSubscription(subscriptionId) {
+  const endpoint = '/api/payments/paypalSubscription/link'
+  if (!subscriptionId) {
+    throw new Error('subscriptionId is required')
+  }
+  try {
+    const response = await axios.post(
+      config.get('API_HOST') + endpoint,
+      { subscriptionId: subscriptionId }
+    )
+    return response.data
+  } catch (err) {
+    throw new Error(`${endpoint} responded with ${err.response.status}: ${err.response.data}`)
+  }
+}
+
+async function getPaypalSubscription() {
+  const endpoint = '/api/payments/paypalSubscription'
+  try {
+    const response = await axios.get(config.get('API_HOST') + endpoint)
+    return response.data
+  } catch (err) {
+    if (err.response.status === 404) {
+      return null
+    } else {
+      console.log(`${endpoint} responded with ${err.response.status}: ${err.response.data}`)
+      return null
+    }
+  }
+}
+
+async function cancelPaypalSubscription() {
+  const endpoint = '/api/payments/paypalSubscription/cancel'
+  try {
+    await axios.post(config.get('API_HOST') + endpoint)
+  } catch (err) {
+    if (err.response.status !== 404) {
+      throw new Error(`${endpoint} responded with ${err.response.status}: ${JSON.stringify(err.response.data)}`)
+    }
+  }
+}
+
 async function createCustomer(email) {
   const response = await fetch(`${config.get('API_HOST')}/api/payments/createCustomer`, {
     method: 'POST',
@@ -215,14 +256,28 @@ async function createSubscription() {
     throw new Error(`/api/payments/createSubscription responded with ${response.status}: ${await response.text()}`)
 }
 
+async function getSubscription() {
+  try {
+    const response = await axios.get(`${config.get('API_HOST')}/api/payments/stripeSubscription`)
+    return response.data
+  } catch (err) {
+    if (err.response.status === 404) {
+      return null
+    } else {
+      console.log(`/api/payments/createSubscription responded with ${err.response.status}: ${err.response.data}`)
+      return null
+    }
+  }
+}
+
 async function cancelSubscription() {
-  const response = await fetch(`${config.get('API_HOST')}/api/payments/cancelSubscription`, {
-    method: 'POST'
-  })
-  if (response.status === 200)
-    return await response.json()
-  else
-    throw new Error(`/api/payments/cancelSubscription responded with ${response.status}: ${await response.text()}`)
+  const endpoint = '/api/payments/cancelSubscription'
+  try {
+    const response = await axios.post(config.get('API_HOST') + endpoint)
+    return response.data
+  } catch (err) {
+    throw new Error(`${endpoint} responded with ${err.response.status}: ${err.response.data}`)
+  }
 }
 
 async function unlinkTwitchAccount() {
@@ -256,7 +311,7 @@ async function postComment(collectionId, message) {
     throw new Error(`POST /api/collections/${collectionId}/comments responded with ${response.status}: ${await response.text()}`)
 }
 
-async function likeComment(collectionId, commentId, remove=false) {
+async function likeComment(collectionId, commentId, remove = false) {
   const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/comments/${commentId}/like`, {
     method: 'POST',
     headers: {
@@ -310,8 +365,12 @@ export {
   getUserUploads,
   getMetadata,
   submitOtp,
+  linkPaypalSubscription,
+  getPaypalSubscription,
+  cancelPaypalSubscription,
   createCustomer,
   createSubscription,
+  getSubscription,
   cancelSubscription,
   unlinkTwitchAccount,
   getInstallerURL,

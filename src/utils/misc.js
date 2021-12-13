@@ -55,17 +55,6 @@ const starToColor = (star, darkMode = false) => {
     return darkMode ? '#fff' : '#000000'
 }
 
-const checkUserIsSubscribed = user => {
-    if (!user) {
-        return false
-    }
-    const userIsSubscribed = user.isSubbedToFunOrange || new Date(user.private?.subscriptionExpiryDate?._seconds * 1000) > new Date()
-    if (!userIsSubscribed) {
-        return false
-    }
-    return true
-}
-
 const useFallbackImg = (ev, fallbackImg) => {
     if (ev.target.src === fallbackImg) {
         return
@@ -80,6 +69,5 @@ export {
     clamp,
     bpmToColor,
     starToColor,
-    checkUserIsSubscribed,
     useFallbackImg
 }

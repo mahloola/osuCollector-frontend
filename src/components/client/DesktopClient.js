@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Badge from 'react-bootstrap/Badge'
 import { LinkContainer } from 'react-router-bootstrap'
-import Modal from 'react-bootstrap/Modal'
 import * as api from '../../utils/api'
 import { useHistory } from 'react-router'
 import { Button, Card, CardBody, Col, Container, Row, Spinner } from '../bootstrap-osu-collector'
@@ -9,8 +8,10 @@ import downloadsPng from './downloads.png'
 import importPng from './import.png'
 import darkmodePng from './darkmode.png'
 import styled from 'styled-components'
-import { ExclamationTriangleFill, HeartFill } from 'react-bootstrap-icons'
-import moment from 'moment'
+import { HeartFill } from 'react-bootstrap-icons'
+import { PayPalButtons } from "@paypal/react-paypal-js"
+import { Alert } from 'react-bootstrap'
+import SubscriptionDetailsModal from './SubscriptionDetailsModal'
 
 const downloadInstaller = async () => {
     try {
@@ -21,17 +22,20 @@ const downloadInstaller = async () => {
     }
 }
 
-const paidSubscriptionStatus = (user) => {
-    if (!user?.private?.subscriptionExpiryDate) {
-        return 'Inactive'
+const paidSubscriptionActive = (user, paypalSubscription, stripeSubscription) => {
+    if (user?.private?.subscriptionExpiryDate) {
+        const subscriptionExpiryDate = new Date(user.private.subscriptionExpiryDate._seconds * 1000)
+        if (subscriptionExpiryDate > new Date()) {
+            return true
+        }
     }
-    const subscriptionExpiryDate = new Date(user.private.subscriptionExpiryDate._seconds * 1000)
-    if (subscriptionExpiryDate > new Date()) {
-        // const renewOrEnd = user?.private?.stripeSubscriptionId ? 'auto-renews' : 'ends'
-        return 'Active'
-    } else {
-        return 'Inactive'
+    if (paypalSubscription?.status.toLowerCase() === 'active') {
+        return true
     }
+    if (stripeSubscription?.status.toLowerCase() === 'active') {
+        return true
+    }
+    return false
 }
 
 const offsetX = 3
@@ -53,41 +57,37 @@ const ShadowHeart = styled(HeartFill)`
 function DesktopClient({ user, setUser }) {
     const history = useHistory()
 
-    // Buy now
-    const [alreadySubbedModalVisible, setAlreadySubbedModalVisible] = useState(false)
-    const [alreadyPaidModalVisible, setAlreadyPaidModalVisible] = useState(false)
-    const buyNowClicked = () => {
-        if (paidSubscriptionStatus(user).includes('Active')) {
-            setAlreadyPaidModalVisible(true)
-        } else if (user?.isSubbedToFunOrange) {
-            setAlreadySubbedModalVisible(true)
-        } else {
-            history.push('/payments/checkout')
+    const [paypalError, setPaypalError] = useState(null)
+
+    const [paypalSubscription, setPaypalSubscription] = useState(null)
+    const onPaypalSubscriptionCancel = async () => {
+        setUser(await api.getOwnUser())
+        if (user?.private?.paypalSubscriptionId) {
+            setPaypalSubscription(await api.getPaypalSubscription(user?.private?.paypalSubscriptionId))
         }
     }
 
-    // Cancel Subscription
-    const [cancelSubscriptionConfirmationVisible, setCancelSubscriptionConfirmationVisible] = useState(false)
-    const [cancellingSubscription, setCancellingSubscription] = useState(false)
-    const cancelSubscription = async () => {
-        setCancellingSubscription(true)
-
-        try {
-            const result = await api.cancelSubscription()
-            console.log(result)
-        } catch (err) {
-            alert(err.message)
+    const [stripeSubscription, setStripeSubscription] = useState(null)
+    const onStripeSubscriptionCancel = async () => {
+        setUser(await api.getOwnUser())
+        if (user?.private?.stripeSubscriptionId) {
+            setStripeSubscription(await api.getSubscription(user?.private?.stripeSubscriptionId))
         }
-        const data = await api.getOwnUser()
-        setUser(data)
-        console.log(data)
-
-        setCancellingSubscription(false)
-        setCancelSubscriptionConfirmationVisible(false)
     }
 
-    // Change Payment Method
-    const [changePaymentMethodVisible, setChangePaymentMethodVisible] = useState(false)
+    useEffect(async () => {
+        if (!user || paypalSubscription || stripeSubscription) {
+            return
+        }
+        if (user?.private?.paypalSubscriptionId) {
+            setPaypalSubscription(await api.getPaypalSubscription(user?.private?.paypalSubscriptionId))
+        }
+        if (user?.private?.stripeSubscriptionId) {
+            setStripeSubscription(await api.getSubscription(user?.private?.stripeSubscriptionId))
+        }
+    }, [user])
+
+    const [paymentModalVisible, setPaymentModalVisible] = useState(false)
 
     // Unlink Twitch
     const [unlinkingTwitchAccount, setUnlinkingTwitchAccount] = useState(false)
@@ -107,16 +107,14 @@ function DesktopClient({ user, setUser }) {
         setUnlinkingTwitchAccount(false)
     }
 
-    // auto renew notice
-    const [autorenewNoticeVisible, setAutorenewNoticeVisible] = useState(false)
-
     // Current Status
     const linkedTwitchAccountStatus = user?.private?.linkedTwitchAccount?.displayName || 'Not linked'
     const twitchSubStatus = user?.isSubbedToFunOrange ? 'Subbed' : 'Not subbed'
-    const userIsSubscribed = user?.isSubbedToFunOrange || new Date(user?.private?.subscriptionExpiryDate?._seconds * 1000) > new Date()
-    const expiryEvent = (Date.now() / 1000) > user?.private?.subscriptionExpiryDate?._seconds ? 'Ended' :
-        user?.private?.stripeSubscriptionId ? 'Renews' :
-            'Ends'
+
+    const twitchSub = user?.isSubbedToFunOrange
+    const paidSub = paidSubscriptionActive(user, paypalSubscription, stripeSubscription)
+
+    console.log(stripeSubscription)
 
     const Divider = () => (
         <div style={{
@@ -159,7 +157,7 @@ function DesktopClient({ user, setUser }) {
                             <p className="lead text-secondary">
                                 Download all the beatmaps in a collection with one click.<br />
                                 <small>
-                                    Downloads are hosted on our own servers.<br/>
+                                    Downloads are hosted on our own servers.<br />
                                     No rate limits, stupid fast download speeds.
                                 </small>
                             </p>
@@ -230,15 +228,15 @@ function DesktopClient({ user, setUser }) {
                         </Card.Title>
                         <Card.Subtitle>
                             <Button
-                                disabled={!userIsSubscribed}
-                                variant={userIsSubscribed ? 'primary' : 'outline-secondary'}
+                                disabled={!user?.paidFeaturesAccess}
+                                variant={user?.paidFeaturesAccess ? 'primary' : 'outline-secondary'}
                                 className='mr-2 my-2'
                                 onClick={downloadInstaller}
                             >
                                 Windows (64-bit)
                             </Button>
                             <br />
-                            {userIsSubscribed ? 'Thank you for supporting us! You are awesome.' : 'Please support us to gain access to the desktop client.'}
+                            {user?.paidFeaturesAccess ? 'Thank you for supporting us! You are awesome.' : 'Please support us to gain access to the desktop client.'}
                         </Card.Subtitle>
                     </CardBody>
                 </Card>
@@ -249,7 +247,7 @@ function DesktopClient({ user, setUser }) {
                     If you want to save money we recommend doing only 1 option.
                 </p>
                 <Row>
-                    <Col>
+                    <Col md={12} lg={6}>
                         <Card className='shadow mb-4'>
                             <CardBody>
                                 <Card.Title>
@@ -288,20 +286,69 @@ function DesktopClient({ user, setUser }) {
                             </CardBody>
                         </Card>
                     </Col>
-                    <Col>
+                    <Col md={12} lg={6}>
                         <Card className='shadow mb-4'>
                             <CardBody>
                                 <Card.Title>
                                     Option 2
                                 </Card.Title>
                                 <Card.Subtitle>
+                                    {!user ?
+                                        <Alert variant='warning' className='mt-4 mx-3 py-2 text-center'><small>You are not logged in</small></Alert>
+                                        : paidSub ?
+                                            <Alert variant='success' className='mt-4 mx-3 py-2 text-center'><small>You already have a paid subscription</small></Alert>
+                                            : twitchSub &&
+                                            <Alert variant='warning' className='mt-4 mx-3 py-2 text-center'><small>You are already subbed to FunOrange&apos;s Twitch channel!</small></Alert>
+                                    }
+                                    {paypalError &&
+                                        <Alert variant='danger' className='mt-4 mx-3 py-2 text-center'>
+                                            <small>
+                                                {paypalError.message}
+                                            </small>
+                                        </Alert>
+                                    }
                                     <Card className='shadow-sm p-3 mx-3 my-4'>
                                         <p>Purchase the desktop client for $1.99 per month</p>
-                                        {user ?
-                                            <Button onClick={buyNowClicked} variant='outline-primary'>Buy now!</Button>
-                                            :
-                                            <Button disabled variant='outline-secondary'>You are not logged in</Button>
-                                        }
+                                        <PayPalButtons
+                                            style={{
+                                                shape: 'rect',
+                                                color: 'gold',
+                                                height: 46,
+                                                layout: 'vertical'
+                                            }}
+                                            disabled={!user || paidSub}
+                                            fundingSource='paypal'
+                                            createSubscription={(data, actions) => {
+                                                return actions.subscription.create({
+                                                    plan_id: 'P-5DC05698WC351562JMGZFV6Y' // production: $1.99 per month
+                                                    // plan_id: 'P-1YN01180390590643MGZNV3Y' // test: $0.05 per day
+                                                })
+                                            }}
+                                            // eslint-disable-next-line no-unused-vars
+                                            onApprove={async (data, actions) => {
+                                                await api.linkPaypalSubscription(data.subscriptionID)
+                                                history.push('/payments/success')
+                                            }}
+                                            onError={error => {
+                                                console.error(error)
+                                                setPaypalError(error)
+                                            }}
+                                        />
+                                        <div className='d-flex my-2'>
+                                            <hr className='flex-fill' />
+                                            <span className='mx-3 my-1 text-muted'>Or pay with card</span>
+                                            <hr className='flex-fill' />
+                                        </div>
+                                        <LinkContainer to='/payments/checkout'>
+                                            <Button
+                                                variant='outline-primary'
+                                                disabled={!user || paidSub}
+                                            >
+                                                <p className='my-1'>
+                                                    Pay with credit card
+                                                </p>
+                                            </Button>
+                                        </LinkContainer>
                                     </Card>
                                 </Card.Subtitle>
                             </CardBody>
@@ -312,13 +359,15 @@ function DesktopClient({ user, setUser }) {
                 <Card className='shadow-sm my-5'>
                     <CardBody>
                         <Card.Title>
-                            Current Status
+                            <h5 id='status'>
+                                Current status
+                            </h5>
                         </Card.Title>
                         <Card.Subtitle>
-                            <p>You are <strong>{!userIsSubscribed && 'not'} currently supporting</strong> osu!Collector.</p>
+                            <p>You are <strong>{!user?.paidFeaturesAccess && 'not'} currently supporting</strong> osu!Collector.</p>
                             <Row>
-                                <Col xs={6}>
-                                    <Card className='shadow-sm p-3'>
+                                <Col md={12} lg={6}>
+                                    <Card className='shadow-sm p-3 mb-4'>
                                         <div className='mb-2 d-flex justify-content-start align-items-center'>
                                             <div className='text-right mr-3' style={{ minWidth: 120 }}>
                                                 Twitch account
@@ -361,46 +410,21 @@ function DesktopClient({ user, setUser }) {
                                         }
                                     </Card>
                                 </Col>
-                                <Col xs={6}>
-                                    <Card className='shadow-sm p-3'>
-                                        <div className='d-flex justify-content-start align-items-center'>
+                                <Col md={12} lg={6}>
+                                    <Card className='shadow-sm p-3 mb-2'>
+                                        <div className='mb-3 d-flex justify-content-start align-items-center'>
                                             <div className='text-right mr-3'>
                                                 Paid Subscription
                                             </div>
                                             <Badge
-                                                variant={
-                                                    paidSubscriptionStatus(user) === 'Active' ?
-                                                        'success'
-                                                        : paidSubscriptionStatus(user) === 'Active*' ?
-                                                            'warning'
-                                                            :
-                                                            'secondary'}
+                                                variant={ paidSubscriptionActive(user, paypalSubscription, stripeSubscription) ? 'success' : 'secondary' }
                                                 className='py-1 px-2 mr-3'
                                             >
-                                                {paidSubscriptionStatus(user)}
+                                                {paidSubscriptionActive(user, paypalSubscription, stripeSubscription) ? 'Active' : 'Inactive'}
                                             </Badge>
-                                            {user?.private?.stripeSubscriptionId && paidSubscriptionStatus(user) === 'Inactive' &&
-                                                <ExclamationTriangleFill
-                                                    className='mr-2'
-                                                    style={{ color: '#ffd966', cursor: 'pointer' }}
-                                                    onClick={() => setAutorenewNoticeVisible(true)}
-                                                />
-                                            }
-                                            {user?.private?.subscriptionExpiryDate?._seconds &&
-                                                <small className='text-muted'>
-                                                    {expiryEvent} on {moment.unix(user.private.subscriptionExpiryDate._seconds).format('MMMM Do YYYY')}
-                                                </small>
-                                            }
                                         </div>
-                                        {user?.private?.stripeSubscriptionId &&
-                                            <div className='mt-3 d-flex justify-content-start'>
-                                                <Col xs='auto' className='pl-0'>
-                                                    <Button onClick={() => setChangePaymentMethodVisible(true)} size='sm' variant='outline-secondary'>Change payment method</Button>
-                                                </Col>
-                                                <Col xs='auto' className='pl-0'>
-                                                    <Button onClick={() => setCancelSubscriptionConfirmationVisible(true)} size='sm' variant='outline-danger'>Cancel Subscription</Button>
-                                                </Col>
-                                            </div>
+                                        {(user?.private?.paypalSubscriptionId || user?.private?.stripeSubscriptionId) &&
+                                            <Button onClick={() => setPaymentModalVisible(true)} size='sm' variant='outline-secondary'>Show details</Button>
                                         }
                                     </Card>
                                 </Col>
@@ -408,6 +432,9 @@ function DesktopClient({ user, setUser }) {
                         </Card.Subtitle>
                     </CardBody>
                 </Card>
+
+
+
                 <svg height="0" xmlns="http://www.w3.org/2000/svg">
                     <filter id="drop-shadow">
                         <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
@@ -421,109 +448,16 @@ function DesktopClient({ user, setUser }) {
                     </filter>
                 </svg>
 
-
-                <Modal show={alreadySubbedModalVisible} onHide={() => setAlreadySubbedModalVisible(false)} size='lg' centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Warning</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        It looks like you are already subbed to FunOrange&apos;s Twitch channel.<br />
-                        Are you sure you would like to support us for an additional $1.99/month?
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant='secondary' onClick={() => setAlreadySubbedModalVisible(false)}>
-                            Ok
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
-                <Modal show={alreadySubbedModalVisible} onHide={() => setAlreadySubbedModalVisible(false)} size='lg' centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Warning</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        It looks like you are already subbed to my twitch account.<br />
-                        Are you sure you would like to support us for an additional $1.99/month?
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant='secondary' onClick={() => setAlreadySubbedModalVisible(false)}>
-                            No
-                        </Button>
-                        <LinkContainer to='/payments/checkout'>
-                            <Button> Yes </Button>
-                        </LinkContainer>
-                    </Modal.Footer>
-                </Modal>
-
-                <Modal show={alreadyPaidModalVisible} onHide={() => setAlreadyPaidModalVisible(false)} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Error</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        It looks like you are already have an active paid subscription.
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant='secondary' onClick={() => setAlreadyPaidModalVisible(false)}>
-                            Okay
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
-                <Modal show={cancelSubscriptionConfirmationVisible} onHide={() => setCancelSubscriptionConfirmationVisible(false)} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirmation</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Are you sure you would like to cancel your subscription?</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant='secondary' onClick={() => setCancelSubscriptionConfirmationVisible(false)}>
-                            No
-                        </Button>
-                        <Button style={{ width: 240 }} variant='danger' onClick={cancelSubscription}>
-                            {cancellingSubscription ?
-                                <>
-                                    <Spinner
-                                        className='mr-2'
-                                        as='span'
-                                        animation='grow'
-                                        size='sm'
-                                        role='status'
-                                        aria-hidden='true' />
-                                    Processing...
-                                </>
-                                : 'Yes, cancel my subscription'}
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
-                <Modal show={changePaymentMethodVisible} onHide={() => setChangePaymentMethodVisible(false)} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Changing Your Payment Method</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>If you would like to change payment method, please cancel your existing subscription, then subscribe with a new payment method once the old subscription ends.</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant='secondary' onClick={() => setChangePaymentMethodVisible(false)}>
-                            Ok
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
-                <Modal show={autorenewNoticeVisible} onHide={() => setAutorenewNoticeVisible(false)} centered>
-                    <Modal.Body>
-                        We are currently experiencing an issue where subscriptions are not auto-renewing.
-                        <br/><br/>
-                        Customers who created a subscription before December 7th are affected by this issue.
-                        <br/><br/>
-                        If your subscription is over and has not auto-renewed, you can click Cancel Subscription,
-                        and then create a new subscription by clicking Buy Now! and checking out as before.
-                        <br/><br/>
-                        We are very sorry for the inconvenience.
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant='secondary' onClick={() => setAutorenewNoticeVisible(false)}>
-                            Ok
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                <SubscriptionDetailsModal
+                    user={user}
+                    setUser={setUser}
+                    show={paymentModalVisible}
+                    onHide={() => setPaymentModalVisible(false)}
+                    paypalSubscription={paypalSubscription}
+                    stripeSubscription={stripeSubscription}
+                    onPaypalSubscriptionCancel={onPaypalSubscriptionCancel}
+                    onStripeSubscriptionCancel={onStripeSubscriptionCancel}
+                />
 
             </Container>
         </div>

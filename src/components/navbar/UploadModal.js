@@ -21,7 +21,6 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
         console.log(file);
         let reader = new FileReader();
         reader.onload = async () => {
-            console.log('reader');
             setLocalCollections(parseCollectionDb(reader.result));
             console.log('collections', localCollections);
         }
