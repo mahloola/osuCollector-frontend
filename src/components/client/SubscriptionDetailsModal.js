@@ -67,7 +67,7 @@ function SubscriptionDetailsModal({
             paypalSubscription?.status.toLowerCase() === 'active' ? 'Renews' :
                 'Ends'
 
-    const stripeEndDate = ['canceled', 'past_due'].includes(stripeSubscription?.status) ?
+    const stripeEndDate = ['canceled', 'past_due', 'incomplete', 'incomplete_expired'].includes(stripeSubscription?.status) ?
         new Date(user?.private?.subscriptionExpiryDate?._seconds * 1000)
         : new Date(stripeSubscription?.current_period_end * 1000)
     const stripeEndDateVerb =
@@ -143,7 +143,7 @@ function SubscriptionDetailsModal({
                             }
                             subscriptionObject={stripeSubscription}
                             cancelSubscriptionApiCall={api.cancelSubscription}
-                            canCancelSubscription={['active', 'past_due', 'unpaid'].includes(stripeSubscription.status.toLowerCase()) && !stripeSubscription.cancel_at_period_end}
+                            canCancelSubscription={stripeSubscription.status.toLowerCase() !== 'canceled' && !stripeSubscription.cancel_at_period_end}
                             onSubscriptionCancel={onStripeSubscriptionCancel}
                             specialStatusIndicator={
                                 stripeSubscription?.status === 'past_due' && (new Date(stripeSubscription.created * 1000)) < new Date('2021-12-13T17:12:10+00:00') &&
@@ -233,7 +233,7 @@ const SubscriptionDetails = ({
                 </div>
                 <div className='w-50'>
                     <div><small className='text-muted'>{endDateVerb} on</small></div>
-                    <div>{moment(endDate).format('MMMM Do, YYYY')}</div>
+                    <div>{endDate ? moment(endDate).format('MMMM Do, YYYY') : '---'}</div>
                 </div>
             </div>
             <hr />
