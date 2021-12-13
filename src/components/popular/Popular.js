@@ -7,7 +7,7 @@ import CollectionList from '../common/CollectionList';
 
 function Popular() {
 
-    const [range, setRange] = useState('alltime')
+    const [range, setRange] = useState(null)
     const [collectionPage, setCollectionPage] = useState(null)
     const [collections, setCollections] = useState(new Array(18).fill(null))
     const query = useQuery()
@@ -15,12 +15,13 @@ function Popular() {
 
     useEffect(() => {
         const queryParamRange = query.get('range')
-        if (queryParamRange) {
-            setRange(queryParamRange)
-        }
+        setRange(queryParamRange || 'alltime')
     }, [])
 
     useEffect(() => {
+        if (!range) {
+            return
+        }
         // retrieve the first page of results after date range is changed
         getPopularCollections(range, undefined, 18).then(_collectionPage => {
             setCollectionPage(_collectionPage)
