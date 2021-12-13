@@ -14,11 +14,12 @@ function Users() {
 
     // get query params on initial page load
     useEffect(() => {
-        getUsers(1, 24).then(_userResults => {
+        let cancel
+        getUsers(1, 24, c => cancel = c).then(_userResults => {
             setUserResults(_userResults)
             setUsers(_userResults.users)
-        })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }).catch(console.log)
+        return cancel
     }, [])
 
     const loadMore = async () => {

@@ -10,14 +10,12 @@ function Recent() {
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        getRecentCollections(undefined, 18)
-            .then(_collectionPage => {
-                setCollectionPage(_collectionPage)
-                setCollections(_collectionPage.collections)
-            })
-            .catch(err => {
-                setError(err)
-            })
+        let cancel
+        getRecentCollections(undefined, 18, c => cancel = c).then(_collectionPage => {
+            setCollectionPage(_collectionPage)
+            setCollections(_collectionPage.collections)
+        }).catch(console.log)
+        return cancel
     }, [])
 
     const loadMore = async () => {

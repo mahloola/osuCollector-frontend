@@ -75,15 +75,20 @@ function DesktopClient({ user, setUser }) {
         }
     }
 
-    useEffect(async () => {
+    useEffect(() => {
         if (!user || paypalSubscription || stripeSubscription) {
             return
         }
+        let cancel1, cancel2
         if (user?.private?.paypalSubscriptionId) {
-            setPaypalSubscription(await api.getPaypalSubscription(user?.private?.paypalSubscriptionId))
+            api.getPaypalSubscription(c => cancel1 = c).then(setPaypalSubscription).catch(console.log)
         }
         if (user?.private?.stripeSubscriptionId) {
-            setStripeSubscription(await api.getSubscription(user?.private?.stripeSubscriptionId))
+            api.getSubscription(c => cancel2 = c).then(setStripeSubscription).catch(console.log)
+        }
+        return () => {
+            if (cancel1) cancel1()
+            if (cancel2) cancel2()
         }
     }, [user])
 

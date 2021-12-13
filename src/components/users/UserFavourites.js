@@ -33,13 +33,12 @@ function UserFavourites() {
     // run this code when page changes
     useEffect(() => {
         if (!user)
-            return;
-        getUserFavourites(user.id)
-            .then(collections => {
-                setCollections(collections);
-            }).catch(err => {
-                console.log('Unable to fetch collections: ', err);
-            });
+            return
+        let cancel
+        getUserFavourites(user.id, c => cancel = c).then(collections => {
+            setCollections(collections)
+        })
+        return cancel
     }, [user])
 
     return (

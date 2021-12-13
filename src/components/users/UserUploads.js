@@ -32,13 +32,12 @@ function UserUploads() {
     // get collections when user changes
     useEffect(() => {
         if (!user)
-            return;
-        api.getUserUploads(user.id)
-            .then(collections => {
-                setCollections(collections);
-            }).catch(err => {
-                console.log('Unable to fetch collections: ', err);
-            });
+            return
+        let cancel
+        api.getUserUploads(user.id, c => cancel = c).then(collections => {
+            setCollections(collections)
+        }).catch(console.log)
+        return cancel
     }, [user])
 
     return (

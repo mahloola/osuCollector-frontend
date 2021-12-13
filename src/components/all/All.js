@@ -57,9 +57,7 @@ function All({ searchText, setSearchText }) {
                 qs.push(`orderBy=${queryOpts.orderBy}`)
             }
             history.push(`/all?${qs.join('&')}`)
-        }).catch(err => {
-            console.log('Unable to fetch collections: ', err);
-        })
+        }).catch(console.log)
         return cancel
     }, [searchText, queryOpts])
 

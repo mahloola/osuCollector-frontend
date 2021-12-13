@@ -14,13 +14,19 @@ function Home() {
     const [recent, setRecent] = useState(new Array(3).fill(null));
 
     useEffect(async () => {
-        setMetadata(await api.getMetadata());
-        api.getPopularCollections('week', 1, 6).then(paginatedCollectionData => {
+        let cancel1, cancel2, cancel3
+        api.getMetadata(c => cancel1 = c).then(setMetadata).catch(console.log)
+        api.getPopularCollections('week', 1, 6, c => cancel2 = c).then(paginatedCollectionData => {
             setPopular(paginatedCollectionData.collections)
-        })
-        api.getRecentCollections(1, 9).then(paginatedCollectionData => {
+        }).catch(console.log)
+        api.getRecentCollections(1, 9, c => cancel3 = c).then(paginatedCollectionData => {
             setRecent(paginatedCollectionData.collections)
-        })
+        }).catch(console.log)
+        return () => {
+            if (cancel1) cancel1()
+            if (cancel2) cancel2()
+            if (cancel3) cancel3()
+        }
     }, [])
 
     return (

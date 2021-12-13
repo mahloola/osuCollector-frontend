@@ -81,19 +81,18 @@ function Collection({ user }) {
     }
 
     // run this code on initial load
-    const refreshCollection = () => {
+    const refreshCollection = (cancelCallback = undefined) => {
         // GET collection
-        api.getCollection(id).then(collection => {
+        api.getCollection(id, cancelCallback).then(collection => {
             setCollection(collection)
             setFavourited(collection.favouritedByUser)
             setFavourites(collection.favourites)
-        }).catch(err => {
-            console.log('Unable to fetch collection: ', err)
-            setCollection(null)
-        });
+        }).catch(console.log)
     }
     useEffect(() => {
-        refreshCollection()
+        let cancel
+        refreshCollection(c => cancel = c)
+        return cancel
     }, [])
 
     useEffect(() => {
@@ -112,9 +111,7 @@ function Collection({ user }) {
         ).then(_beatmapPage => {
             setBeatmapPage(_beatmapPage)
             setBeatmaps(_beatmapPage.beatmaps)
-        }).catch(err => {
-            console.log('Unable to fetch beatmaps: ', err)
-        })
+        }).catch(console.log)
         return cancel
     }, [queryOpts])
 

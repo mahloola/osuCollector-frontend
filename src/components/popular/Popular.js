@@ -23,21 +23,12 @@ function Popular() {
             return
         }
         // retrieve the first page of results after date range is changed
-        getPopularCollections(range, undefined, 18).then(_collectionPage => {
+        let cancel
+        getPopularCollections(range, undefined, 18, c => cancel = c).then(_collectionPage => {
             setCollectionPage(_collectionPage)
             setCollections(_collectionPage.collections)
-        })
-            .catch(err => {
-                console.log('Unable to fetch popular collections: ', err)
-                // An error occurred with the server. Please try refreshing the page
-                getPopularCollections(range, undefined, 18).then(_collectionPage => {
-                    setCollectionPage(_collectionPage)
-                    setCollections(_collectionPage.collections)
-                })
-                    .catch(err => {
-                        console.log('Unable to fetch popular collections: ', err)
-                    })
-            })
+        }).catch(console.log)
+        return cancel
     }, [range])
 
     const loadMore = async () => {

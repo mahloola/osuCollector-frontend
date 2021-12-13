@@ -204,10 +204,12 @@ async function linkPaypalSubscription(subscriptionId) {
   }
 }
 
-async function getPaypalSubscription() {
+async function getPaypalSubscription(cancelCallback = undefined) {
   const endpoint = '/api/payments/paypalSubscription'
   try {
-    const response = await axios.get(config.get('API_HOST') + endpoint)
+    const response = await axios.get(config.get('API_HOST') + endpoint, {
+      cancelToken: cancelCallback ? new axios.CancelToken(cancelCallback) : undefined
+    })
     return response.data
   } catch (err) {
     if (err.response.status === 404) {
@@ -256,9 +258,11 @@ async function createSubscription() {
     throw new Error(`/api/payments/createSubscription responded with ${response.status}: ${await response.text()}`)
 }
 
-async function getSubscription() {
+async function getSubscription(cancelCallback = undefined) {
   try {
-    const response = await axios.get(`${config.get('API_HOST')}/api/payments/stripeSubscription`)
+    const response = await axios.get(`${config.get('API_HOST')}/api/payments/stripeSubscription`, {
+      cancelToken: cancelCallback ? new axios.CancelToken(cancelCallback) : undefined
+    })
     return response.data
   } catch (err) {
     if (err.response.status === 404) {
