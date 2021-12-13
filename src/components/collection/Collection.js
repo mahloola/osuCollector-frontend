@@ -68,11 +68,11 @@ function Collection({ user }) {
     const [favourites, setFavourites] = useState(false)
     const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
 
-    const onPlayClick = beatmapsetId => {
-        if (currentlyPlaying === beatmapsetId) {
+    const onPlayClick = index => {
+        if (currentlyPlaying === index) {
             setCurrentlyPlaying(null)
         } else {
-            setCurrentlyPlaying(beatmapsetId)
+            setCurrentlyPlaying(index)
         }
     }
 
@@ -548,9 +548,9 @@ function Collection({ user }) {
                         }
                         className='row'
                     >
-                        {listing.map(({ beatmapset, beatmaps }, i) =>
+                        {listing.map(({ beatmapset, beatmaps }, index) =>
                             <ReactPlaceholder
-                                key={i}
+                                key={index}
                                 ready={beatmapPage}
                                 showLoadingAnimation
                                 type='rect'
@@ -568,8 +568,8 @@ function Collection({ user }) {
                                     className='mb-4'
                                     beatmapset={beatmapset}
                                     beatmaps={beatmaps}
-                                    playing={currentlyPlaying === beatmapset?.id}
-                                    onPlayClick={() => onPlayClick(beatmapset?.id)}
+                                    playing={currentlyPlaying === index}
+                                    onPlayClick={() => onPlayClick(index)}
                                     onAudioEnd={onAudioEnd}
                                 />
                             </ReactPlaceholder>
