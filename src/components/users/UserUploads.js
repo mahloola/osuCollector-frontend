@@ -3,42 +3,44 @@ import { Card, Container, Image } from '../bootstrap-osu-collector';
 import CollectionList from '../common/CollectionList';
 import * as api from '../../utils/api'
 import ReactPlaceholder from 'react-placeholder/lib';
+import { addFavouritedByUserAttribute } from 'utils/helpers';
 
-function UserUploads() {
+function UserUploads({ user, setUser }) {
 
-    const [user, setUser] = useState(null);
+    const [pageUser, setPageUser] = useState(null);
     const [collections, setCollections] = useState(new Array(3).fill(null));
 
     // run this code on initial page load
-    useEffect(async () => {
+    useEffect(() => {
+        (async () => {
+            // get user id from path, eg. /users/123/uploads
+            const match = window.location.pathname.match(/\/users\/(\d+)\/uploads/g)
+            if (!match) {
+                alert('User not found.')
+                return
+            }
+            const userId = Number(match[0].replace('/users/', '').replace('/uploads', '').trim())
 
-        // get user id from path, eg. /users/123/uploads
-        const match = window.location.pathname.match(/\/users\/(\d+)\/uploads/g)
-        if (!match) {
-            alert('User not found.')
-            return
-        }
-        const userId = Number(match[0].replace('/users/', '').replace('/uploads', '').trim())
-
-        // get user from database
-        const user = await api.getUser(userId)
-        if (user)
-            setUser(user)
-        else
-            alert(`user with id ${userId} not found`)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+            // get user from database
+            const user = await api.getUser(userId)
+            if (user)
+                setPageUser(user)
+            else
+                alert(`user with id ${userId} not found`)
+        })()
     }, [])
 
     // get collections when user changes
     useEffect(() => {
-        if (!user)
+        if (!pageUser)
             return
         let cancel
-        api.getUserUploads(user.id, c => cancel = c).then(collections => {
+        api.getUserUploads(pageUser.id, c => cancel = c).then(collections => {
+            addFavouritedByUserAttribute(collections, user)
             setCollections(collections)
         }).catch(console.log)
         return cancel
-    }, [user])
+    }, [pageUser])
 
     return (
         <Container className='pt-4'>
@@ -47,7 +49,7 @@ function UserUploads() {
                     <div className='ml-2'>
                         <div className="d-flex justify-content-left align-items-center p-2 pb-0 mb-2" >
                             <ReactPlaceholder
-                                ready={user}
+                                ready={pageUser}
                                 showLoadingAnimation
                                 type='round'
                                 className='mr-3'
@@ -55,7 +57,7 @@ function UserUploads() {
                             >
                                 <Image
                                     className='mr-3 border border-light shadow-sm'
-                                    src={`https://a.ppy.sh/${user?.id}`}
+                                    src={`https://a.ppy.sh/${pageUser?.id}`}
                                     roundedCircle
                                     style={{
                                         width: '48px',
@@ -64,12 +66,12 @@ function UserUploads() {
                                 />
                             </ReactPlaceholder>
                             <ReactPlaceholder
-                                ready={user}
+                                ready={pageUser}
                                 showLoadingAnimation
                                 type='rect'
                                 style={{ width: '300px', height: '40px' }}
                             >
-                                <h1 className='mb-0'> {user?.osuweb?.username}&apos;s Uploads </h1>
+                                <h1 className='mb-0'> {pageUser?.osuweb?.username}&apos;s Uploads </h1>
                             </ReactPlaceholder>
                         </div>
                         <ReactPlaceholder
@@ -84,8 +86,11 @@ function UserUploads() {
                     </div>
                     <CollectionList
                         collections={collections}
+                        setCollections={setCollections}
                         hasMore={false}
                         loadMore={() => 0}
+                        user={user}
+                        setUser={setUser}
                     />
                 </Card.Body>
             </Card>

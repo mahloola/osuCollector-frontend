@@ -7,33 +7,54 @@ import "react-placeholder/lib/reactPlaceholder.css";
 import CollectionCard from '../common/CollectionCard';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Alert } from 'react-bootstrap';
+import { addFavouritedByUserAttribute, changeCollectionFavouritedStatus } from 'utils/helpers';
+import { Discord } from 'react-bootstrap-icons';
 
-function Home() {
+function Home({ user, setUser }) {
     const [metadata, setMetadata] = useState(null);
     const [popular, setPopular] = useState(new Array(6).fill(null));
     const [recent, setRecent] = useState(new Array(3).fill(null));
 
-    useEffect(async () => {
-        let cancel1, cancel2, cancel3
-        api.getMetadata(c => cancel1 = c).then(setMetadata).catch(console.log)
-        api.getPopularCollections('week', 1, 6, c => cancel2 = c).then(paginatedCollectionData => {
-            setPopular(paginatedCollectionData.collections)
-        }).catch(console.log)
-        api.getRecentCollections(1, 9, c => cancel3 = c).then(paginatedCollectionData => {
-            setRecent(paginatedCollectionData.collections)
-        }).catch(console.log)
-        return () => {
-            if (cancel1) cancel1()
-            if (cancel2) cancel2()
-            if (cancel3) cancel3()
-        }
+    useEffect(() => {
+        (async () => {
+            let cancel1, cancel2, cancel3
+            api.getMetadata(c => cancel1 = c).then(setMetadata).catch(console.log)
+            api.getPopularCollections('week', 1, 6, c => cancel2 = c).then(paginatedCollectionData => {
+                addFavouritedByUserAttribute(paginatedCollectionData.collections, user)
+                setPopular(paginatedCollectionData.collections)
+            }).catch(console.log)
+            api.getRecentCollections(1, 9, c => cancel3 = c).then(paginatedCollectionData => {
+                setRecent(paginatedCollectionData.collections)
+            }).catch(console.log)
+            return () => {
+                if (cancel1) cancel1()
+                if (cancel2) cancel2()
+                if (cancel3) cancel3()
+            }
+        })()
     }, [])
+
+    const likeButtonClicked = (collectionId, favourited) => {
+        setUser({
+            ...user,
+            favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter(id => id !== collectionId)
+        })
+        setRecent(changeCollectionFavouritedStatus(recent, collectionId, favourited))
+        setPopular(changeCollectionFavouritedStatus(popular, collectionId, favourited))
+        if (favourited) {
+            api.favouriteCollection(collectionId)
+        } else {
+            api.unfavouriteCollection(collectionId)
+        }
+    }
 
     return (
         <Container className='pt-4 pb-4'>
             <Row>
-                <Alert variant='success' className='text-center'>
-                    Beatmap downloads are working again. If any issues arise, please visit the <a href='https://discord.gg/WZMQjwF5Vr'>osu!Collector discord</a>.
+                <Alert variant='info' className='text-center'>
+                    <Discord className='mr-2' size={26}/>
+                    Join the <a href='https://discord.gg/WZMQjwF5Vr'>osu!Collector discord</a>!
+                    Feel free to message FunOrange about any issues you have or suggestions for the site.
                 </Alert>
                 <Col className='px-5 my-2' md={12} lg={9}>
                     <h2>
@@ -87,9 +108,6 @@ function Home() {
                                 Popular this week
                             </h2>
                         </div>
-                        <LinkContainer to='/popular?range=week'>
-                            <a className='mr-2'>See all</a>
-                        </LinkContainer>
                     </div>
                     <Container className='p-2'>
                         <Row>
@@ -99,11 +117,19 @@ function Home() {
                                         className='mx-auto'
                                         style={{ width: '90%', height: '235px' }}
                                     >
-                                        <CollectionCard collection={collection}></CollectionCard>
+                                        <CollectionCard
+                                            collection={collection}
+                                            likeButtonClicked={(collectionId, favourited) => likeButtonClicked(collectionId, favourited)}
+                                        />
                                     </ReactPlaceholder>
                                 </Col>
                             ))}
                         </Row>
+                        <LinkContainer to='/popular?range=week'>
+                            <Card $lightbg className='shadow-sm mt-1 mx-1 p-3 collection-card-clickable text-center'>
+                                <h5 className='mb-0'> See all </h5>
+                            </Card>
+                        </LinkContainer>
                     </Container>
                 </Card.Body>
             </Card>
@@ -116,9 +142,6 @@ function Home() {
                                 Recently Uploaded
                             </h2>
                         </div>
-                        <LinkContainer to='/recent'>
-                            <a className='mr-2'>See all</a>
-                        </LinkContainer>
                     </div>
                     <Container className='p-2'>
                         <Row>
@@ -128,11 +151,19 @@ function Home() {
                                         className='mx-auto'
                                         style={{ width: '90%', height: '235px' }}
                                     >
-                                        <CollectionCard collection={collection}></CollectionCard>
+                                        <CollectionCard
+                                            collection={collection}
+                                            likeButtonClicked={(collectionId, favourited) => likeButtonClicked(collectionId, favourited)}
+                                        />
                                     </ReactPlaceholder>
                                 </Col>
                             ))}
                         </Row>
+                        <LinkContainer to='/recent'>
+                            <Card $lightbg className='shadow-sm mt-1 mx-1 p-3 collection-card-clickable text-center'>
+                                <h5 className='mb-0'> See all </h5>
+                            </Card>
+                        </LinkContainer>
                     </Container>
                 </Card.Body>
             </Card>

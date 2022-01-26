@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { Card, Alert, Container } from '../bootstrap-osu-collector';
 import { getRecentCollections } from '../../utils/api'
 import CollectionList from '../common/CollectionList';
+import { addFavouritedByUserAttribute } from 'utils/helpers';
 
-function Recent() {
+function Recent({ user, setUser }) {
 
     const [collectionPage, setCollectionPage] = useState(null);
     const [collections, setCollections] = useState(new Array(18).fill(null));
@@ -13,6 +14,7 @@ function Recent() {
         let cancel
         getRecentCollections(undefined, 18, c => cancel = c).then(_collectionPage => {
             setCollectionPage(_collectionPage)
+            addFavouritedByUserAttribute(_collectionPage.collections, user)
             setCollections(_collectionPage.collections)
         }).catch(console.log)
         return cancel
@@ -22,6 +24,7 @@ function Recent() {
         try {
             const _collectionPage = await getRecentCollections(collectionPage.nextPageCursor, 18)
             setCollectionPage(_collectionPage)
+            addFavouritedByUserAttribute(_collectionPage.collections, user)
             setCollections([...collections, ..._collectionPage.collections])
         } catch (err) {
             setError(err)
@@ -45,8 +48,11 @@ function Recent() {
                         :
                         <CollectionList
                             collections={collections}
+                            setCollections={setCollections}
                             hasMore={collectionPage?.hasMore}
                             loadMore={loadMore}
+                            user={user}
+                            setUser={setUser}
                         />
                     }
                 </Card.Body>

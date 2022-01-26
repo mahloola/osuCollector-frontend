@@ -1,6 +1,6 @@
 import { useHistory, useParams } from 'react-router-dom';
 import { useContext, useState, useEffect } from 'react';
-import { Button, Card, Col, Container, Image, Modal, OverlayTrigger, Row, Spinner, Tooltip } from '../bootstrap-osu-collector';
+import { Button, Card, Col, Container, Form, Image, Modal, OverlayTrigger, Row, Spinner, Tooltip } from '../bootstrap-osu-collector';
 import Alert from 'react-bootstrap/Alert'
 import * as api from '../../utils/api';
 import FavouriteButton from '../common/FavouriteButton';
@@ -12,12 +12,15 @@ import SortButton from '../common/SortButton';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bpmToColor, starToColor } from '../../utils/misc';
 import EditableTextbox from '../common/EditableTextbox';
-import { TrashFill, ExclamationTriangleFill } from 'react-bootstrap-icons';
+import { TrashFill, ExclamationTriangleFill, Pencil } from 'react-bootstrap-icons';
 import styled, { ThemeContext } from 'styled-components';
 import ModeCounters from '../common/ModeCounters';
 import BarGraph from '../common/BarGraph';
 import { LinkContainer } from 'react-router-bootstrap';
 import Comments from './Comments';
+import DropdownButton from '../common/DropdownButton';
+import moment from 'moment'
+import { addFavouritedByUserAttribute } from 'utils/helpers';
 
 const groupBeatmapsets = beatmaps => {
     if (beatmaps?.length === 0) {
@@ -50,22 +53,61 @@ const GraphContainer = styled(Card.Body)`
     background-color: ${props => props.theme.darkMode ? '#121212' : '#eee'};
 `
 
-function Collection({ user }) {
+function RenameForm({ collection, setCollection, setRenamingCollection }) {
+    const [newCollectionName, setNewCollectionName] = useState('')
+
+    return (
+        <Form>
+            <div className='d-flex'>
+                <Form.Control
+                    className='mr-2'
+                    size='lg'
+                    placeholder={collection.name}
+                    onChange={event => setNewCollectionName(event.target.value)}
+                />
+                <Button
+                    className='ml-2 mr-1'
+                    onClick={() => {
+                        api.renameCollection(collection.id, newCollectionName)
+                        setCollection({
+                            ...collection,
+                            name: newCollectionName
+                        })
+                        setRenamingCollection(false)
+                    }}
+                >
+                    Rename
+                </Button>
+                <Button
+                    className='mx-1'
+                    variant="secondary"
+                    onClick={() => setRenamingCollection(false)}
+                >
+                    Cancel
+                </Button>
+            </div>
+        </Form>
+    )
+}
+
+function Collection({ user, setUser }) {
 
     const theme = useContext(ThemeContext)
     const history = useHistory()
 
-    let { id } = useParams();
+    let { id } = useParams()
     const [queryOpts, setQueryOpts] = useState({
         perPage: 50,
         sortBy: 'beatmapset.artist',
-        orderBy: 'asc'
+        orderBy: 'asc',
+        filterMin: undefined,
+        filterMax: undefined
     })
-    const [collection, setCollection] = useState()
+    const [collection, setCollection] = useState(undefined)
     const [beatmapPage, setBeatmapPage] = useState(null)
-    const [beatmaps, setBeatmaps] = useState(null);
+    const [beatmaps, setBeatmaps] = useState(null)
     const [favourited, setFavourited] = useState(false)
-    const [favourites, setFavourites] = useState(false)
+    const [favourites, setFavourites] = useState(0)
     const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
 
     const onPlayClick = index => {
@@ -84,6 +126,7 @@ function Collection({ user }) {
     const refreshCollection = (cancelCallback = undefined) => {
         // GET collection
         api.getCollection(id, cancelCallback).then(collection => {
+            addFavouritedByUserAttribute(collection, user)
             setCollection(collection)
             setFavourited(collection.favouritedByUser)
             setFavourites(collection.favourites)
@@ -145,6 +188,7 @@ function Collection({ user }) {
             description: newDescription
         })
     }
+    const [renamingCollection, setRenamingCollection] = useState(false)
 
     const deleteCollection = async () => {
         setDeleting(true)
@@ -175,6 +219,10 @@ function Collection({ user }) {
             api.unfavouriteCollection(collection.id)
             setFavourites(favourites - 1)
         }
+        setUser({
+            ...user,
+            favourites: favourited ? [...user.favourites, collection.id] : user.favourites.filter(id => id !== collection.id)
+        })
     }
 
     const setSortBy = sortBy => {
@@ -313,7 +361,26 @@ function Collection({ user }) {
                     style={{ height: '58px' }}
                 >
                     <div className='d-flex justify-content-between'>
-                        {collection && <h1 className='mb-0'>{collection.name}</h1>}
+                        <div className='d-flex align-content-center'>
+                            {renamingCollection ?
+                                <RenameForm
+                                    collection={collection}
+                                    setCollection={setCollection}
+                                    setRenamingCollection={setRenamingCollection}
+                                />
+                                :
+                                <h1 className='mb-0 mr-4'>{collection?.name}</h1>
+                            }
+                            {collection?.uploader?.id === user?.id && !renamingCollection &&
+                                <Button
+                                    variant='outline-secondary'
+                                    onClick={() => setRenamingCollection(true)}
+                                    style={{ width: 48 }}
+                                >
+                                    <Pencil className='svg-shadow' size={18} />
+                                </Button>
+                            }
+                        </div>
                         {collection?.uploader?.id === user?.id &&
                             <Button
                                 variant='danger'
@@ -341,17 +408,15 @@ function Collection({ user }) {
                         <Container className='p-0'>
                             <Row className='p-0'>
 
-                                <Col lg={12} xl={5}>
+                                <Col lg={12} xl={6}>
                                     {/* beatmap count grouped by mode */}
                                     <div className='mt-2 mb-3 d-flex align-items-center'>
-                                        <ModeCounters
-                                            collection={collection}
-                                        />
+                                        <ModeCounters collection={collection} className={undefined} />
                                         {(collection.unsubmittedBeatmapCount > 0 || collection.unknownChecksums.length > 0) &&
                                             <OverlayTrigger
                                                 placement="right"
                                                 overlay={
-                                                    <Tooltip>
+                                                    <Tooltip id=''>
                                                         <div className='px-2'>
                                                             {collection.unsubmittedBeatmapCount > 0 &&
                                                                 <div>
@@ -376,8 +441,8 @@ function Collection({ user }) {
                                             </OverlayTrigger>
                                         }
                                     </div>
-                                    {/* uploader */}
                                     <div className='mt-1 mb-3 d-flex justify-content-start align-items-center'>
+                                        {/* uploader */}
                                         <Image className='collection-card-uploader-avatar mr-2' src={`https://a.ppy.sh/${collection.uploader.id}`} roundedCircle />
                                         <LinkContainer to={`/users/${collection.uploader.id}/uploads`}>
                                             <a>{collection.uploader.username}</a>
@@ -387,6 +452,15 @@ function Collection({ user }) {
                                                 #{collection.uploader.rank}
                                             </small>
                                         }
+                                        {/* date */}
+                                        <small className='text-muted ml-3'>
+                                            Created {moment.unix(collection.dateUploaded._seconds).fromNow()}
+                                            {Math.abs(collection.dateLastModified._seconds - collection.dateUploaded._seconds) > 86400 &&
+                                                <>
+                                                    , updated {moment.unix(collection.dateLastModified._seconds).fromNow()}
+                                                </>
+                                            }
+                                        </small>
                                     </div>
                                     {/* description */}
                                     <EditableTextbox
@@ -403,17 +477,43 @@ function Collection({ user }) {
                                                 history.push('/client')
                                             }
                                         }}>
-                                            Download beatmaps
+                                            Download maps
                                         </Button>
-                                        <Button className='mx-1' onClick={() => {
-                                            if (user?.paidFeaturesAccess) {
-                                                alert('Please use the osu!Collector desktop client to access this feature.')
-                                            } else {
-                                                history.push('/client')
-                                            }
-                                        }}>
-                                            Add to osu!
-                                        </Button>
+                                        <DropdownButton
+                                            title='Add to osu!'
+                                            titleAction={() => {
+                                                if (user?.paidFeaturesAccess) {
+                                                    alert('Please use the osu!Collector desktop client to access this feature.')
+                                                } else {
+                                                    history.push('/client')
+                                                }
+                                            }}
+                                            menuItems={['Download as collection.db']}
+                                            menuActions={[async () => {
+                                                if (user?.paidFeaturesAccess) {
+                                                    // download collection.db
+                                                    let data
+                                                    try {
+                                                        data = await api.downloadCollectionDb(collection.id)
+                                                    } catch (err) {
+                                                        alert(err.message)
+                                                        return
+                                                    }
+                                                    const url = window.URL.createObjectURL(new Blob([data]))
+                                                    const a = document.createElement('a')
+                                                    a.href = url
+                                                    a.download = `${collection.uploader.username} - ${collection.name}.db`
+                                                    document.body.appendChild(a) // we need to append the element to the dom -> otherwise it will not work in firefox
+                                                    a.click()
+                                                    a.remove()
+                                                } else {
+                                                    history.push('/client')
+                                                }
+                                            }]}
+                                            style={{
+                                                width: 202
+                                            }}
+                                        />
                                         <FavouriteButton
                                             className='mx-1'
                                             favourites={favourites}
@@ -422,7 +522,7 @@ function Collection({ user }) {
                                         />
                                     </div>
                                 </Col>
-                                <Col lg={12} xl={7}>
+                                <Col lg={12} xl={6}>
                                     {/* Difficulty Spread Graph */}
                                     <GraphContainer className='pt-0 pb-2 mb-3' variant='top'>
                                         <BarGraph
@@ -518,6 +618,7 @@ function Collection({ user }) {
                                 <SortButton
                                     sortDirection={queryOpts.sortBy !== field ? null : queryOpts.orderBy}
                                     onClick={() => setSortBy(field)}
+                                    className={undefined}
                                 >
                                     {label}
                                 </SortButton>
@@ -582,7 +683,6 @@ function Collection({ user }) {
             <Modal
                 show={showDeleteConfirmationModal}
                 onHide={() => setShowDeleteConfirmationModal(false)}
-                size='md'
                 centered={true}
             >
                 <Modal.Body>

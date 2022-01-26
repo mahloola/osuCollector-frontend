@@ -125,6 +125,24 @@ async function editCollectionDescription(collectionId, description) {
   }
 }
 
+async function renameCollection(collectionId, name) {
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/rename`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name })
+  })
+  if (response.status === 200) {
+    console.log('collection successfully renamed')
+    return true
+  } else {
+    console.log(response)
+    console.log(await response.text())
+    return false
+  }
+}
+
 async function deleteCollection(collectionId) {
   const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}`, {
     method: 'DELETE'
@@ -136,6 +154,19 @@ async function deleteCollection(collectionId) {
     console.log(response)
     console.log(await response.text())
     return false
+  }
+}
+
+async function downloadCollectionDb(collectionId) {
+  const route = `/api/collections/${collectionId}/collectionDb/export`
+  try {
+    const res = await axios.get(
+      config.get('API_HOST') + route,
+      { responseType: 'arraybuffer' }
+    )
+    return res.data
+  } catch (err) {
+    throw new Error(`${route} responded with ${err.response.status}: ${err.response.statusText}`)
   }
 }
 
@@ -186,6 +217,23 @@ async function submitOtp(otp, y) {
   return await fetch(`${config.get('API_HOST')}/api/authentication/otp?otp=${otp}&y=${y}`, {
     method: 'POST',
   })
+}
+
+async function getTwitchSubStatus(cancelCallback = undefined) {
+  const endpoint = '/api/users/me/twitchSub'
+  try {
+    const response = await axios.get(config.get('API_HOST') + endpoint, {
+      cancelToken: cancelCallback ? new axios.CancelToken(cancelCallback) : undefined
+    })
+    return response.data.isSubbedToFunOrange
+  } catch (err) {
+    if (err.response.status === 404) {
+      return null
+    } else {
+      console.log(`${endpoint} responded with ${err.response.status}: ${err.response.data}`)
+      return null
+    }
+  }
 }
 
 async function linkPaypalSubscription(subscriptionId) {
@@ -294,8 +342,10 @@ async function unlinkTwitchAccount() {
     throw new Error(`/api/users/me/unlinkTwitch responded with ${response.status}: ${await response.text()}`)
 }
 
-async function getInstallerURL() {
-  const response = await axios.get('/api/installerURL')
+async function getInstallerURL(platform = undefined) {
+  const response = await axios.get('/api/installerURL', {
+    params: { platform }
+  })
   return response.data
 }
 
@@ -361,7 +411,9 @@ export {
   favouriteCollection,
   unfavouriteCollection,
   editCollectionDescription,
+  renameCollection,
   deleteCollection,
+  downloadCollectionDb,
   getUsers,
   getUser,
   getOwnUser,
@@ -369,6 +421,7 @@ export {
   getUserUploads,
   getMetadata,
   submitOtp,
+  getTwitchSubStatus,
   linkPaypalSubscription,
   getPaypalSubscription,
   cancelPaypalSubscription,

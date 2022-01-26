@@ -1,5 +1,5 @@
 import { Route, Switch, useHistory } from 'react-router-dom'
-import { getOwnUser } from './utils/api.js'
+import { getOwnUser } from './utils/api'
 import { useState, useEffect } from 'react'
 import { useQuery } from './utils/hooks'
 import { css, ThemeProvider } from 'styled-components'
@@ -15,19 +15,20 @@ import NavigationBar from './components/navbar/NavigationBar'
 import All from './components/all/All'
 import Users from './components/users/Users'
 import './App.css'
-import UserFavourites from './components/users/UserFavourites.js'
-import UserUploads from './components/users/UserUploads.js'
-import EnterOtp from './components/login/EnterOtp.js'
+import UserFavourites from './components/users/UserFavourites'
+import UserUploads from './components/users/UserUploads'
+import EnterOtp from './components/login/EnterOtp'
+import ScrollToTop from 'components/common/ScrollToTop'
 
 // website imports
 import NotFound from './components/notfound/NotFound'
 import DesktopClient from './components/client/DesktopClient'
-import ShowOtp from './components/login/ShowOtp.js'
-import TwitchSuccess from './components/twitchSuccess/TwitchSuccess.js'
+import ShowOtp from './components/login/ShowOtp'
+import TwitchSuccess from './components/twitchSuccess/TwitchSuccess'
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
-import Checkout from './components/payments/Checkout.js'
-import Success from './components/payments/Success.js'
+import Checkout from './components/payments/Checkout'
+import Success from './components/payments/Success'
 import { PayPalScriptProvider } from "@paypal/react-paypal-js"
 
 extend([mixPlugin])
@@ -57,21 +58,22 @@ function App() {
     const [authX, setAuthX] = useState('')
 
     // get query params on initial page load
-    useEffect(async () => {
-        // store logged in user object in app level state
-        const user = await getOwnUser()
-        // undo theme if user is not subscribed
-        if (!user?.paidFeaturesAccess && currentTheme.darkMode) {
-            const newTheme = {
-                ...currentTheme,
-                darkMode: false
+    useEffect(() => {
+        (async () => {
+            // store logged in user object in app level state
+            const user = await getOwnUser()
+            // undo theme if user is not subscribed
+            if (!user?.paidFeaturesAccess && currentTheme.darkMode) {
+                const newTheme = {
+                    ...currentTheme,
+                    darkMode: false
+                }
+                setCurrentTheme(newTheme)
+                localStorage.setItem('theme', JSON.stringify(newTheme))
             }
-            setCurrentTheme(newTheme)
-            localStorage.setItem('theme', JSON.stringify(newTheme))
-        }
-        setUser(user)
-        setSearchText(query.get('search') || '')
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+            setUser(user)
+            setSearchText(query.get('search') || '')
+        })()
     }, [])
 
     const theme = {
@@ -122,27 +124,28 @@ function App() {
                             toggleTheme={toggleTheme}
                         />
                         <div style={{ minHeight: 'calc(100vh - 56px)' }}>
+                            <ScrollToTop /> 
                             <Switch>
                                 <Route exact path='/'>
-                                    <Home />
+                                    <Home user={user} setUser={setUser} />
                                 </Route>
                                 <Route path='/all'>
-                                    <All searchText={searchText} setSearchText={setSearchText} />
+                                    <All searchText={searchText} setSearchText={setSearchText} user={user} setUser={setUser} />
                                 </Route>
                                 <Route path='/popular'>
-                                    <Popular />
+                                    <Popular user={user} setUser={setUser} />
                                 </Route>
                                 <Route path='/recent'>
-                                    <Recent />
+                                    <Recent user={user} setUser={setUser} />
                                 </Route>
                                 <Route exact path='/users'>
                                     <Users />
                                 </Route>
                                 <Route path='/users/:id/favourites'>
-                                    <UserFavourites />
+                                    <UserFavourites user={user} setUser={setUser} />
                                 </Route>
                                 <Route path='/users/:id/uploads'>
-                                    <UserUploads />
+                                    <UserUploads user={user} setUser={setUser} />
                                 </Route>
                                 <Route path='/client'>
                                     <DesktopClient user={user} setUser={setUser} />
@@ -165,6 +168,7 @@ function App() {
                                 <Route path='/collections/:id'>
                                     <Collection
                                         user={user}
+                                        setUser={setUser}
                                     />
                                 </Route>
                                 <Route>

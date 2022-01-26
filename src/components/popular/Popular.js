@@ -4,8 +4,9 @@ import { Card, Button, Container } from '../bootstrap-osu-collector'
 import { getPopularCollections } from '../../utils/api'
 import { useQuery } from '../../utils/hooks'
 import CollectionList from '../common/CollectionList';
+import { addFavouritedByUserAttribute } from 'utils/helpers';
 
-function Popular() {
+function Popular({ user, setUser }) {
 
     const [range, setRange] = useState(null)
     const [collectionPage, setCollectionPage] = useState(null)
@@ -26,6 +27,7 @@ function Popular() {
         let cancel
         getPopularCollections(range, undefined, 18, c => cancel = c).then(_collectionPage => {
             setCollectionPage(_collectionPage)
+            addFavouritedByUserAttribute(_collectionPage.collections, user)
             setCollections(_collectionPage.collections)
         }).catch(console.log)
         return cancel
@@ -35,6 +37,7 @@ function Popular() {
         try {
             const _collectionPage = await getPopularCollections(range, collectionPage.nextPageCursor, 18)
             setCollectionPage(_collectionPage)
+            addFavouritedByUserAttribute(_collectionPage.collections, user)
             setCollections([...collections, ..._collectionPage.collections])
         } catch (err) {
             console.log(err)
@@ -79,8 +82,11 @@ function Popular() {
                     </div>
                     <CollectionList
                         collections={collections}
+                        setCollections={setCollections}
                         hasMore={collectionPage?.hasMore}
                         loadMore={loadMore}
+                        user={user}
+                        setUser={setUser}
                     />
                 </Card.Body>
             </Card>

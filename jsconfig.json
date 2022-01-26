@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "checkJs": true,
+    "module": "commonjs",
+    "target": "es2020",
+    "jsx": "react-jsx",
+    "strictFunctionTypes": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*"
+  ]
+}

@@ -8,14 +8,14 @@ import downloadsPng from './downloads.png'
 import importPng from './import.png'
 import darkmodePng from './darkmode.png'
 import styled from 'styled-components'
-import { HeartFill } from 'react-bootstrap-icons'
+import { HeartFill, Twitch } from 'react-bootstrap-icons'
 import { PayPalButtons } from "@paypal/react-paypal-js"
 import { Alert } from 'react-bootstrap'
 import SubscriptionDetailsModal from './SubscriptionDetailsModal'
 
-const downloadInstaller = async () => {
+const downloadInstaller = async (platform = 'win32') => {
     try {
-        const installerURL = await api.getInstallerURL()
+        const installerURL = await api.getInstallerURL(platform)
         open(installerURL)
     } catch (err) {
         alert('Error ' + err.response.status + ': ' + err.response.data)
@@ -57,6 +57,8 @@ const ShadowHeart = styled(HeartFill)`
 function DesktopClient({ user, setUser }) {
     const history = useHistory()
 
+    const [isSubbedToFunOrange, setIsSubbedToFunOrange] = useState(false)
+
     const [paypalError, setPaypalError] = useState(null)
 
     const [paypalSubscription, setPaypalSubscription] = useState(null)
@@ -79,16 +81,18 @@ function DesktopClient({ user, setUser }) {
         if (!user || paypalSubscription || stripeSubscription) {
             return
         }
-        let cancel1, cancel2
+        let cancel1, cancel2, cancel3
+        api.getTwitchSubStatus(c => cancel1 = c).then(setIsSubbedToFunOrange).catch(console.log)
         if (user?.private?.paypalSubscriptionId) {
-            api.getPaypalSubscription(c => cancel1 = c).then(setPaypalSubscription).catch(console.log)
+            api.getPaypalSubscription(c => cancel2 = c).then(setPaypalSubscription).catch(console.log)
         }
         if (user?.private?.stripeSubscriptionId) {
-            api.getSubscription(c => cancel2 = c).then(setStripeSubscription).catch(console.log)
+            api.getSubscription(c => cancel3 = c).then(setStripeSubscription).catch(console.log)
         }
         return () => {
             if (cancel1) cancel1()
             if (cancel2) cancel2()
+            if (cancel3) cancel3()
         }
     }, [user])
 
@@ -114,9 +118,9 @@ function DesktopClient({ user, setUser }) {
 
     // Current Status
     const linkedTwitchAccountStatus = user?.private?.linkedTwitchAccount?.displayName || 'Not linked'
-    const twitchSubStatus = user?.isSubbedToFunOrange ? 'Subbed' : 'Not subbed'
+    const twitchSubStatus = isSubbedToFunOrange ? 'Subbed' : 'Not subbed'
 
-    const twitchSub = user?.isSubbedToFunOrange
+    const twitchSub = isSubbedToFunOrange
     const paidSub = paidSubscriptionActive(user, paypalSubscription, stripeSubscription)
 
     console.log(stripeSubscription)
@@ -236,9 +240,17 @@ function DesktopClient({ user, setUser }) {
                                 disabled={!user?.paidFeaturesAccess}
                                 variant={user?.paidFeaturesAccess ? 'primary' : 'outline-secondary'}
                                 className='mr-2 my-2'
-                                onClick={downloadInstaller}
+                                onClick={() => downloadInstaller('win32')}
                             >
-                                Windows (64-bit)
+                                Windows 64-bit
+                            </Button>
+                            <Button
+                                disabled={!user?.paidFeaturesAccess}
+                                variant={user?.paidFeaturesAccess ? 'primary' : 'outline-secondary'}
+                                className='mr-2 my-2'
+                                onClick={() => downloadInstaller('linux')}
+                            >
+                                Linux x64 .deb
                             </Button>
                             <br />
                             {user?.paidFeaturesAccess ? 'Thank you for supporting us! You are awesome.' : 'Please support us to gain access to the desktop client.'}
@@ -256,7 +268,8 @@ function DesktopClient({ user, setUser }) {
                         <Card className='shadow mb-4'>
                             <CardBody>
                                 <Card.Title>
-                                    <span className='mr-2'>Option 1</span> <i>free with Twitch Prime</i>
+                                    <span className='mr-2'>Option 1</span> <i style={{marginTop: 1}}>free with Twitch Prime</i>
+                                    <Twitch size={28} className='ml-3 mb-1' style={{color: '#8a43f2'}} />
                                 </Card.Title>
                                 <Card className='shadow-sm p-3 mx-3 my-4'>
                                     <p><strong className='mr-2'>1</strong> Link your Twitch account with osu!Collector</p>
@@ -401,7 +414,7 @@ function DesktopClient({ user, setUser }) {
                                             </div>
                                             <div>
                                                 <Badge
-                                                    variant={user?.isSubbedToFunOrange ? 'success' : 'secondary'}
+                                                    variant={isSubbedToFunOrange ? 'success' : 'secondary'}
                                                     className='py-1 px-2'
                                                 >
                                                     {twitchSubStatus}
@@ -422,7 +435,7 @@ function DesktopClient({ user, setUser }) {
                                                 Paid Subscription
                                             </div>
                                             <Badge
-                                                variant={ paidSubscriptionActive(user, paypalSubscription, stripeSubscription) ? 'success' : 'secondary' }
+                                                variant={paidSubscriptionActive(user, paypalSubscription, stripeSubscription) ? 'success' : 'secondary'}
                                                 className='py-1 px-2 mr-3'
                                             >
                                                 {paidSubscriptionActive(user, paypalSubscription, stripeSubscription) ? 'Active' : 'Inactive'}

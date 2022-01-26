@@ -10,8 +10,9 @@ import osuPng from '../common/mode-osu.png'
 import taikoPng from '../common/mode-taiko.png'
 import maniaPng from '../common/mode-mania.png'
 import catchPng from '../common/mode-catch.png'
+import { addFavouritedByUserAttribute } from 'utils/helpers';
 
-function All({ searchText, setSearchText }) {
+function All({ searchText, setSearchText, user, setUser }) {
 
     const [collectionPage, setCollectionPage] = useState(null);
     const [collections, setCollections] = useState(new Array(18).fill(null));
@@ -45,6 +46,7 @@ function All({ searchText, setSearchText }) {
             c => cancel = c
         ).then(_collectionPage => {
             setCollectionPage(_collectionPage);
+            addFavouritedByUserAttribute(_collectionPage.collections, user)
             setCollections(_collectionPage.collections)
             const qs = []
             if (searchText !== null && searchText !== '') {
@@ -90,6 +92,7 @@ function All({ searchText, setSearchText }) {
                 queryOpts.orderBy
             )
             setCollectionPage(_collectionPage)
+            addFavouritedByUserAttribute(_collectionPage.collections, user)
             setCollections([...collections, ..._collectionPage.collections])
         } catch (err) {
             console.log(err)
@@ -124,6 +127,7 @@ function All({ searchText, setSearchText }) {
                             ].map(([field, label]) =>
                                 <div key={field} className='p-1 mr-2'>
                                     <SortButton
+                                        className={undefined}
                                         sortDirection={(queryOpts === null || queryOpts.sortBy !== field) ? null : queryOpts.orderBy}
                                         onClick={() => setSortBy(field)}
                                     >
@@ -139,6 +143,7 @@ function All({ searchText, setSearchText }) {
                             ].map(([field, png]) =>
                                 <div key={field} className='p-1 mr-2'>
                                     <SortButton
+                                        className={undefined}
                                         sortDirection={(queryOpts === null || queryOpts.sortBy !== field) ? null : queryOpts.orderBy}
                                         onClick={() => setSortBy(field)}
                                     >
@@ -155,8 +160,11 @@ function All({ searchText, setSearchText }) {
                     <Card.Body>
                         <CollectionList
                             collections={collections}
+                            setCollections={setCollections}
                             hasMore={collectionPage?.hasMore}
                             loadMore={loadMore}
+                            user={user}
+                            setUser={setUser}
                         />
                     </Card.Body>
                 </Card>

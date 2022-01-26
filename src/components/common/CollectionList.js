@@ -2,8 +2,28 @@ import { Col, Container, Spinner } from '../bootstrap-osu-collector';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ReactPlaceholder from 'react-placeholder/lib';
 import CollectionCard from './CollectionCard';
+import { changeCollectionFavouritedStatus } from 'utils/helpers';
+import * as api from '../../utils/api';
 
-const CollectionList = ({ collections, hasMore, loadMore }) => {
+const CollectionList = ({ collections, setCollections, hasMore, loadMore, user, setUser }) => {
+    if (!collections) {
+        console.log('WTF')
+        console.log(collections)
+    }
+
+    const likeButtonClicked = (collectionId, favourited) => {
+        setUser({
+            ...user,
+            favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter(id => id !== collectionId)
+        })
+        setCollections(changeCollectionFavouritedStatus(collections, collectionId, favourited))
+        if (favourited) {
+            api.favouriteCollection(collectionId)
+        } else {
+            api.unfavouriteCollection(collectionId)
+        }
+    }
+
     return (
         <Container className='p-2'>
             <InfiniteScroll
@@ -32,7 +52,10 @@ const CollectionList = ({ collections, hasMore, loadMore }) => {
                             style={{ width: '90%', height: '235px' }}
                         >
                             {collection &&
-                                <CollectionCard collection={collection}></CollectionCard>
+                                <CollectionCard
+                                    collection={collection}
+                                    likeButtonClicked={likeButtonClicked}
+                                />
                             }
                         </ReactPlaceholder>
                     </Col>

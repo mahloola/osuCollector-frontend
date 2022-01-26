@@ -1,4 +1,5 @@
 import * as ReactBootstrap from 'react-bootstrap'
+import { Dropdown } from 'react-bootstrap'
 import styled, { css } from 'styled-components'
 
 const backgroundColor = props =>
@@ -39,6 +40,16 @@ const Button = styled(ReactBootstrap.Button)`
     `}
 `
 
+const DropdownToggle = styled(Dropdown.Toggle)`
+    ${props => props.theme.darkMode && css`
+        ${props => (props.variant === 'primary' || !props.variant) && css`
+            background-color: ${props => props.theme.primary50};
+            border-color: ${props => props.theme.primary};
+            color: #f8f8f2;
+        `}
+    `}
+`
+
 const ModalHeader = styled(ReactBootstrap.Modal.Header)`
     ${backgroundAndBorderColor}
 `
@@ -53,6 +64,7 @@ export {
     Card,
     CardBody,
     CardFooter,
+    DropdownToggle,
     ListGroupItem,
     ModalHeader,
     ModalBody

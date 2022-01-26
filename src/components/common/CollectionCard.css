@@ -1,13 +1,13 @@
 a.nostyle:link {
     text-decoration: inherit;
     color: inherit;
-    cursor: auto;
+    cursor: pointer;
 }
 
 a.nostyle:visited {
     text-decoration: inherit;
     color: inherit;
-    cursor: auto;
+    cursor: pointer;
 }
 
 .collection-card-uploader-avatar { 
@@ -21,6 +21,22 @@ a.nostyle:visited {
 
 .collection-card-graph-bg {
     background-color: #eee;
+}
+
+.red-heart-color {
+    color: red;
+}
+
+.red-heart-color:hover {
+    color: #f66;
+}
+
+.grey-heart-color {
+    color: grey;
+}
+
+.grey-heart-color:hover {
+    color: #eee;
 }
 
 .muted-filter {

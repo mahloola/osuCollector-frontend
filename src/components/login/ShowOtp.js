@@ -5,9 +5,8 @@ import { Card, Container } from '../bootstrap-osu-collector';
 function ShowOtp() {
     const query = useQuery();
     const [otp, setOtp] = useState('')
-    useEffect(async () => {
+    useEffect(() => {
         setOtp(query.get('otp') || '');
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

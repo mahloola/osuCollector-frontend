@@ -1,27 +1,27 @@
 import { useContext, useState } from 'react';
 import { Card, Image, ListGroup, ListGroupItem } from '../bootstrap-osu-collector'
 import moment from 'moment'
-import './CollectionCard.css'
 import { LinkContainer } from 'react-router-bootstrap'
 import Truncate from 'react-truncate'
 import { starToColor } from '../../utils/misc'
 import BarGraph from './BarGraph';
 import styled, { ThemeContext } from 'styled-components'
 import ModeCounters from './ModeCounters';
+import './CollectionCard.css'
 
 const GraphContainer = styled(Card.Body)`
     cursor: pointer;
     background-color: ${props => props.theme.darkMode ? '#121212' : '#eee'};
 `
 
-function CollectionCard({ collection }) {
+function CollectionCard({ collection, likeButtonClicked }) {
 
     const theme = useContext(ThemeContext)
 
     const [hovered, setHovered] = useState(false)
 
     const relativeDate = moment.unix(collection.dateUploaded._seconds).fromNow()
-    const heartColour = collection.favouritedByUser ? 'red' : 'grey'
+    const heartClicked = () => likeButtonClicked(collection.id, !collection.favouritedByUser)
     const difficultySpread = collection.difficultySpread
         ? collection.difficultySpread
         : {
@@ -50,19 +50,18 @@ function CollectionCard({ collection }) {
                             <BarGraph
                                 data={[
                                     ['', '', { role: 'style' }],
-                                    ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(star =>
-                                        [star.toString(), difficultySpread[star], starToColor(star, theme.darkMode)]
-                                    )
+                                    ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(star => [star.toString(), difficultySpread[star], starToColor(star, theme.darkMode)])
                                 ]}
                                 height={80}
+                                chartEvents={undefined}
                             />
                         </GraphContainer>
                     </a>
                 </LinkContainer>
-                <LinkContainer to={`/collections/${collection.id}`}>
-                    <a className='nostyle'>
-                        <Card.Body className='collection-card-clickable pt-3'>
-                            <div className='d-flex justify-content-between align-items-top'>
+                <Card.Body className='collection-card-clickable pt-3'>
+                    <div className='d-flex justify-content-between align-items-top'>
+                        <LinkContainer to={`/collections/${collection.id}`} className='nostyle'>
+                            <a className='nostyle'>
                                 <div style={{ width: '100%' }}>
                                     <ModeCounters
                                         collection={collection}
@@ -74,13 +73,28 @@ function CollectionCard({ collection }) {
                                         </Truncate>
                                     </Card.Title>
                                 </div>
-                                <Card.Title>
-                                    <div className='pt-0 d-flex align-items-center'>
-                                        <i className='fas fa-heart mr-2' style={{ color: heartColour }}></i>
-                                        <small> {collection.favourites} </small>
-                                    </div>
-                                </Card.Title>
+                            </a>
+                        </LinkContainer>
+                        <LinkContainer to={`/collections/${collection.id}`}>
+                            <a className='flex-fill' />
+                        </LinkContainer>
+                        <div className='d-flex flex-column'>
+                            <div className='d-flex'>
+                                <h5 className='mb-0'>
+                                    <i
+                                        className={`fas fa-heart mr-2 ${collection.favouritedByUser ? 'red-heart-color' : 'grey-heart-color'}`}
+                                        onClick={heartClicked}
+                                    />
+                                    <small> {collection.favourites} </small>
+                                </h5>
                             </div>
+                            <LinkContainer to={`/collections/${collection.id}`}>
+                                <a className='h-100'/>
+                            </LinkContainer>
+                        </div>
+                    </div>
+                    <LinkContainer to={`/collections/${collection.id}`}>
+                        <a className='nostyle'>
                             <Card.Text>
                                 {collection.description ?
                                     <Truncate lines={1}>
@@ -92,9 +106,9 @@ function CollectionCard({ collection }) {
                                     </small>
                                 }
                             </Card.Text>
-                        </Card.Body>
-                    </a>
-                </LinkContainer>
+                        </a>
+                    </LinkContainer>
+                </Card.Body>
                 <ListGroup className='list-group-flush'>
                     <ListGroupItem $lightbg>
                         <div className='d-flex justify-content-between align-items-center'>
