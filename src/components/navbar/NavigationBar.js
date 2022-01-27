@@ -92,6 +92,10 @@ function NavigationBar({
                             <LinkContainer to='/client'>
                                 <Nav.Link>Desktop Client</Nav.Link>
                             </LinkContainer>
+
+                            <LinkContainer to='/tournaments'>
+                                <Nav.Link>Tournaments</Nav.Link>
+                            </LinkContainer>
                         </Nav>
 
                         <Form onSubmit={searchSubmit} className='ml-3 me-auto'>
@@ -170,6 +174,10 @@ function NavigationBar({
 
                             <LinkContainer to='/client'>
                                 <Nav.Link>Desktop Client</Nav.Link>
+                            </LinkContainer>
+
+                            <LinkContainer to='/tournaments'>
+                                <Nav.Link>Tournaments</Nav.Link>
                             </LinkContainer>
 
                             <Nav.Link onClick={toggleTheme}>

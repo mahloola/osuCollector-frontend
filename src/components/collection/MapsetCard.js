@@ -3,7 +3,7 @@ import { Badge, Button, Card, CardFooter, Col, Container, Image, ListGroup, List
 import { PlayFill, StopFill } from 'react-bootstrap-icons'
 import { bpmToColor, secondsToHHMMSS, useFallbackImg } from '../../utils/misc'
 import './MapsetCard.css'
-import slimcoverfallback from './slimcoverfallback.jpg'
+import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import DifficultyBadge from '../common/DifficultyBadge'
 import Truncate from 'react-truncate'
 import osuPng from '../common/mode-osu.png'

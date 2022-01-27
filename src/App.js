@@ -30,6 +30,8 @@ import { Elements } from "@stripe/react-stripe-js"
 import Checkout from './components/payments/Checkout'
 import Success from './components/payments/Success'
 import { PayPalScriptProvider } from "@paypal/react-paypal-js"
+import Tournaments from 'components/tournaments/Tournaments'
+import Tournament from 'components/tournament.js/Tournament'
 
 extend([mixPlugin])
 
@@ -124,7 +126,7 @@ function App() {
                             toggleTheme={toggleTheme}
                         />
                         <div style={{ minHeight: 'calc(100vh - 56px)' }}>
-                            <ScrollToTop /> 
+                            <ScrollToTop />
                             <Switch>
                                 <Route exact path='/'>
                                     <Home user={user} setUser={setUser} />
@@ -149,6 +151,12 @@ function App() {
                                 </Route>
                                 <Route path='/client'>
                                     <DesktopClient user={user} setUser={setUser} />
+                                </Route>
+                                <Route exact path='/tournaments'>
+                                    <Tournaments />
+                                </Route>
+                                <Route path='/tournaments/:id'>
+                                    <Tournament />
                                 </Route>
                                 <Route path='/payments/checkout'>
                                     <Checkout />

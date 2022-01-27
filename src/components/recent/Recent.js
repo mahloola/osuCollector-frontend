@@ -16,7 +16,7 @@ function Recent({ user, setUser }) {
             setCollectionPage(_collectionPage)
             addFavouritedByUserAttribute(_collectionPage.collections, user)
             setCollections(_collectionPage.collections)
-        }).catch(console.log)
+        }).catch(setError)
         return cancel
     }, [])
 
