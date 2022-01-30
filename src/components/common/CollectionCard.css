@@ -1,44 +1,44 @@
 a.nostyle:link {
-    text-decoration: inherit;
-    color: inherit;
-    cursor: pointer;
+  text-decoration: inherit;
+  color: inherit;
+  cursor: pointer;
 }
 
 a.nostyle:visited {
-    text-decoration: inherit;
-    color: inherit;
-    cursor: pointer;
+  text-decoration: inherit;
+  color: inherit;
+  cursor: pointer;
 }
 
-.collection-card-uploader-avatar { 
-    width: 32px;
-    height: 32px;
+.collection-card-uploader-avatar {
+  width: 32px;
+  height: 32px;
 }
 
 .collection-card-clickable {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .collection-card-graph-bg {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .red-heart-color {
-    color: red;
+  color: red;
 }
 
 .red-heart-color:hover {
-    color: #f66;
+  color: #f66;
 }
 
 .grey-heart-color {
-    color: grey;
+  color: grey;
 }
 
 .grey-heart-color:hover {
-    color: #eee;
+  color: #eee;
 }
 
 .muted-filter {
-    filter: opacity(20%);
+  filter: opacity(20%);
 }

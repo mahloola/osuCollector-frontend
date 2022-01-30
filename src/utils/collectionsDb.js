@@ -20,7 +20,6 @@ function parseCollectionDb(buffer) {
   offset += 4
 
   for (let i = 0; i < numCollections; i++) {
-
     // read collection name (peppy string)
     let [collectionName, bytesParsed] = parsePeppyString(buffer, offset)
     offset += bytesParsed
@@ -33,25 +32,25 @@ function parseCollectionDb(buffer) {
     // read each beatmap MD5 hash
     let beatmapChecksums = []
     for (let i = 0; i < numBeatmaps; i++) {
-        let [beatmapMd5, bytesParsed] = parsePeppyString(buffer, offset)
-        beatmapChecksums.push(beatmapMd5)
-        offset += bytesParsed
+      let [beatmapMd5, bytesParsed] = parsePeppyString(buffer, offset)
+      beatmapChecksums.push(beatmapMd5)
+      offset += bytesParsed
     }
 
     collections.push({
       name: collectionName,
-      beatmapChecksums: beatmapChecksums
+      beatmapChecksums: beatmapChecksums,
     })
   }
   return collections
 }
 
 function readUnalignedInt32(source, position) {
-    let readBuffer = new ArrayBuffer(4)
-    let u8Dest = new Uint8Array(readBuffer, 0, 4); // Create 8-bit view of the array
-    let u8Src = new Uint8Array(source, position, 4);   // Create 8-bit view of the array
-    u8Dest.set(u8Src, 0);                          // Copy bytes one by one
-    return new Uint32Array(readBuffer)[0]
+  let readBuffer = new ArrayBuffer(4)
+  let u8Dest = new Uint8Array(readBuffer, 0, 4) // Create 8-bit view of the array
+  let u8Src = new Uint8Array(source, position, 4) // Create 8-bit view of the array
+  u8Dest.set(u8Src, 0) // Copy bytes one by one
+  return new Uint32Array(readBuffer)[0]
 }
 
 // Peppy's binary string encoding according to https://osu.ppy.sh/wiki/cs/osu!_File_Formats/Db_(file_format)
@@ -65,8 +64,7 @@ function parsePeppyString(buffer, startOffset) {
   let offset = startOffset
   if (new Uint8Array(buffer, offset)[0] === 0x00) {
     return ['', 1]
-  }
-  else if (new Uint8Array(buffer, offset)[0] === 0x0b) {
+  } else if (new Uint8Array(buffer, offset)[0] === 0x0b) {
     offset += 1
     const uleb128 = decodeULEB128(new Uint8Array(buffer, offset), 0)
     const stringLength = Number(uleb128[0])

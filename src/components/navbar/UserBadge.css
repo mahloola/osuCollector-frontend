@@ -1,49 +1,49 @@
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
 .user-badge {
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    background-color: gray;
-    border-radius: 50px;
-    text-decoration: none;
-    text-shadow: 1px 1px 2px #000000;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  background-color: gray;
+  border-radius: 50px;
+  text-decoration: none;
+  text-shadow: 1px 1px 2px #000000;
 }
 
 .user-badge-supporter {
-    background-color: #FF66AB;
+  background-color: #ff66ab;
 }
 
 .user-badge:hover {
-    text-decoration: none;
-    background-color: darkgray;
+  text-decoration: none;
+  background-color: darkgray;
 }
 
 .user-badge-supporter:hover {
-    background-color: #ff91c2;
+  background-color: #ff91c2;
 }
 
 .user-badge a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .user-badge span {
-    padding: 0px 15px 0px 6px;
-    color: white;
-    vertical-align: text-top;   
+  padding: 0px 15px 0px 6px;
+  color: white;
+  vertical-align: text-top;
 }
 
 .user-badge .avatar-img {
-    height: 30px;
-    width: 30px;
-    margin: 4px;
-    object-fit: cover;
+  height: 30px;
+  width: 30px;
+  margin: 4px;
+  object-fit: cover;
 }

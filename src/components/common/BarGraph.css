@@ -1,1 +1,3 @@
-svg > g > g.google-visualization-tooltip { pointer-events: none }
+svg > g > g.google-visualization-tooltip {
+  pointer-events: none;
+}

@@ -1,15 +1,15 @@
 .news {
-    border-left: 2px solid rgb(179, 179, 179);
-    padding-left: 1em;
-    margin-left: 2em;
-    margin-bottom: 2em;
-    max-width: 50%;
+  border-left: 2px solid rgb(179, 179, 179);
+  padding-left: 1em;
+  margin-left: 2em;
+  margin-bottom: 2em;
+  max-width: 50%;
 }
 
 .date {
-    font-size: 0.9em;
+  font-size: 0.9em;
 }
 
 .stats {
-    max-width: 45%;
+  max-width: 45%;
 }

@@ -1,32 +1,32 @@
 .user-cover {
-    object-fit: cover;
-    height: 89px;
-    max-width: 100%;
+  object-fit: cover;
+  height: 89px;
+  max-width: 100%;
 }
 
 .user-rank-left {
-    display: block;
-    align-items:center;
+  display: block;
+  align-items: center;
 }
 .user-rank-right {
-    display: block;
-    align-items:center;
+  display: block;
+  align-items: center;
 }
 .user-ranks {
-    font-size: 2em;
+  font-size: 2em;
 }
 
 .user-avatar {
-    position: absolute;
-    top: 21px;
-    height: 80px;
-    width: 80px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    box-shadow: 0px 2px 9px #00000030, 0px 2px 9px #00000030;
+  position: absolute;
+  top: 21px;
+  height: 80px;
+  width: 80px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0px 2px 9px #00000030, 0px 2px 9px #00000030;
 }
 
 .user-links {
-    text-align: center;
-    padding: 10px;
+  text-align: center;
+  padding: 10px;
 }

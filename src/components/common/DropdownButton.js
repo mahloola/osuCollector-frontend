@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Button, ButtonGroup, Dropdown, DropdownToggle } from 'components/bootstrap-osu-collector'
 
 function DropdownButton({ title, titleAction, menuItems, menuActions, style }) {
-
   const [dropdownVisible, setDropdownVisible] = useState(false)
 
   return (
@@ -13,36 +12,33 @@ function DropdownButton({ title, titleAction, menuItems, menuActions, style }) {
         className='d-flex flex-column'
         style={{
           ...style,
-          position: 'relative'
+          position: 'relative',
         }}
       >
         <Dropdown as={ButtonGroup}>
           <Button onClick={titleAction}>{title}</Button>
-          <DropdownToggle
-            split
-            style={{width: 0}}
-            onClick={() => setDropdownVisible(!dropdownVisible)}
-          />
+          <DropdownToggle split style={{ width: 0 }} onClick={() => setDropdownVisible(!dropdownVisible)} />
         </Dropdown>
-        {dropdownVisible && menuItems.map((title, i) =>
-          <Button
-            key={i}
-            variant='light'
-            className='shadow-sm text-sm'
-            style={{
-              position: 'absolute',
-              transform: 'translate(0, 38px)',
-              margin: '0 auto',
-              textAlign: 'center',
-              width: '100%',
-              padding: '5px 10px',
-              whiteSpace: 'nowrap'
-            }}
-            onClick={menuActions[i]}
-          >
-            <small> {title} </small>
-          </Button>
-        )}
+        {dropdownVisible &&
+          menuItems.map((title, i) => (
+            <Button
+              key={i}
+              variant='light'
+              className='shadow-sm text-sm'
+              style={{
+                position: 'absolute',
+                transform: 'translate(0, 38px)',
+                margin: '0 auto',
+                textAlign: 'center',
+                width: '100%',
+                padding: '5px 10px',
+                whiteSpace: 'nowrap',
+              }}
+              onClick={menuActions[i]}
+            >
+              <small> {title} </small>
+            </Button>
+          ))}
       </div>
       {/* <div className='mx-1'>
         <div role='group' className='btn-group'>

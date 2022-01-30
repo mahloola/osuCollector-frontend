@@ -1,6 +1,6 @@
 .editable-textbox {
-    cursor: pointer;
+  cursor: pointer;
 }
 .editable-textbox:hover {
-    background-color: #eee;
+  background-color: #eee;
 }

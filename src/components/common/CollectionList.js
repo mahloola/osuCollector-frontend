@@ -1,68 +1,63 @@
-import { Col, Container, Spinner } from '../bootstrap-osu-collector';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import ReactPlaceholder from 'react-placeholder/lib';
-import CollectionCard from './CollectionCard';
-import { changeCollectionFavouritedStatus } from 'utils/helpers';
-import * as api from '../../utils/api';
+import { Col, Container, Spinner } from '../bootstrap-osu-collector'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import ReactPlaceholder from 'react-placeholder/lib'
+import CollectionCard from './CollectionCard'
+import { changeCollectionFavouritedStatus } from 'utils/misc'
+import * as api from '../../utils/api'
 
 const CollectionList = ({ collections, setCollections, hasMore, loadMore, user, setUser }) => {
-    if (!collections) {
-        console.log('WTF')
-        console.log(collections)
-    }
+  if (!collections) {
+    console.log('WTF')
+    console.log(collections)
+  }
 
-    const likeButtonClicked = (collectionId, favourited) => {
-        setUser({
-            ...user,
-            favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter(id => id !== collectionId)
-        })
-        setCollections(changeCollectionFavouritedStatus(collections, collectionId, favourited))
-        if (favourited) {
-            api.favouriteCollection(collectionId)
-        } else {
-            api.unfavouriteCollection(collectionId)
+  const likeButtonClicked = (collectionId, favourited) => {
+    setUser({
+      ...user,
+      favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter((id) => id !== collectionId),
+    })
+    setCollections(changeCollectionFavouritedStatus(collections, collectionId, favourited))
+    if (favourited) {
+      api.favouriteCollection(collectionId)
+    } else {
+      api.unfavouriteCollection(collectionId)
+    }
+  }
+
+  return (
+    <Container className='p-2'>
+      <InfiniteScroll
+        dataLength={collections.length}
+        next={loadMore}
+        hasMore={hasMore}
+        loader={
+          <div className='d-flex justify-content-center p-2'>
+            <Spinner animation='border' />
+          </div>
         }
-    }
-
-    return (
-        <Container className='p-2'>
-            <InfiniteScroll
-                dataLength={collections.length}
-                next={loadMore}
-                hasMore={hasMore}
-                loader={
-                    <div className="d-flex justify-content-center p-2" >
-                        <Spinner animation="border" />
-                    </div>
-                }
-                endMessage={
-                    <p className='text-muted' style={{ textAlign: 'center' }}>
-                        <b>Nothing more to show.</b>
-                    </p>
-                }
-                className='row'
+        endMessage={
+          <p className='text-muted' style={{ textAlign: 'center' }}>
+            <b>Nothing more to show.</b>
+          </p>
+        }
+        className='row'
+      >
+        {collections.map((collection, i) => (
+          <Col lg={6} xl={4} className='p-0 my-3' key={i}>
+            <ReactPlaceholder
+              ready={collection !== null}
+              showLoadingAnimation
+              type='rect'
+              className='mx-auto'
+              style={{ width: '90%', height: '235px' }}
             >
-                {collections.map((collection, i) =>
-                    <Col lg={6} xl={4} className='p-0 my-3' key={i}>
-                        <ReactPlaceholder
-                            ready={collection !== null}
-                            showLoadingAnimation
-                            type='rect'
-                            className='mx-auto'
-                            style={{ width: '90%', height: '235px' }}
-                        >
-                            {collection &&
-                                <CollectionCard
-                                    collection={collection}
-                                    likeButtonClicked={likeButtonClicked}
-                                />
-                            }
-                        </ReactPlaceholder>
-                    </Col>
-                )}
-            </InfiniteScroll>
-        </Container>
-    )
+              {collection && <CollectionCard collection={collection} likeButtonClicked={likeButtonClicked} />}
+            </ReactPlaceholder>
+          </Col>
+        ))}
+      </InfiniteScroll>
+    </Container>
+  )
 }
 
-export default CollectionList;
+export default CollectionList
