@@ -69,8 +69,8 @@ function Tournament() {
     return <h1>Loading...</h1>
   }
 
-  const flattenedBeatmapsGroupedByRound = tournament.mappool.map((round) =>
-    round.maps
+  const flattenedBeatmapsGroupedByRound = tournament.rounds.map((round) =>
+    round.mods
       .map((mod) =>
         mod.maps.map((beatmap, i) => ({
           round: round.round,
@@ -149,13 +149,13 @@ function Tournament() {
           </div>
         </Card>
 
-        <Card className='p-4 shadow' style={{minHeight: '100vh'}}>
+        <Card className='p-4 shadow' style={{ minHeight: '100vh' }}>
           <h1 className='mb-4'> Mappool </h1>
           <Tab.Container defaultActiveKey={0}>
             <div className='d-flex'>
               <div className='px-2 mr-1' style={{ width: 150 }}>
                 <Nav variant='pills' className='flex-column'>
-                  {tournament.mappool.map((round, i) => (
+                  {tournament.rounds.map((round, i) => (
                     <Nav.Item key={i}>
                       <Nav.Link eventKey={i}>{round.round}</Nav.Link>
                     </Nav.Item>
@@ -164,9 +164,9 @@ function Tournament() {
               </div>
               <div className='flex-fill'>
                 <Tab.Content>
-                  {tournament.mappool.map((round, i) => (
+                  {tournament.rounds.map((round, i) => (
                     <Tab.Pane key={i} eventKey={i}>
-                      {round.maps.map((mod, j) => (
+                      {round.mods.map((mod, j) => (
                         <div key={j}>
                           {mod.maps.map((beatmap, k) => (
                             <MappoolBeatmap key={k} mod={mod.mod} modIndex={k + 1} beatmap={beatmap} className='mb-1' />

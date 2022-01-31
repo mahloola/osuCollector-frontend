@@ -66,7 +66,7 @@ function MappoolBeatmap({ mod, modIndex, beatmap, className }) {
             {hovered && (
               <>
                 <Button
-                  href={beatmap.url}
+                  href={beatmap.url || `https://osu.ppy.sh/b/${beatmap}`}
                   target='blank'
                   variant='outline-secondary'
                   className='ms-auto px-2 mr-1'

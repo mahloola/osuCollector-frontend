@@ -2,7 +2,7 @@ export function truncate(inputString, length) {
   return inputString.length > length ? inputString.substring(0, length) + '...' : inputString
 }
 
-export function secondsToHHMMSS (sec_num) {
+export function secondsToHHMMSS(sec_num) {
   let hours = Math.floor(sec_num / 3600)
   let minutes = Math.floor((sec_num - hours * 3600) / 60)
   let seconds = sec_num - hours * 3600 - minutes * 60
@@ -97,6 +97,78 @@ export function changeCollectionFavouritedStatus(collections, collectionId, favo
   } else {
     return collections
   }
+}
+
+export function parseMappool(text) {
+  const lines = text
+    .split('\n')
+    .filter((line) => line.trim().length > 0) // filter blank lines
+    .filter((line) => !/^#/.test(line)) // filter comments
+
+  const sectionRegex = /^\s*\[(.+)\.(.+)\]\s*$/
+  const urlRegex1 = /^https:\/\/osu\.ppy\.sh\/beatmapsets\/.+\/(\d+)/
+  const urlRegex2 = /^https:\/\/osu\.ppy\.sh\/b\/(\d+)/
+  const beatmapIdRegex = /^(\d+)\s*$/
+
+  const rounds = []
+  let roundString = null
+  let modString = null
+  for (const line of lines) {
+    const sectionMatch = line.match(sectionRegex)
+    if (sectionMatch) {
+      roundString = sectionMatch[1]
+      modString = sectionMatch[2]
+      continue
+    }
+
+    let beatmapId = null
+    const urlMatch1 = line.match(urlRegex1)
+    if (urlMatch1) {
+      beatmapId = urlMatch1[1]
+    }
+
+    const urlMatch2 = line.match(urlRegex2)
+    if (urlMatch2) {
+      beatmapId = urlMatch2[1]
+    }
+
+    const beatmapIdMatch = line.match(beatmapIdRegex)
+    if (beatmapIdMatch) {
+      beatmapId = beatmapIdMatch[1]
+    }
+
+    if (beatmapId && roundString && modString) {
+      // add round to mappool if it hasn't been added yet
+      let roundIndex = rounds.findIndex((_round) => _round.round === roundString)
+      if (roundIndex < 0) {
+        roundIndex = rounds.length
+        rounds.push({
+          round: roundString,
+          mods: [],
+        })
+      }
+
+      // add round.mod to mappool if it hasn't been added yet
+      const round = rounds[roundIndex]
+      let modIndex = round.mods.findIndex((_mod) => _mod.mod === modString)
+      if (modIndex < 0) {
+        modIndex = round.mods.length
+        round.mods.push({
+          mod: modString,
+          maps: [],
+        })
+      }
+
+      // add beatmap to mappool
+      // @ts-ignore
+      rounds[roundIndex].mods[modIndex].maps.push(beatmapId)
+      continue
+    }
+
+    // line doesn't match any pattern
+    return { mappool: null, error: `This line is invalid:\n\n${line}` }
+  }
+  return { rounds: rounds, error: null }
 }
 
 export function validateEmail(email) {

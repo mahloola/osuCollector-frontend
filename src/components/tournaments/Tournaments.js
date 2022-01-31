@@ -1,13 +1,12 @@
 import { Alert, Button, Card, Container, Form, FormControl, InputGroup } from 'components/bootstrap-osu-collector'
 import { useEffect, useState } from 'react'
 import { Plus, Search } from 'react-bootstrap-icons'
+import { LinkContainer } from 'react-router-bootstrap'
 import styled, { css } from 'styled-components'
 import { getTournaments } from 'utils/api'
-import CreateTournamentModal from './CreateTournamentModal'
 import TournamentList from './TournamentList'
 
 function Tournaments() {
-  const [showCreateTournamentModal, setShowCreateTournamentModal] = useState(false)
   const [tournamentPage, setTournamentPage] = useState(null)
   const [tournaments, setTournaments] = useState(new Array(18).fill(null))
   const [error, setError] = useState(null)
@@ -40,12 +39,14 @@ function Tournaments() {
           <Card.Body>
             <div className='d-flex justify-content-between align-items-end mb-3'>
               <h2 className='my-2 ml-3 mb-0 mr-4'>Tournaments</h2>
-              <S.CreateButton onClick={() => setShowCreateTournamentModal(true)}>
-                <h4 className='my-2 mx-3 text-muted'>
-                  <Plus size={28} />
-                  <span className='mr-2'>create a tournament</span>
-                </h4>
-              </S.CreateButton>
+              <LinkContainer to='tournaments/create'>
+                <S.CreateButton>
+                  <h4 className='my-2 mx-3 text-muted'>
+                    <Plus size={28} />
+                    <span className='mr-2'>create a tournament</span>
+                  </h4>
+                </S.CreateButton>
+              </LinkContainer>
             </div>
             <Form onSubmit={searchSubmit} className='ml-3 me-auto'>
               <InputGroup>
@@ -70,12 +71,6 @@ function Tournaments() {
           </Card.Body>
         </Card>
       </Container>
-      {showCreateTournamentModal && (
-        <CreateTournamentModal
-          showCreateTournamentModal={showCreateTournamentModal}
-          setShowCreateTournamentModal={setShowCreateTournamentModal}
-        />
-      )}
     </>
   )
 }

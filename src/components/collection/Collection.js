@@ -6,6 +6,7 @@ import {
   Col,
   Container,
   Form,
+  FormControl,
   Image,
   Modal,
   OverlayTrigger,
@@ -71,7 +72,7 @@ function RenameForm({ collection, setCollection, setRenamingCollection }) {
   return (
     <Form>
       <div className='d-flex'>
-        <Form.Control
+        <FormControl
           className='mr-2'
           size='lg'
           placeholder={collection.name}

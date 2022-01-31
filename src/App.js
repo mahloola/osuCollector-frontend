@@ -31,7 +31,8 @@ import Checkout from './components/payments/Checkout'
 import Success from './components/payments/Success'
 import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 import Tournaments from 'components/tournaments/Tournaments'
-import Tournament from 'components/tournament.js/Tournament'
+import Tournament from 'components/tournament/Tournament'
+import CreateTournament from 'components/tournaments/create/CreateTournament'
 
 extend([mixPlugin])
 
@@ -95,7 +96,7 @@ function App() {
     try {
       const _theme = JSON.parse(localStorage.getItem('theme'))
       if (!_theme.light) {
-        theme.light = '#f8f8f2'
+        _theme.light = '#f8f8f2'
       }
       return _theme
     } catch (err) {
@@ -159,6 +160,9 @@ function App() {
                 </Route>
                 <Route exact path='/tournaments'>
                   <Tournaments />
+                </Route>
+                <Route exact path='/tournaments/create'>
+                  <CreateTournament />
                 </Route>
                 <Route path='/tournaments/:id'>
                   <Tournament />

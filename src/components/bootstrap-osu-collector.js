@@ -56,6 +56,21 @@ const DropdownToggle = styled(Dropdown.Toggle)`
     `}
 `
 
+const FormControl = styled(ReactBootstrap.Form.Control)`
+  ${({ theme }) =>
+    theme.darkMode &&
+    css`
+      background-color: ${({ theme }) => theme.primary20};
+      border-color: ${({ theme }) => theme.primary40};
+      color: ${({ theme }) => theme.light};
+      &:focus {
+        background-color: ${({ theme }) => theme.primary20};
+        border: 0;
+        color: ${({ theme }) => theme.light};
+      }
+    `}
+`
+
 const ModalHeader = styled(ReactBootstrap.Modal.Header)`
   ${backgroundAndBorderColor}
 `
@@ -65,4 +80,4 @@ const ModalBody = styled(ReactBootstrap.Modal.Body)`
 `
 
 export * from 'react-bootstrap'
-export { Button, Card, CardBody, CardFooter, DropdownToggle, ListGroupItem, ModalHeader, ModalBody }
+export { Button, Card, CardBody, CardFooter, DropdownToggle, FormControl, ListGroupItem, ModalHeader, ModalBody }

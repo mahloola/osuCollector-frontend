@@ -453,10 +453,10 @@ const createTournamentDto = {
   organizers: [8759374, 6701656, 3388082],
   banner:
     'https://i.ppy.sh/703bd12f5dda80a76ace24e467f03adcba1e1697/68747470733a2f2f63646e2e646973636f72646170702e636f6d2f6174746163686d656e74732f3536343634353437353037373139333736392f3838373739313031383036343337353836392f6d61696e62616e6e65722e706e67',
-  mappool: [
+  rounds: [
     {
       round: 'qualifiers',
-      maps: [
+      mods: [
         {
           mod: 'NM',
           maps: [3264035, 2613136, 3144020, 2823535],
@@ -477,7 +477,7 @@ const createTournamentDto = {
     },
     {
       round: 'round of 24',
-      maps: [
+      mods: [
         {
           mod: 'NM',
           maps: [1010809, 3107770, 3291091, 2123415, 3258081],
@@ -502,7 +502,7 @@ const createTournamentDto = {
     },
     {
       round: 'round of 16',
-      maps: [
+      mods: [
         {
           mod: 'NM',
           maps: [3232580, 3313230, 2687032, 2680792, 3117956],
@@ -527,7 +527,7 @@ const createTournamentDto = {
     },
     {
       round: 'quarterfinals',
-      maps: [
+      mods: [
         {
           mod: 'NM',
           maps: [3325009, 3046849, 2581265, 3325906, 3325902, 2659351],
@@ -552,7 +552,7 @@ const createTournamentDto = {
     },
     {
       round: 'semifinals',
-      maps: [
+      mods: [
         {
           mod: 'NM',
           maps: [1744742, 3336990, 1419975, 3193011, 3218308, 3227979],
@@ -577,7 +577,7 @@ const createTournamentDto = {
     },
     {
       round: 'finals',
-      maps: [
+      mods: [
         {
           mod: 'NM',
           maps: [3348479, 3348280, 2633685, 1576337, 3213279, 3323488, 1532151],
@@ -602,7 +602,7 @@ const createTournamentDto = {
     },
     {
       round: 'grand finals',
-      maps: [
+      mods: [
         {
           mod: 'NM',
           maps: [3358433, 3359658, 3227488, 3359700, 3359671, 2955142, 3070802],
