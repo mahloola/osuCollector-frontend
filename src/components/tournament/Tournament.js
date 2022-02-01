@@ -151,6 +151,9 @@ function Tournament() {
 
         <Card className='p-4 shadow' style={{ minHeight: '100vh' }}>
           <h1 className='mb-4'> Mappool </h1>
+          <div>TODO: diff calc</div>
+          <div>TODO: play song preview</div>
+          <div>TODO: mobile layout</div>
           <Tab.Container defaultActiveKey={0}>
             <div className='d-flex'>
               <div className='px-2 mr-1' style={{ width: 150 }}>

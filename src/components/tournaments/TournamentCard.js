@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Card, Image, ListGroup, ListGroupItem } from '../bootstrap-osu-collector'
 import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'
 import { useFallbackImg } from 'utils/misc'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
+import { ThemeContext } from 'styled-components'
 
 export default function TournamentCard({ tournament }) {
+  const theme = useContext(ThemeContext)
   const [hovered, setHovered] = useState(false)
 
   const relativeDate = moment.unix(tournament.dateUploaded._seconds).fromNow()
@@ -25,7 +27,7 @@ export default function TournamentCard({ tournament }) {
         </LinkContainer>
         <ListGroup className='list-group-flush'>
           <ListGroupItem $lightbg>
-            <h4 className='img-overlay-text mt-1 mb-1'> {tournament.name} </h4>
+            <h4 className={`${theme.darkMode && 'img-overlay-text'} mt-1 mb-1`}> {tournament.name} </h4>
             <div className='d-flex justify-content-between align-items-center'>
               <div className='d-flex justify-content-start align-items-center my-1'>
                 <Image

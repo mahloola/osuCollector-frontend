@@ -3,11 +3,12 @@
 import axios from 'axios'
 import { useRef } from 'react'
 import { useContext, useState } from 'react'
-import { Container } from 'react-bootstrap'
+import { Alert, Col, Container, Image, Row } from 'react-bootstrap'
 import styled, { css, ThemeContext } from 'styled-components'
 import { parseMappool } from 'utils/misc'
-import { Button, Card, Form, FormControl, InputGroup } from '../../bootstrap-osu-collector'
+import { Button, Card, Form, FloatingLabel, FormControl, InputGroup } from '../../bootstrap-osu-collector'
 import MappoolEditor from '../MappoolEditor'
+import OrganizerIcon from './OrganizerIcon'
 
 const mappoolTemplate = `# Lines beginning with '#' are ignored
 
@@ -20,90 +21,186 @@ https://osu.ppy.sh/beatmapsets/1257558#osu/2613136
 https://osu.ppy.sh/beatmapsets/1537691#osu/3144020
 https://osu.ppy.sh/beatmapsets/1306570#osu/2823535
 
-[qualifiers.HD]
-https://osu.ppy.sh/beatmapsets/1597784#osu/3263097
-https://osu.ppy.sh/beatmapsets/1597824#osu/3263174
-
 # You can also provide beatmap IDs instead of the full URL
-# https://osu.ppy.sh/beatmapsets/1306570#osu/2823535 <- It's only the last number!!!
+# https://osu.ppy.sh/beatmapsets/1306570#osu/2823535 👈 only the last number!!!
+
+[qualifiers.HD]
+3263097
+3263174
 
 [qualifiers.HR]
-3180981
-2871777
+
+
 
 [qualifiers.DT]
-563370
-1814067
+
+
 
 [qualifiers.FM]
-3154009
-896689
+
 
 # Feel free to add or remove sections as you please
 
+
 [round of 16.NM]
+
+
+
+
 
 [round of 16.HD]
 
+
+
 [round of 16.HR]
+
+
 
 [round of 16.DT]
 
+
+
+
 [round of 16.FM]
+
+
 
 [round of 16.TB]
 
 
+
+
 [quarterfinals.NM]
+
+
+
+
+
+
 
 [quarterfinals.HD]
 
+
+
+
 [quarterfinals.HR]
+
+
+
 
 [quarterfinals.DT]
 
+
+
+
+
 [quarterfinals.FM]
+
+
+
 
 [quarterfinals.TB]
 
 
+
+
 [semifinals.NM]
+
+
+
+
+
+
 
 [semifinals.HD]
 
+
+
+
 [semifinals.HR]
+
+
+
 
 [semifinals.DT]
 
+
+
+
+
 [semifinals.FM]
+
+
+
 
 [semifinals.TB]
 
 
+
+
 [finals.NM]
+
+
+
+
+
+
 
 [finals.HD]
 
+
+
+
 [finals.HR]
+
+
+
 
 [finals.DT]
 
+
+
+
+
 [finals.FM]
+
+
+
 
 [finals.TB]
 
 
 [grand finals.NM]
 
+
+
+
+
+
+
 [grand finals.HD]
+
+
+
 
 [grand finals.HR]
 
+
+
+
 [grand finals.DT]
+
+
+
+
 
 [grand finals.FM]
 
-[grand finals.TB]`
+
+
+
+[grand finals.TB]
+`
 
 const owcText = `
 [qualifiers.NM]
@@ -123,8 +220,6 @@ https://osu.ppy.sh/beatmapsets/1597825#osu/3263175
 [qualifiers.DT]
 https://osu.ppy.sh/beatmapsets/1597789#osu/3263112
 https://osu.ppy.sh/beatmapsets/1597755#osu/3263028
-
-
 
 
 
@@ -156,12 +251,12 @@ https://osu.ppy.sh/beatmapsets/1348020#osu/2791506
 https://osu.ppy.sh/beatmapsets/1604660#osu/3276769
 
 
+
 [round of 16.NM]
 https://osu.ppy.sh/beatmapsets/1610199#osu/3287700
 https://osu.ppy.sh/beatmapsets/1610241#osu/3287781
 https://osu.ppy.sh/beatmapsets/1610080#osu/3287483
 https://osu.ppy.sh/beatmapsets/1610294#osu/3287875
-
 
 [round of 16.HD]
 https://osu.ppy.sh/beatmapsets/1610204#osu/3287711
@@ -219,7 +314,6 @@ https://osu.ppy.sh/beatmapsets/1616079#osu/3299464
 
 
 
-
 [semifinals.NM]
 https://osu.ppy.sh/beatmapsets/1621784#osu/3311170
 https://osu.ppy.sh/beatmapsets/1621473#osu/3310526
@@ -227,25 +321,32 @@ https://osu.ppy.sh/beatmapsets/1621874#osu/3311309
 https://osu.ppy.sh/beatmapsets/1621891#osu/3311337
 https://osu.ppy.sh/beatmapsets/1621877#osu/3311312
 https://osu.ppy.sh/beatmapsets/1621878#osu/3311313
+
 [semifinals.HD]
 https://osu.ppy.sh/beatmapsets/1621830#osu/3311238
 https://osu.ppy.sh/beatmapsets/1621706#osu/3311073
 https://osu.ppy.sh/beatmapsets/1084460#osu/2267887
+
 [semifinals.HR]
 https://osu.ppy.sh/beatmapsets/395846#osu/861381
 https://osu.ppy.sh/beatmapsets/1621892#osu/3311344
 https://osu.ppy.sh/beatmapsets/1621683#osu/3311036
+
 [semifinals.DT]
 https://osu.ppy.sh/beatmapsets/1271945#osu/2643135
 https://osu.ppy.sh/beatmapsets/1621910#osu/3311366
 https://osu.ppy.sh/beatmapsets/105686#osu/277274
 https://osu.ppy.sh/beatmapsets/1621901#osu/3311356
+
 [semifinals.FM]
 https://osu.ppy.sh/beatmapsets/1622117#osu/3311891
 https://osu.ppy.sh/beatmapsets/1621916#osu/3311383
 https://osu.ppy.sh/beatmapsets/1621913#osu/3311375
+
 [semifinals.TB]
 https://osu.ppy.sh/beatmapsets/1621918#osu/3311391
+
+
 
 [finals.NM]
 https://osu.ppy.sh/beatmapsets/1288914#osu/2675756
@@ -254,6 +355,7 @@ https://osu.ppy.sh/beatmapsets/1627451#osu/3322521
 https://osu.ppy.sh/beatmapsets/1627456#osu/3322526
 https://osu.ppy.sh/beatmapsets/1627466#osu/3322566
 https://osu.ppy.sh/beatmapsets/1627210#osu/3322093
+
 [finals.HD]
 https://osu.ppy.sh/beatmapsets/1382362#osu/2856086
 https://osu.ppy.sh/beatmapsets/1627474#osu/3322576
@@ -263,15 +365,18 @@ https://osu.ppy.sh/beatmapsets/1267294#osu/2633747
 https://osu.ppy.sh/beatmapsets/182815#osu/438187
 https://osu.ppy.sh/beatmapsets/1431935#osu/2947341
 https://osu.ppy.sh/beatmapsets/1627494#osu/3322603
+
 [finals.DT]
 https://osu.ppy.sh/beatmapsets/1614390#osu/3320894
 https://osu.ppy.sh/beatmapsets/1627491#osu/3322598
 https://osu.ppy.sh/beatmapsets/166062#osu/859667
 https://osu.ppy.sh/beatmapsets/1627501#osu/3322610
+
 [finals.FM]
 https://osu.ppy.sh/beatmapsets/1627502#osu/3322611
 https://osu.ppy.sh/beatmapsets/1271973#osu/2643166
 https://osu.ppy.sh/beatmapsets/1627418#osu/3322445
+
 [finals.TB]
 https://osu.ppy.sh/beatmapsets/1627506#osu/3322616
 
@@ -282,42 +387,96 @@ https://osu.ppy.sh/beatmapsets/1633220#osu/3333699
 https://osu.ppy.sh/beatmapsets/1633224#osu/3333703
 https://osu.ppy.sh/beatmapsets/1633221#osu/3333700
 https://osu.ppy.sh/beatmapsets/1633222#osu/3333701
+
 [grand finals.HD]
 https://osu.ppy.sh/beatmapsets/1538589#osu/3145691
 https://osu.ppy.sh/beatmapsets/1633283#osu/3333793
 https://osu.ppy.sh/beatmapsets/1633226#osu/3333706
+
 [grand finals.HR]
 https://osu.ppy.sh/beatmapsets/1504153#osu/3081546
 https://osu.ppy.sh/beatmapsets/1631947#osu/3331199
 https://osu.ppy.sh/beatmapsets/1633205#osu/3333660
+
 [grand finals.DT]
 https://osu.ppy.sh/beatmapsets/1633147#osu/3333570
 https://osu.ppy.sh/beatmapsets/1633156#osu/3333586
 https://osu.ppy.sh/beatmapsets/1633270#osu/3333770
 https://osu.ppy.sh/beatmapsets/1633242#osu/3333734
+
 [grand finals.FM]
 https://osu.ppy.sh/beatmapsets/1633237#osu/3333729
 https://osu.ppy.sh/beatmapsets/1633261#osu/3333760
 https://osu.ppy.sh/beatmapsets/1245641#osu/3333738
+
 [grand finals.TB]
-https://osu.ppy.sh/beatmapsets/1633250#osu/3333745
-`
+https://osu.ppy.sh/beatmapsets/1633250#osu/3333745`
 
 function CreateTournament() {
   const theme = useContext(ThemeContext)
 
-  const [tournamentName, setTournamentName] = useState('')
-  const [tournamentURL, setTournamentURL] = useState('')
-  const [bannerURL, setBannerURL] = useState('')
   const [organizer, setOrganizer] = useState('')
   const [organizers, setOrganizers] = useState([])
-  const [description, setDescription] = useState('')
-  // const [mappoolText, setMappoolText] = useState(mappoolTemplate)
-  const [mappoolText, setMappoolText] = useState(owcText)
+  const [mappoolText, setMappoolText] = useState(mappoolTemplate)
+  // const [mappoolText, setMappoolText] = useState(owcText)
 
-  const submit = async () => {
-    const { rounds, error } = parseMappool(mappoolText)
-    if (!error) {
+  const [error, setError] = useState(false)
+  const [tournamentNameError, setTournamentNameError] = useState('')
+  const [tournamentURLError, setTournamentURLError] = useState('')
+  const [bannerURLError, setBannerURLError] = useState('')
+  const [organizerError, setOrganizerError] = useState('')
+  const [mappoolError, setMappoolError] = useState('')
+  const [submitButtonClicked, setSubmitButtonClicked] = useState(false)
+
+  const submit = async (event) => {
+    event.preventDefault()
+    if (!submitButtonClicked) {
+      console.log('Enter key ignored')
+      setSubmitButtonClicked(false)
+      return
+    }
+    setSubmitButtonClicked(false)
+    const tournamentName = event.currentTarget[0].value.trim()
+    const tournamentURL = event.currentTarget[1].value.trim()
+    const bannerURL = event.currentTarget[2].value.trim()
+    const description = event.currentTarget[5].value.trim()
+
+    let error = false
+    setTournamentNameError('')
+    setTournamentURLError('')
+    setBannerURLError('')
+    setMappoolError('')
+
+    if (!tournamentName) {
+      setTournamentNameError('Required')
+      error = true
+    }
+
+    if (!tournamentURL) {
+      setTournamentURLError('Required')
+      error = true
+    }
+
+    if (bannerURL !== '' && !/^https:\/\/(\w+\.)?ppy.sh\//.test(bannerURL)) {
+      setBannerURLError(
+        'For security reasons, only URLs originating from https://i.ppy.sh are accepted. Please make sure the image comes from an osu! forum post.'
+      )
+      error = true
+    }
+
+    const { rounds, error: mappoolError } = parseMappool(mappoolText)
+
+    if (mappoolError) {
+      setMappoolError(mappoolError)
+      error = true
+    }
+
+    setError(error)
+    if (error) {
+      return
+    }
+
+    if (!mappoolError) {
       const createTournamentDto = {
         name: tournamentName,
         link: tournamentURL,
@@ -331,6 +490,7 @@ function CreateTournament() {
         await axios.post('http://localhost:8000/api/tournaments', createTournamentDto)
         alert('success!!!')
       } catch (err) {
+        // TODO: handle 'A tournament with that name already exists'
         alert(err.message)
       }
     } else {
@@ -338,47 +498,93 @@ function CreateTournament() {
     }
   }
 
+  const addOrganizer = () => {
+    setOrganizer('')
+    const organizerId = Number(organizer)
+    if (!organizers.includes(organizerId)) {
+      setOrganizers((organizers) => organizers.concat(organizerId))
+    }
+  }
+
+  const organizerKeyPress = (e) => {
+    console.log('organizerKeyPress')
+    if (e.charCode === 13) {
+      addOrganizer()
+    }
+  }
   return (
     <Container className='pt-4'>
       <Card className='px-5 py-4'>
-        <h1 className='text-muted mb-4'>Create Tournament</h1>
-        <Form>
-          <h3>Details</h3>
-
-          <Form.Label className='text-muted'>Tournament name</Form.Label>
-          <FormControl className='mb-3' value={tournamentName} onChange={(e) => setTournamentName(e.target.value)} />
-
-          <Form.Label className='text-muted'>Tournament URL</Form.Label>
-          <FormControl className='mb-3' value={tournamentURL} onChange={(e) => setTournamentURL(e.target.value)} />
-
-          {/* TODO: For security reasons, only URLs originating from https://i.ppy.sh are accepted. */}
-          <Form.Label className='text-muted'>Banner URL</Form.Label>
-          <FormControl value={bannerURL} onChange={(e) => setBannerURL(e.target.value)} />
-          <Form.Text muted className='mb-3'>
-            You can get the banner URL by going to the tournament page, right clicking the banner image, and clicking
-            &quot;Copy image address&quot;
-          </Form.Text>
-
-          {/* TODO: I still don't know what the best way to input this is. */}
-          <Form.Label className='text-muted'>Tournament Organizers</Form.Label>
-          <InputGroup style={{ width: 366 }}>
-            <S.InputGroupText>https://osu.ppy.sh/users/</S.InputGroupText>
-            <FormControl value={organizer} onChange={(e) => setOrganizer(e.target.value)} placeholder='2051389' />
-            <Button variant='primary'>Add</Button>
-          </InputGroup>
-          <Form.Text muted className='mb-3'>
-            Optional: Organizers have permission to make changes to this tournament
-          </Form.Text>
+        <Form onSubmit={submit} className='pb-5'>
+          <h1 className='text-muted mb-4'>Create Tournament</h1>
 
           <Form.Group className='mb-3'>
-            <Form.Label className='text-muted'>Description</Form.Label>
-            <Form.Control
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              style={textareaFormControlStyle(theme)}
-              as='textarea'
-              rows={2}
-            />
+            <Form.Label>Tournament name</Form.Label>
+            <FormControl isInvalid={tournamentNameError} />
+            <Form.Control.Feedback type='invalid'>{tournamentNameError}</Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className='mb-3'>
+            <Form.Label>Tournament URL</Form.Label>
+            <FormControl isInvalid={tournamentURLError} />
+            <Form.Control.Feedback type='invalid'>{tournamentURLError}</Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className='mb-3'>
+            <Form.Label>
+              Banner URL <small className='ml-2 text-muted'>only https://i.ppy.sh allowed</small>
+            </Form.Label>
+            <FormControl isInvalid={bannerURLError} />
+            <Form.Control.Feedback type='invalid'>{bannerURLError}</Form.Control.Feedback>
+            <Form.Text muted>
+              You can get the banner URL by going to the tournament page, right clicking the banner image, and clicking
+              &quot;Copy image address&quot;
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className='mb-3'>
+            <Form.Label>Tournament Organizers</Form.Label>
+            <div className='d-flex'>
+              <InputGroup hasValidation className='mr-4' style={{ width: 366 }}>
+                <S.InputGroupText>https://osu.ppy.sh/users/</S.InputGroupText>
+                <FormControl
+                  placeholder='2051389'
+                  value={organizer}
+                  onKeyPress={organizerKeyPress}
+                  onChange={(e) => {
+                    const value = e.target.value.trim()
+                    setOrganizer(value)
+                    if (value === '' || /^\d+$/.test(value)) {
+                      setOrganizerError('')
+                    } else {
+                      setOrganizerError('Invalid user ID')
+                    }
+                  }}
+                  isInvalid={organizerError}
+                />
+                <Button variant='primary' disabled={organizerError} onClick={addOrganizer}>
+                  Add
+                </Button>
+                <Form.Control.Feedback type='invalid'>
+                  <span style={{ paddingLeft: 208 }}>{organizerError}</span>
+                </Form.Control.Feedback>
+              </InputGroup>
+              {organizers.map((organizerId) => (
+                <div className='d-flex mr-2' key={organizerId}>
+                  <OrganizerIcon
+                    organizerId={organizerId}
+                    onClick={() => setOrganizers((organizers) => organizers.filter((id) => id !== organizerId))}
+                    roundedCircle
+                  />
+                </div>
+              ))}
+            </div>
+            <Form.Text muted>Optional: Organizers have permission to make changes to this tournament</Form.Text>
+          </Form.Group>
+
+          <Form.Group className='mb-3'>
+            <Form.Label>Description</Form.Label>
+            <Form.Control style={textareaFormControlStyle(theme)} as='textarea' rows={2} />
             <Form.Text muted className='mb-3'>
               Keep it short; for more information users should visit the tournament URL
             </Form.Text>
@@ -389,10 +595,17 @@ function CreateTournament() {
             A mappool template is provided below. Please modify it to include the maps in the tournament.
           </Form.Text>
           <MappoolEditor mappoolText={mappoolText} setMappoolText={setMappoolText} />
+          {error && (
+            <Alert className='mt-4 mb-0' variant='danger'>
+              Please fix the above errors and try again
+            </Alert>
+          )}
+          <Button className='mt-4 w-100' size='lg' variant='primary' type='submit'>
+            <h3 onClick={() => setSubmitButtonClicked(true)} className='mb-0 py-2'>
+              Submit
+            </h3>
+          </Button>
         </Form>
-        <Button className='mt-4' size='lg' variant='primary' type='submit' onClick={submit}>
-          <h3 className='mb-0 py-2'>Submit</h3>
-        </Button>
       </Card>
     </Container>
   )
@@ -407,6 +620,23 @@ S.InputGroupText = styled(InputGroup.Text)`
       border-color: ${({ theme }) => theme.primary40};
       color: #6c757d;
     `}
+`
+
+S.FloatingLabel = styled(FloatingLabel)`
+  ${({ theme }) =>
+    theme.darkMode &&
+    css`
+      & > input {
+        background-color: ${({ theme }) => theme.primary20};
+        border-color: ${({ theme }) => theme.primary20};
+        color: ${({ theme }) => theme.light};
+        &:focus {
+          background-color: ${({ theme }) => theme.primary20};
+          border-color: ${({ theme }) => theme.primary20};
+          color: ${({ theme }) => theme.light};
+        }
+      }
+    `};
 `
 
 const textareaFormControlStyle = (theme) =>

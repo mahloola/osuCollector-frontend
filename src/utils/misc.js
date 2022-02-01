@@ -166,7 +166,7 @@ export function parseMappool(text) {
     }
 
     // line doesn't match any pattern
-    return { mappool: null, error: `This line is invalid:\n\n${line}` }
+    return { rounds: null, error: `This line is invalid:\n\n${line}` }
   }
   return { rounds: rounds, error: null }
 }

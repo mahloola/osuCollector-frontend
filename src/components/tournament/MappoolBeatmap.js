@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Button, Card } from 'components/bootstrap-osu-collector'
-import Truncate from 'react-truncate'
 import styled from 'styled-components'
 import { secondsToHHMMSS, useFallbackImg } from 'utils/misc'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
@@ -10,20 +9,21 @@ function MappoolBeatmap({ mod, modIndex, beatmap, className }) {
   const [hovered, setHovered] = useState(false)
 
   const beatmapset = beatmap?.beatmapset
+  const beatmapString = `${beatmapset?.artist} - ${beatmapset?.title} [${beatmap?.version}]`
   const dt = mod.toLowerCase() === 'dt'
   const hr = mod.toLowerCase() === 'hr'
   const diffUp = <span style={{ color: '#cd334f' }}>▲</span>
-  const diffDown = <span style={{ color: '#6EFF79' }}>▼</span>
+  const diffDown = <span style={{ color: '#43D64E' }}>▼</span>
   return (
     <div className={className}>
       <Card $lightbg onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-        <div className='d-flex align-items-center p-2'>
+        <div className='d-flex align-items-center'>
           {/* content */}
           <img
             className='card-img-top'
             src={beatmapset?.covers.card || ''}
             onError={(ev) => useFallbackImg(ev, slimcoverfallback)}
-            style={{ objectFit: 'cover', width: 160, height: 48, borderStyle: 'none' }}
+            style={{ objectFit: 'cover', width: 180, height: 66, borderStyle: 'none' }}
           />
           <S.ModBadge mod={mod} className='mx-3'>
             <div className='d-flex align-items-center justify-content-center' style={{ height: 48 }}>
@@ -32,10 +32,12 @@ function MappoolBeatmap({ mod, modIndex, beatmap, className }) {
               </div>
             </div>
           </S.ModBadge>
-          <div className='flex-fill'>
+          <div className='flex-fill' style={{ minWidth: 0 }}>
             {typeof beatmap === 'object' ? (
-              <div>
-                <Truncate lines={1}>{`${beatmapset.artist} - ${beatmapset.title} [${beatmap.version}]`}</Truncate>
+              <>
+                <S.Truncate hovered={hovered}>
+                  <b>{beatmapString}</b>
+                </S.Truncate>
                 <div className='d-flex mt-1' style={{ fontSize: 14 }}>
                   <div className='mr-4'>
                     {secondsToHHMMSS(beatmap.hit_length / (dt ? 1.5 : 1))} {dt && diffDown}
@@ -57,29 +59,27 @@ function MappoolBeatmap({ mod, modIndex, beatmap, className }) {
                     OD {beatmap.accuracy} {(dt || hr) && diffUp}
                   </div>
                 </div>
-              </div>
+              </>
             ) : (
               <span className='text-muted'>Beatmap being processed...</span>
             )}
           </div>
-          <div className='flex' style={{ minWidth: 130 }}>
-            {hovered && (
-              <>
-                <Button
-                  href={beatmap.url || `https://osu.ppy.sh/b/${beatmap}`}
-                  target='blank'
-                  variant='outline-secondary'
-                  className='ms-auto px-2 mr-1'
-                  size='sm'
-                >
-                  <small> Website </small>
-                </Button>
-                <Button variant='outline-primary' className='mx-1 px-2' size='sm' href={`osu://b/${beatmap.id}`}>
-                  <small> Direct </small>
-                </Button>
-              </>
-            )}
-          </div>
+          {hovered && (
+            <div className='d-flex pr-2'>
+              <Button
+                href={beatmap.url || `https://osu.ppy.sh/b/${beatmap}`}
+                target='blank'
+                variant='outline-secondary'
+                className='ms-auto px-2 mr-1'
+                size='sm'
+              >
+                <small> Website </small>
+              </Button>
+              <Button variant='outline-primary' className='mx-1 px-2' size='sm' href={`osu://b/${beatmap.id}`}>
+                <small> Direct </small>
+              </Button>
+            </div>
+          )}
         </div>
       </Card>
     </div>
@@ -100,6 +100,31 @@ S.ModBadge = styled(Card)`
     if (mod.toLowerCase() === 'tb') return 'background-color: #111;'
     return ''
   }}
+`
+
+S.Truncate = styled.div`
+  /* background-color: #6eff79; */
+  @media screen and (min-width: 576px) {
+    /* background-color: #4fc0ff; */
+  }
+  @media screen and (min-width: 768px) {
+    /* background-color: #f8da5e; */
+  }
+  @media screen and (min-width: 992px) {
+    max-width: ${({ hovered }) => (hovered ? '328px' : '468px')};
+    /* background-color: #ff7f68; */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media screen and (min-width: 1200px) {
+    max-width: ${({ hovered }) => (hovered ? '485px' : '625px')};
+    /* background-color: #ff4e6f; */
+  }
+  @media screen and (min-width: 1400px) {
+    max-width: ${({ hovered }) => (hovered ? '667px' : '807px')};
+    /* background-color: #a653b0; */
+  }
 `
 
 // S.Length = styled.div`

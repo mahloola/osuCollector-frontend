@@ -1,6 +1,7 @@
 import * as ReactBootstrap from 'react-bootstrap'
 import { Dropdown } from 'react-bootstrap'
 import styled, { css } from 'styled-components'
+import ReactBootstrapFloatingLabel from 'react-bootstrap-floating-label'
 
 const backgroundColor = (props) =>
   props.$lightbg2 ? props.theme.primary25 : props.$lightbg ? props.theme.primary15 : props.theme.primary8
@@ -79,5 +80,31 @@ const ModalBody = styled(ReactBootstrap.Modal.Body)`
   ${backgroundAndBorderColor}
 `
 
+const FloatingLabel = styled(ReactBootstrapFloatingLabel)`
+  ${({ theme }) =>
+    theme.darkMode &&
+    css`
+      background-color: ${({ theme }) => theme.primary20};
+      border-color: ${({ theme }) => theme.primary40};
+      color: ${({ theme }) => theme.light};
+      &:focus {
+        background-color: ${({ theme }) => theme.primary20};
+        border: 0;
+        color: ${({ theme }) => theme.light};
+      }
+    `}
+`
+
 export * from 'react-bootstrap'
-export { Button, Card, CardBody, CardFooter, DropdownToggle, FormControl, ListGroupItem, ModalHeader, ModalBody }
+export {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  DropdownToggle,
+  FloatingLabel,
+  FormControl,
+  ListGroupItem,
+  ModalHeader,
+  ModalBody,
+}
