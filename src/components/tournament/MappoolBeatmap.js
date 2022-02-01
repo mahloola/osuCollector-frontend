@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react'
 import { Button, Card } from 'components/bootstrap-osu-collector'
 import styled from 'styled-components'
@@ -5,7 +6,7 @@ import { secondsToHHMMSS, useFallbackImg } from 'utils/misc'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 
 /* eslint-disable no-unused-vars */
-function MappoolBeatmap({ mod, modIndex, beatmap, className }) {
+function MappoolBeatmap({ beatmap, mod, modIndex, className }) {
   const [hovered, setHovered] = useState(false)
 
   const beatmapset = beatmap?.beatmapset
@@ -14,6 +15,7 @@ function MappoolBeatmap({ mod, modIndex, beatmap, className }) {
   const hr = mod.toLowerCase() === 'hr'
   const diffUp = <span style={{ color: '#cd334f' }}>▲</span>
   const diffDown = <span style={{ color: '#43D64E' }}>▼</span>
+
   return (
     <div className={className}>
       <Card $lightbg onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>

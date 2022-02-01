@@ -7,6 +7,7 @@ import Alert from 'react-bootstrap/Alert'
 import * as api from '../../utils/api'
 import { Globe } from 'react-bootstrap-icons'
 import { useFallbackImg } from 'utils/misc'
+import { calculateARWithDT, calculateARWithHR, calculateODWithDT, calculateODWithHR } from 'utils/diffcalc'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import { Image } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -171,9 +172,31 @@ function Tournament() {
                     <Tab.Pane key={i} eventKey={i}>
                       {round.mods.map((mod, j) => (
                         <div key={j}>
-                          {mod.maps.map((beatmap, k) => (
-                            <MappoolBeatmap key={k} mod={mod.mod} modIndex={k + 1} beatmap={beatmap} className='mb-1' />
-                          ))}
+                          {mod.maps.map((beatmap, k) => {
+                            let moddedBeatmap
+                            console.log('hi')
+                            if (typeof beatmap === 'object') {
+                              moddedBeatmap = { ...beatmap }
+                              if (mod.mod.toLowerCase() === 'hr') {
+                                moddedBeatmap.cs = beatmap.cs + 1.2
+                                moddedBeatmap.ar = Math.round(10 * calculateARWithHR(beatmap.ar)) / 10
+                                moddedBeatmap.accuracy = Math.round(10 * calculateODWithHR(beatmap.accuracy)) / 10
+                              }
+                              if (mod.mod.toLowerCase() === 'dt') {
+                                moddedBeatmap.ar = Math.round(10 * calculateARWithDT(beatmap.ar)) / 10
+                                moddedBeatmap.accuracy = Math.round(10 * calculateODWithDT(beatmap.accuracy)) / 10
+                              }
+                            }
+                            return (
+                              <MappoolBeatmap
+                                key={k}
+                                mod={mod.mod}
+                                modIndex={k + 1}
+                                beatmap={moddedBeatmap || beatmap}
+                                className='mb-1'
+                              />
+                            )
+                          })}
                         </div>
                       ))}
                     </Tab.Pane>
