@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Card } from 'components/bootstrap-osu-collector'
-import styled from 'styled-components'
-import { secondsToHHMMSS, useFallbackImg } from 'utils/misc'
-import slimcoverfallback from '../common/slimcoverfallback.jpg'
+import styled, { ThemeContext } from 'styled-components'
+import { secondsToHHMMSS, starToColor } from 'utils/misc'
+import { PlayFill, StopFill } from 'react-bootstrap-icons'
 
 /* eslint-disable no-unused-vars */
-function MappoolBeatmap({ beatmap, mod, modIndex, className }) {
+function MappoolBeatmap({ beatmap, mod, modIndex, playing, onPlayClick, onAudioEnd, className }) {
+  const theme = useContext(ThemeContext)
   const [hovered, setHovered] = useState(false)
 
   const beatmapset = beatmap?.beatmapset
@@ -15,18 +16,52 @@ function MappoolBeatmap({ beatmap, mod, modIndex, className }) {
   const hr = mod.toLowerCase() === 'hr'
   const diffUp = <span style={{ color: '#cd334f' }}>▲</span>
   const diffDown = <span style={{ color: '#43D64E' }}>▼</span>
+  const starColorAlpha = theme.darkMode ? '90' : '60'
+
+  const audioRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause()
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!beatmap || audioRef.current !== null) {
+      return
+    }
+    const audio = new Audio(`https://b.ppy.sh/preview/${beatmapset?.id}.mp3`)
+    audio.volume = 0.2
+    audio.addEventListener('ended', onAudioEnd)
+    audioRef.current = audio
+  }, [beatmap])
+
+  useEffect(() => {
+    if (!audioRef.current) return
+    if (playing) {
+      audioRef.current.play()
+    } else {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+    }
+  }, [playing])
 
   return (
     <div className={className}>
       <Card $lightbg onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
         <div className='d-flex align-items-center'>
           {/* content */}
-          <img
-            className='card-img-top'
-            src={beatmapset?.covers.card || ''}
-            onError={(ev) => useFallbackImg(ev, slimcoverfallback)}
-            style={{ objectFit: 'cover', width: 180, height: 66, borderStyle: 'none' }}
-          />
+          <S.BeatmapCover className='card-img-top' src={beatmapset?.covers.card || ''} onClick={onPlayClick}>
+            <div className='d-flex justify-content-center align-items-center'>
+              {playing ? (
+                <StopFill style={{ color: 'white' }} className='svg-shadow' size={66} />
+              ) : (
+                <PlayFill style={{ color: 'white' }} className='svg-shadow' size={66} />
+              )}
+            </div>
+          </S.BeatmapCover>
           <S.ModBadge mod={mod} className='mx-3'>
             <div className='d-flex align-items-center justify-content-center' style={{ height: 48 }}>
               <div className='text-center' style={{ marginTop: 1 }}>
@@ -41,24 +76,33 @@ function MappoolBeatmap({ beatmap, mod, modIndex, className }) {
                   <b>{beatmapString}</b>
                 </S.Truncate>
                 <div className='d-flex mt-1' style={{ fontSize: 14 }}>
-                  <div className='mr-4'>
-                    {secondsToHHMMSS(beatmap.hit_length / (dt ? 1.5 : 1))} {dt && diffDown}
+                  <div className='mr-3 text-muted'>
+                    {dt ? (
+                      <b>{secondsToHHMMSS(beatmap.hit_length / (dt ? 1.5 : 1))}</b>
+                    ) : (
+                      secondsToHHMMSS(beatmap.hit_length / (dt ? 1.5 : 1))
+                    )}
                   </div>
-                  {/* TODO: calculate difficulty */}
+                  <div className='mr-3'>
+                    <S.BackgroundSpan color={starToColor(beatmap.difficulty_rating) + starColorAlpha}>
+                      {dt || hr ? <b>&gt;{beatmap.difficulty_rating} ★</b> : beatmap.difficulty_rating + ' ★'}
+                    </S.BackgroundSpan>
+                  </div>
+                  <div className='mr-4'>{dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}</div>
                   <div className='mr-4'>
-                    {beatmap.difficulty_rating} ★ {(dt || hr) && diffUp}
+                    <S.BackgroundSpan color={'#4fc0ff2a'}>
+                      {hr ? <b>CS {beatmap.cs}</b> : 'CS ' + beatmap.cs}
+                    </S.BackgroundSpan>
                   </div>
                   <div className='mr-4'>
-                    {Math.round(beatmap.bpm * (dt ? 1.5 : 1))} bpm {dt && diffUp}
+                    <S.BackgroundSpan color={'#ff4e6f2a'}>
+                      {dt || hr ? <b>AR {beatmap.ar}</b> : 'AR ' + beatmap.ar}
+                    </S.BackgroundSpan>
                   </div>
                   <div className='mr-4'>
-                    CS {beatmap.cs} {hr && diffUp}
-                  </div>
-                  <div className='mr-4'>
-                    AR {beatmap.ar} {(dt || hr) && diffUp}
-                  </div>
-                  <div className='mr-4'>
-                    OD {beatmap.accuracy} {(dt || hr) && diffUp}
+                    <S.BackgroundSpan color={'#6eff792a'}>
+                      {dt || hr ? <b>OD {beatmap.accuracy}</b> : 'AR ' + beatmap.accuracy}
+                    </S.BackgroundSpan>{' '}
                   </div>
                 </div>
               </>
@@ -89,6 +133,23 @@ function MappoolBeatmap({ beatmap, mod, modIndex, className }) {
 }
 
 const S = {}
+
+S.BeatmapCover = styled.div`
+  background-color: #474958;
+  background-image: url(${(props) => props.src});
+  width: 180px;
+  height: 66px;
+  background-size: cover;
+  cursor: pointer;
+  & > div > svg {
+    display: none;
+  }
+  &:hover {
+    & > div > svg {
+      display: block;
+    }
+  }
+`
 
 S.ModBadge = styled(Card)`
   min-width: 60px;
@@ -127,6 +188,15 @@ S.Truncate = styled.div`
     max-width: ${({ hovered }) => (hovered ? '667px' : '807px')};
     /* background-color: #a653b0; */
   }
+`
+
+S.BackgroundSpan = styled.span`
+  background: ${({ color }) => color};
+  border-radius: 999px;
+  padding: 0px 8px 0px 8px;
+  display: inline-block;
+  text-align: center;
+  margin-right: 6px;
 `
 
 // S.Length = styled.div`

@@ -658,7 +658,3 @@ export async function deleteTournament(id) {
     return false
   }
 }
-
-export async function getBeatmapStarRatings(beatmapIds, cancelCallback = undefined) {
-  return getRequestWithQueryParameters('/api/diffcalc', { beatmapIds }, cancelCallback)
-}

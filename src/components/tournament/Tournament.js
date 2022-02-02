@@ -1,26 +1,17 @@
-/* eslint-disable no-unused-vars */
-// @ts-nocheck
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { Button, Card, Col, Container, Row, Tab, Nav } from '../bootstrap-osu-collector'
-import Alert from 'react-bootstrap/Alert'
 import * as api from '../../utils/api'
 import { Globe } from 'react-bootstrap-icons'
 import { useFallbackImg } from 'utils/misc'
-import { calculateARWithDT, calculateARWithHR, calculateODWithDT, calculateODWithHR } from 'utils/diffcalc'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
-import { Image } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
-import styled from 'styled-components'
-import MappoolBeatmap from './MappoolBeatmap'
 import UserChip from 'components/common/UserChip'
-import Truncate from 'react-truncate'
+import styled from 'styled-components'
+import MappoolRound from './MappoolRound'
 
 function Tournament() {
   let { id } = useParams()
   const [tournament, setTournament] = useState(undefined)
-  const [favourited, setFavourited] = useState(false)
-  const [favourites, setFavourites] = useState(0)
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
 
   // run this code on initial load
@@ -30,8 +21,6 @@ function Tournament() {
       .getTournament(id, cancelCallback)
       .then((tournament) => {
         setTournament(tournament)
-        setFavourited(tournament.favouritedByUser)
-        setFavourites(tournament.favourites)
       })
       .catch(console.log)
   }
@@ -42,46 +31,46 @@ function Tournament() {
   }, [])
 
   // message modal
-  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
-  const [deleting, setDeleting] = useState(false)
+  // const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
+  // const [deleting, setDeleting] = useState(false)
 
-  const deleteTournament = async () => {
-    setDeleting(true)
-    const result = await api.deleteTournament(tournament.id)
-    setDeleting(false)
-    setShowDeleteConfirmationModal(false)
-    if (result) {
-      setTournamentSuccessfullyDeleted(true)
-    } else {
-      alert('Delete failed. Check console for more info.')
-    }
-  }
+  // const deleteTournament = async () => {
+  //   setDeleting(true)
+  //   const result = await api.deleteTournament(tournament.id)
+  //   setDeleting(false)
+  //   setShowDeleteConfirmationModal(false)
+  //   if (result) {
+  //     setTournamentSuccessfullyDeleted(true)
+  //   } else {
+  //     alert('Delete failed. Check console for more info.')
+  //   }
+  // }
 
-  const [tournamentSuccessfullyDeleted, setTournamentSuccessfullyDeleted] = useState(false)
-  if (tournamentSuccessfullyDeleted) {
-    return (
-      <Alert variant='danger'>
-        <Alert.Heading className='text-center m-0'>Tournament deleted</Alert.Heading>
-      </Alert>
-    )
-  }
+  // const [tournamentSuccessfullyDeleted, setTournamentSuccessfullyDeleted] = useState(false)
+  // if (tournamentSuccessfullyDeleted) {
+  //   return (
+  //     <Alert variant='danger'>
+  //       <Alert.Heading className='text-center m-0'>Tournament deleted</Alert.Heading>
+  //     </Alert>
+  //   )
+  // }
 
   if (!tournament) {
     return <h1>Loading...</h1>
   }
 
-  const flattenedBeatmapsGroupedByRound = tournament.rounds.map((round) =>
-    round.mods
-      .map((mod) =>
-        mod.maps.map((beatmap, i) => ({
-          round: round.round,
-          mod: mod.mod,
-          index: i + 1,
-          beatmap: beatmap,
-        }))
-      )
-      .flat()
-  )
+  // const flattenedBeatmapsGroupedByRound = tournament.rounds.map((round) =>
+  //   round.mods
+  //     .map((mod) =>
+  //       mod.maps.map((beatmap, i) => ({
+  //         round: round.round,
+  //         mod: mod.mod,
+  //         index: i + 1,
+  //         beatmap: beatmap,
+  //       }))
+  //     )
+  //     .flat()
+  // )
 
   if (tournament) {
     return (
@@ -152,8 +141,6 @@ function Tournament() {
 
         <Card className='p-4 shadow' style={{ minHeight: '100vh' }}>
           <h1 className='mb-4'> Mappool </h1>
-          <div>TODO: diff calc</div>
-          <div>TODO: play song preview</div>
           <div>TODO: mobile layout</div>
           <Tab.Container defaultActiveKey={0}>
             <div className='d-flex'>
@@ -170,35 +157,11 @@ function Tournament() {
                 <Tab.Content>
                   {tournament.rounds.map((round, i) => (
                     <Tab.Pane key={i} eventKey={i}>
-                      {round.mods.map((mod, j) => (
-                        <div key={j}>
-                          {mod.maps.map((beatmap, k) => {
-                            let moddedBeatmap
-                            console.log('hi')
-                            if (typeof beatmap === 'object') {
-                              moddedBeatmap = { ...beatmap }
-                              if (mod.mod.toLowerCase() === 'hr') {
-                                moddedBeatmap.cs = beatmap.cs + 1.2
-                                moddedBeatmap.ar = Math.round(10 * calculateARWithHR(beatmap.ar)) / 10
-                                moddedBeatmap.accuracy = Math.round(10 * calculateODWithHR(beatmap.accuracy)) / 10
-                              }
-                              if (mod.mod.toLowerCase() === 'dt') {
-                                moddedBeatmap.ar = Math.round(10 * calculateARWithDT(beatmap.ar)) / 10
-                                moddedBeatmap.accuracy = Math.round(10 * calculateODWithDT(beatmap.accuracy)) / 10
-                              }
-                            }
-                            return (
-                              <MappoolBeatmap
-                                key={k}
-                                mod={mod.mod}
-                                modIndex={k + 1}
-                                beatmap={moddedBeatmap || beatmap}
-                                className='mb-1'
-                              />
-                            )
-                          })}
-                        </div>
-                      ))}
+                      <MappoolRound
+                        round={round}
+                        currentlyPlaying={currentlyPlaying}
+                        setCurrentlyPlaying={setCurrentlyPlaying}
+                      />
                     </Tab.Pane>
                   ))}
                 </Tab.Content>

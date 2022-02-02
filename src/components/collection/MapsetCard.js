@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   Badge,
   Button,
@@ -37,22 +37,28 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
     }[mode]
   }
 
-  const [audio, setAudio] = useState(null)
+  const audioRef = useRef(null)
 
   useEffect(() => {
-    const _audio = new Audio(`https://b.ppy.sh/preview/${beatmapset.id}.mp3`)
-    _audio.volume = 0.2
-    _audio.addEventListener('ended', onAudioEnd)
-    setAudio(_audio)
+    const audio = new Audio(`https://b.ppy.sh/preview/${beatmapset.id}.mp3`)
+    audio.volume = 0.2
+    audio.addEventListener('ended', onAudioEnd)
+    audioRef.current = audio
+
+    return () => {
+      if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause()
+      }
+    }
   }, [])
 
   useEffect(() => {
-    if (!audio) return
+    if (!audioRef.current) return
     if (playing) {
-      audio.play()
+      audioRef.current.play()
     } else {
-      audio.pause()
-      audio.currentTime = 0
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
     }
   }, [playing])
 

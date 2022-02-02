@@ -3,9 +3,10 @@ export function truncate(inputString, length) {
 }
 
 export function secondsToHHMMSS(sec_num) {
-  let hours = Math.floor(sec_num / 3600)
-  let minutes = Math.floor((sec_num - hours * 3600) / 60)
-  let seconds = sec_num - hours * 3600 - minutes * 60
+  const sec = Math.round(sec_num)
+  let hours = Math.floor(sec / 3600)
+  let minutes = Math.floor((sec - hours * 3600) / 60)
+  let seconds = sec - hours * 3600 - minutes * 60
 
   if (hours < 10) {
     // @ts-ignore
@@ -19,9 +20,6 @@ export function secondsToHHMMSS(sec_num) {
     // @ts-ignore
     seconds = '0' + seconds
   }
-  hours = Math.round(hours)
-  minutes = Math.round(minutes)
-  seconds = Math.round(seconds)
 
   return hours > 0 ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds
 }
@@ -169,6 +167,15 @@ export function parseMappool(text) {
     return { rounds: null, error: `This line is invalid:\n\n${line}` }
   }
   return { rounds: rounds, error: null }
+}
+
+export const isEqual = (arr1, arr2) => {
+  if (!arr1 || !arr2) return false
+  if (arr1.length !== arr2.length) return false
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) return false
+  }
+  return true
 }
 
 export function validateEmail(email) {
