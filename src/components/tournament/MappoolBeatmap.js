@@ -4,6 +4,7 @@ import { Button, Card } from 'components/bootstrap-osu-collector'
 import styled, { ThemeContext } from 'styled-components'
 import { secondsToHHMMSS, starToColor } from 'utils/misc'
 import { PlayFill, StopFill } from 'react-bootstrap-icons'
+import { Breakpoints } from 'utils/misc'
 
 /* eslint-disable no-unused-vars */
 function MappoolBeatmap({ beatmap, mod, modIndex, playing, onPlayClick, onAudioEnd, className }) {
@@ -83,27 +84,60 @@ function MappoolBeatmap({ beatmap, mod, modIndex, playing, onPlayClick, onAudioE
                       secondsToHHMMSS(beatmap.hit_length / (dt ? 1.5 : 1))
                     )}
                   </div>
-                  <div className='mr-3'>
-                    <S.BackgroundSpan color={starToColor(beatmap.difficulty_rating) + starColorAlpha}>
-                      {dt || hr ? <b>&gt;{beatmap.difficulty_rating} ★</b> : beatmap.difficulty_rating + ' ★'}
-                    </S.BackgroundSpan>
-                  </div>
-                  <div className='mr-4'>{dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}</div>
-                  <div className='mr-4'>
-                    <S.BackgroundSpan color={'#4fc0ff2a'}>
-                      {hr ? <b>CS {beatmap.cs}</b> : 'CS ' + beatmap.cs}
-                    </S.BackgroundSpan>
-                  </div>
-                  <div className='mr-4'>
-                    <S.BackgroundSpan color={'#ff4e6f2a'}>
-                      {dt || hr ? <b>AR {beatmap.ar}</b> : 'AR ' + beatmap.ar}
-                    </S.BackgroundSpan>
-                  </div>
-                  <div className='mr-4'>
-                    <S.BackgroundSpan color={'#6eff792a'}>
-                      {dt || hr ? <b>OD {beatmap.accuracy}</b> : 'AR ' + beatmap.accuracy}
-                    </S.BackgroundSpan>{' '}
-                  </div>
+                  <Breakpoints.XLUp>
+                    <div className='mr-3'>
+                      <S.BackgroundSpan color={starToColor(beatmap.difficulty_rating) + starColorAlpha}>
+                        {dt || hr ? <b>&gt;{beatmap.difficulty_rating} ★</b> : beatmap.difficulty_rating + ' ★'}
+                      </S.BackgroundSpan>
+                    </div>
+                    <div className='mr-4'>{dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}</div>
+                    <div className='mr-4'>
+                      <S.BackgroundSpan color={'#4fc0ff2a'}>
+                        {hr ? <b>CS {beatmap.cs}</b> : 'CS ' + beatmap.cs}
+                      </S.BackgroundSpan>
+                    </div>
+                    <div className='mr-4'>
+                      <S.BackgroundSpan color={'#ff4e6f2a'}>
+                        {dt || hr ? <b>AR {beatmap.ar}</b> : 'AR ' + beatmap.ar}
+                      </S.BackgroundSpan>
+                    </div>
+                    <div className='mr-4'>
+                      <S.BackgroundSpan color={'#6eff792a'}>
+                        {dt || hr ? <b>OD {beatmap.accuracy}</b> : 'AR ' + beatmap.accuracy}
+                      </S.BackgroundSpan>{' '}
+                    </div>
+                  </Breakpoints.XLUp>
+                  <Breakpoints.LG>
+                    <div className='mr-2'>
+                      <S.BackgroundSpan color={starToColor(beatmap.difficulty_rating) + starColorAlpha}>
+                        {dt || hr ? <b>&gt;{beatmap.difficulty_rating} ★</b> : beatmap.difficulty_rating + ' ★'}
+                      </S.BackgroundSpan>
+                    </div>
+                    <div className='mr-2'>{dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}</div>
+                    <div className='mr-2'>
+                      <S.BackgroundSpan color={'#4fc0ff2a'}>
+                        {hr ? <b>CS {beatmap.cs}</b> : 'CS ' + beatmap.cs}
+                      </S.BackgroundSpan>
+                    </div>
+                    <div className='mr-2'>
+                      <S.BackgroundSpan color={'#ff4e6f2a'}>
+                        {dt || hr ? <b>AR {beatmap.ar}</b> : 'AR ' + beatmap.ar}
+                      </S.BackgroundSpan>
+                    </div>
+                    <div className='mr-2'>
+                      <S.BackgroundSpan color={'#6eff792a'}>
+                        {dt || hr ? <b>OD {beatmap.accuracy}</b> : 'AR ' + beatmap.accuracy}
+                      </S.BackgroundSpan>{' '}
+                    </div>
+                  </Breakpoints.LG>
+                  <Breakpoints.MD>
+                    <div className='mr-2'>
+                      <S.BackgroundSpan color={starToColor(beatmap.difficulty_rating) + starColorAlpha}>
+                        {dt || hr ? <b>&gt;{beatmap.difficulty_rating} ★</b> : beatmap.difficulty_rating + ' ★'}
+                      </S.BackgroundSpan>
+                    </div>
+                    <div className='mr-2'>{dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}</div>
+                  </Breakpoints.MD>
                 </div>
               </>
             ) : (
@@ -174,7 +208,7 @@ S.Truncate = styled.div`
     /* background-color: #f8da5e; */
   }
   @media screen and (min-width: 992px) {
-    max-width: ${({ hovered }) => (hovered ? '328px' : '468px')};
+    max-width: ${({ hovered }) => (hovered ? '448px' : '588px')};
     /* background-color: #ff7f68; */
     white-space: nowrap;
     overflow: hidden;

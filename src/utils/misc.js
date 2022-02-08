@@ -1,3 +1,5 @@
+import { useMediaQuery } from 'react-responsive'
+
 export function truncate(inputString, length) {
   return inputString.length > length ? inputString.substring(0, length) + '...' : inputString
 }
@@ -202,4 +204,26 @@ export function validateEmail(email) {
 
 export function delay(ms) {
   return new Promise((res) => setTimeout(res, ms))
+}
+
+export const Breakpoints = {
+  XS: ({ children }) => (useMediaQuery({ maxWidth: 576 }) ? children : null),
+
+  SMDown: ({ children }) => (useMediaQuery({ maxWidth: 768 - 1 }) ? children : null),
+  SM: ({ children }) => (useMediaQuery({ minWidth: 576, maxWidth: 768 - 1 }) ? children : null),
+  SMUp: ({ children }) => (useMediaQuery({ minWidth: 576 }) ? children : null),
+
+  MDDown: ({ children }) => (useMediaQuery({ maxWidth: 992 - 1 }) ? children : null),
+  MD: ({ children }) => (useMediaQuery({ minWidth: 768, maxWidth: 992 - 1 }) ? children : null),
+  MDUp: ({ children }) => (useMediaQuery({ minWidth: 768 }) ? children : null),
+
+  LGDown: ({ children }) => (useMediaQuery({ maxWidth: 1200 - 1 }) ? children : null),
+  LG: ({ children }) => (useMediaQuery({ minWidth: 992, maxWidth: 1200 - 1 }) ? children : null),
+  LGUp: ({ children }) => (useMediaQuery({ minWidth: 992 }) ? children : null),
+
+  XLDown: ({ children }) => (useMediaQuery({ maxWidth: 1400 - 1 }) ? children : null),
+  XL: ({ children }) => (useMediaQuery({ minWidth: 1200, maxWidth: 1400 - 1 }) ? children : null),
+  XLUp: ({ children }) => (useMediaQuery({ minWidth: 1200 }) ? children : null),
+
+  XXL: ({ children }) => (useMediaQuery({ minWidth: 1400 }) ? children : null),
 }

@@ -6,7 +6,7 @@ import { Globe, PencilSquare, TrashFill } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { useFallbackImg, userOwnsTournament } from 'utils/misc'
+import { Breakpoints, useFallbackImg, userOwnsTournament } from 'utils/misc'
 import * as api from '../../utils/api'
 import {
   Alert,
@@ -23,6 +23,9 @@ import {
 } from '../bootstrap-osu-collector'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import MappoolRound from './MappoolRound'
+import Truncate from 'react-truncate'
+import { Ellipsis } from 'react-bootstrap/esm/PageItem'
+import { Tabs } from 'react-bootstrap'
 
 function Tournament({ user }) {
   // @ts-ignore
@@ -234,51 +237,125 @@ function Tournament({ user }) {
         <Card className='p-4 shadow' style={{ minHeight: '100vh' }}>
           <h1 className='mb-4'> Mappool </h1>
           <Tab.Container defaultActiveKey={0}>
-            <div className='d-flex'>
-              <div className='px-2 mr-1' style={{ width: 150 }}>
-                <Nav variant='pills' className='flex-column'>
-                  <ReactPlaceholder
-                    ready={!loading}
-                    type='rect'
-                    showLoadingAnimation
-                    style={{ height: '40px' }}
-                    color='#0D6EFD'
-                  >
-                    {tournament?.rounds.map((round, i) => (
-                      <Nav.Item key={i}>
-                        <Nav.Link eventKey={i}>{round.round}</Nav.Link>
-                      </Nav.Item>
-                    ))}
-                  </ReactPlaceholder>
-                </Nav>
-              </div>
-              <div className='flex-fill'>
-                <Tab.Content>
-                  {loading
-                    ? [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                        <ReactPlaceholder
-                          key={i}
-                          ready={false}
-                          type='rect'
-                          showLoadingAnimation
-                          style={{ height: '66px' }}
-                          className='mb-1'
-                        >
-                          {' '}
-                        </ReactPlaceholder>
-                      ))
-                    : tournament?.rounds.map((round, i) => (
-                        <Tab.Pane key={i} eventKey={i}>
-                          <MappoolRound
-                            round={round}
-                            currentlyPlaying={currentlyPlaying}
-                            setCurrentlyPlaying={setCurrentlyPlaying}
-                          />
-                        </Tab.Pane>
+            <Breakpoints.XLUp>
+              <div className='d-flex'>
+                <div className='px-2 mr-1' style={{ width: 150 }}>
+                  <Nav variant='pills' className='flex-column'>
+                    <ReactPlaceholder
+                      ready={!loading}
+                      type='rect'
+                      showLoadingAnimation
+                      style={{ height: '40px' }}
+                      color='#0D6EFD'
+                    >
+                      {tournament?.rounds.map((round, i) => (
+                        <Nav.Item key={i}>
+                          <Nav.Link eventKey={i}>
+                            <div
+                              style={{
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                width: 118,
+                                margin: 0,
+                              }}
+                            >
+                              {round.round}
+                            </div>
+                          </Nav.Link>
+                        </Nav.Item>
                       ))}
-                </Tab.Content>
+                    </ReactPlaceholder>
+                  </Nav>
+                </div>
+                <div className='flex-fill'>
+                  <Tab.Content>
+                    {loading
+                      ? [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                          <ReactPlaceholder
+                            key={i}
+                            ready={false}
+                            type='rect'
+                            showLoadingAnimation
+                            style={{ height: '66px' }}
+                            className='mb-1'
+                          >
+                            {' '}
+                          </ReactPlaceholder>
+                        ))
+                      : tournament?.rounds.map((round, i) => (
+                          <Tab.Pane key={i} eventKey={i}>
+                            <MappoolRound
+                              round={round}
+                              currentlyPlaying={currentlyPlaying}
+                              setCurrentlyPlaying={setCurrentlyPlaying}
+                            />
+                          </Tab.Pane>
+                        ))}
+                  </Tab.Content>
+                </div>
               </div>
-            </div>
+            </Breakpoints.XLUp>
+            <Breakpoints.LGDown>
+              <div>
+                <div className='px-2 mr-1'>
+                  <Nav variant='pills'>
+                    <div className='d-flex'>
+                      <ReactPlaceholder
+                        ready={!loading}
+                        type='rect'
+                        showLoadingAnimation
+                        style={{ height: '40px' }}
+                        color='#0D6EFD'
+                      >
+                        {tournament?.rounds.map((round, i) => (
+                          <Nav.Item key={i}>
+                            <Nav.Link eventKey={i}>
+                              <div
+                                style={{
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                  margin: 0,
+                                }}
+                              >
+                                {round.round}
+                              </div>
+                            </Nav.Link>
+                          </Nav.Item>
+                        ))}
+                      </ReactPlaceholder>
+                    </div>
+                  </Nav>
+                </div>
+                <div className='flex-fill'>
+                  <Tab.Content>
+                    {loading
+                      ? [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                          <ReactPlaceholder
+                            key={i}
+                            ready={false}
+                            type='rect'
+                            showLoadingAnimation
+                            style={{ height: '66px' }}
+                            className='mb-1'
+                          >
+                            {' '}
+                          </ReactPlaceholder>
+                        ))
+                      : tournament?.rounds.map((round, i) => (
+                          <Tab.Pane key={i} eventKey={i}>
+                            <MappoolRound
+                              round={round}
+                              currentlyPlaying={currentlyPlaying}
+                              setCurrentlyPlaying={setCurrentlyPlaying}
+                            />
+                          </Tab.Pane>
+                        ))}
+                  </Tab.Content>
+                </div>
+              </div>
+            </Breakpoints.LGDown>
           </Tab.Container>
         </Card>
       </Container>
