@@ -132,8 +132,6 @@ function DesktopClient({ user, setUser }) {
   const twitchSub = isSubbedToFunOrange
   const paidSub = paidSubscriptionActive(user, paypalSubscription, stripeSubscription)
 
-  console.log(stripeSubscription)
-
   const Divider = () => (
     <div
       style={{

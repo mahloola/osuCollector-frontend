@@ -25,7 +25,7 @@ S.Container = styled.div`
 `
 
 S.Overlay = styled(XCircleFill)`
-  color: #000000bb;
+  color: #ff3333cc;
   position: absolute;
   z-index: 27;
   cursor: pointer;
@@ -36,7 +36,8 @@ S.Overlay = styled(XCircleFill)`
 S.Image = styled(Image)`
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   position: absolute;
-  width: auto;
+  object-fit: cover;
+  width: 34px;
   height: 34px;
   cursor: pointer;
 `

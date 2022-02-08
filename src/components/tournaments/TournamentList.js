@@ -1,6 +1,5 @@
-import { Col, Container, Spinner } from '../bootstrap-osu-collector'
+import { Col, Container, ReactPlaceholder, Spinner } from '../bootstrap-osu-collector'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import ReactPlaceholder from 'react-placeholder/lib'
 import TournamentCard from './TournamentCard'
 
 export default function TournamentList({ tournaments, hasMore, loadMore }) {

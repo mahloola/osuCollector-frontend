@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Card, Container, Image } from '../bootstrap-osu-collector'
+import { Card, Container, Image, ReactPlaceholder } from '../bootstrap-osu-collector'
 import CollectionList from '../common/CollectionList'
 import * as api from '../../utils/api'
-import ReactPlaceholder from 'react-placeholder/lib'
 import { addFavouritedByUserAttribute } from 'utils/misc'
 
 function UserUploads({ user, setUser }) {

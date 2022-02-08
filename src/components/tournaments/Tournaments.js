@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Plus, Search } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
 import styled, { css } from 'styled-components'
-import { getTournaments } from 'utils/api'
+import * as api from 'utils/api'
 import TournamentList from './TournamentList'
 
 function Tournaments() {
@@ -23,7 +23,8 @@ function Tournaments() {
 
   useEffect(() => {
     let cancel
-    getTournaments((c) => (cancel = c))
+    api
+      .getRecentTournaments((c) => (cancel = c))
       .then((_tournamentPage) => {
         setTournamentPage(_tournamentPage)
         setTournaments(_tournamentPage.tournaments)

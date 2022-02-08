@@ -1,7 +1,9 @@
 import * as ReactBootstrap from 'react-bootstrap'
 import { Dropdown } from 'react-bootstrap'
-import styled, { css } from 'styled-components'
+import styled, { css, ThemeContext } from 'styled-components'
 import ReactBootstrapFloatingLabel from 'react-bootstrap-floating-label'
+import _ReactPlaceholder from 'react-placeholder/lib'
+import { useContext } from 'react'
 
 const backgroundColor = (props) =>
   props.$lightbg2 ? props.theme.primary25 : props.$lightbg ? props.theme.primary15 : props.theme.primary8
@@ -95,6 +97,19 @@ const FloatingLabel = styled(ReactBootstrapFloatingLabel)`
     `}
 `
 
+function ReactPlaceholder(props) {
+  const theme = useContext(ThemeContext)
+  if (theme.darkMode) {
+    return (
+      <_ReactPlaceholder {...props} color={props.color || theme.primary30}>
+        {props.children}
+      </_ReactPlaceholder>
+    )
+  } else {
+    return <_ReactPlaceholder {...props}>{props.children}</_ReactPlaceholder>
+  }
+}
+
 export * from 'react-bootstrap'
 export {
   Button,
@@ -107,4 +122,5 @@ export {
   ListGroupItem,
   ModalHeader,
   ModalBody,
+  ReactPlaceholder,
 }

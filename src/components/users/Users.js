@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { Alert, Card, Container, Col, Spinner, Pagination } from '../bootstrap-osu-collector'
+import { Alert, Card, Container, Col, ReactPlaceholder, Spinner, Pagination } from '../bootstrap-osu-collector'
 import { getUsers } from '../../utils/api'
-import ReactPlaceholder from 'react-placeholder/lib'
 import UserCard from './UserCard'
 
 function Users() {
@@ -68,7 +67,7 @@ function Users() {
                       showLoadingAnimation
                       type='rect'
                       className='mx-auto'
-                      style={{ width: '90%', height: '235px' }}
+                      style={{ width: '90%', height: '210px' }}
                     >
                       {user && <UserCard user={user}></UserCard>}
                     </ReactPlaceholder>

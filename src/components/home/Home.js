@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Card, Col, Container, Row } from '../bootstrap-osu-collector'
+import { Card, Col, Container, ReactPlaceholder, Row } from '../bootstrap-osu-collector'
 import * as api from '../../utils/api'
 import './Home.css'
-import ReactPlaceholder from 'react-placeholder'
 import 'react-placeholder/lib/reactPlaceholder.css'
 import CollectionCard from '../common/CollectionCard'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -16,31 +15,29 @@ function Home({ user, setUser }) {
   const [recent, setRecent] = useState(new Array(3).fill(null))
 
   useEffect(() => {
-    ;(async () => {
-      let cancel1, cancel2, cancel3
-      api
-        .getMetadata((c) => (cancel1 = c))
-        .then(setMetadata)
-        .catch(console.log)
-      api
-        .getPopularCollections('week', 1, 6, (c) => (cancel2 = c))
-        .then((paginatedCollectionData) => {
-          addFavouritedByUserAttribute(paginatedCollectionData.collections, user)
-          setPopular(paginatedCollectionData.collections)
-        })
-        .catch(console.log)
-      api
-        .getRecentCollections(1, 9, (c) => (cancel3 = c))
-        .then((paginatedCollectionData) => {
-          setRecent(paginatedCollectionData.collections)
-        })
-        .catch(console.log)
-      return () => {
-        if (cancel1) cancel1()
-        if (cancel2) cancel2()
-        if (cancel3) cancel3()
-      }
-    })()
+    let cancel1, cancel2, cancel3
+    api
+      .getMetadata((c) => (cancel1 = c))
+      .then(setMetadata)
+      .catch(console.log)
+    api
+      .getPopularCollections('week', 1, 6, (c) => (cancel2 = c))
+      .then((paginatedCollectionData) => {
+        addFavouritedByUserAttribute(paginatedCollectionData.collections, user)
+        setPopular(paginatedCollectionData.collections)
+      })
+      .catch(console.log)
+    api
+      .getRecentCollections(1, 9, (c) => (cancel3 = c))
+      .then((paginatedCollectionData) => {
+        setRecent(paginatedCollectionData.collections)
+      })
+      .catch(console.log)
+    return () => {
+      if (cancel1) cancel1()
+      if (cancel2) cancel2()
+      if (cancel3) cancel3()
+    }
   }, [])
 
   const likeButtonClicked = (collectionId, favourited) => {

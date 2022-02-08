@@ -1,6 +1,5 @@
-import { Col, Container, Spinner } from '../bootstrap-osu-collector'
+import { Col, Container, ReactPlaceholder, Spinner } from '../bootstrap-osu-collector'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import ReactPlaceholder from 'react-placeholder/lib'
 import CollectionCard from './CollectionCard'
 import { changeCollectionFavouritedStatus } from 'utils/misc'
 import * as api from '../../utils/api'
@@ -49,7 +48,7 @@ const CollectionList = ({ collections, setCollections, hasMore, loadMore, user, 
               showLoadingAnimation
               type='rect'
               className='mx-auto'
-              style={{ width: '90%', height: '235px' }}
+              style={{ width: '90%', height: '268px' }}
             >
               {collection && <CollectionCard collection={collection} likeButtonClicked={likeButtonClicked} />}
             </ReactPlaceholder>

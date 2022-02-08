@@ -10,6 +10,7 @@ import {
   Image,
   Modal,
   OverlayTrigger,
+  ReactPlaceholder,
   Row,
   Spinner,
   Tooltip,
@@ -17,7 +18,6 @@ import {
 import Alert from 'react-bootstrap/Alert'
 import * as api from '../../utils/api'
 import FavouriteButton from '../common/FavouriteButton'
-import ReactPlaceholder from 'react-placeholder/lib'
 import { RectShape } from 'react-placeholder/lib/placeholders'
 import './MapsetCard.css'
 import MapsetCard from './MapsetCard'

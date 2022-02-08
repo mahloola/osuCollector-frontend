@@ -8,9 +8,6 @@ const getRequestWithQueryParameters = async (route, params = undefined, cancelCa
     params: params,
     cancelToken: cancelCallback ? new axios.CancelToken(cancelCallback) : undefined,
   })
-  if (res.status !== 200) {
-    throw new Error(`${route} responded with ${res.status}: ${res.data}`)
-  }
   return res.data
 }
 
@@ -265,6 +262,9 @@ export async function getTwitchSubStatus(cancelCallback = undefined) {
     })
     return response.data.isSubbedToFunOrange
   } catch (err) {
+    if (err.toString() === 'Cancel') {
+      return
+    }
     if (err.response.status === 404) {
       return null
     } else {
@@ -297,6 +297,9 @@ export async function getPaypalSubscription(cancelCallback = undefined) {
     })
     return response.data
   } catch (err) {
+    if (err.toString() === 'Cancel') {
+      return
+    }
     if (err.response.status === 404) {
       return null
     } else {
@@ -346,6 +349,9 @@ export async function getSubscription(cancelCallback = undefined) {
     })
     return response.data
   } catch (err) {
+    if (err.toString() === 'Cancel') {
+      return
+    }
     if (err.response.status === 404) {
       return null
     } else {
@@ -628,29 +634,45 @@ const createTournamentDto = {
   ],
 }
 
-// eslint-disable-next-line no-unused-vars
-export async function getTournaments(cancelCallback = undefined) {
-  const noMappool = await getTournament(1, cancelCallback)
-  delete noMappool.mappool
-  return {
-    nextPageCursor: null,
-    hasMore: false,
-    tournaments: [noMappool],
+export async function createTournament(createTournamentDto) {
+  const route = '/api/tournaments'
+  const res = await axios.post(config.get('API_HOST') + route, createTournamentDto)
+  if (res.status !== 200) {
+    throw new Error(`${route} responded with ${res.status}: ${res.data}`)
   }
-  // return getRequestWithQueryParameters('/api/tournaments', {}, cancelCallback)
+  return res.data
 }
 
-// eslint-disable-next-line no-unused-vars
+export async function editTournament(id, createTournamentDto) {
+  const route = `/api/tournaments/${id}`
+  const res = await axios.patch(config.get('API_HOST') + route, createTournamentDto)
+  if (res.status !== 200) {
+    throw new Error(`${route} responded with ${res.status}: ${res.data}`)
+  }
+  return res.data
+}
+
+export async function getRecentTournaments(cursor = undefined, perPage = undefined, cancelCallback = undefined) {
+  return getRequestWithQueryParameters(
+    '/api/tournaments/recent',
+    {
+      cursor,
+      perPage,
+    },
+    cancelCallback
+  )
+}
+
 export async function getTournament(id, cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/tournaments/${id}`, {}, cancelCallback)
 }
 
 export async function deleteTournament(id) {
-  const response = await fetch(`${config.get('API_HOST')}/api/tournemants/${id}`, {
+  const response = await fetch(`${config.get('API_HOST')}/api/tournaments/${id}`, {
     method: 'DELETE',
   })
   if (response.status === 200) {
-    console.log('description successfully edited')
+    console.log('tournament successfully deleted')
     return true
   } else {
     console.log(response)

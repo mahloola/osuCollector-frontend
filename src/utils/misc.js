@@ -106,6 +106,7 @@ export function parseMappool(text) {
   const sectionRegex = /^\s*\[(.+)\.(.+)\]\s*$/
   const urlRegex1 = /^https:\/\/osu\.ppy\.sh\/beatmapsets\/.+\/(\d+)/
   const urlRegex2 = /^https:\/\/osu\.ppy\.sh\/b\/(\d+)/
+  const urlRegex3 = /^https:\/\/osu\.ppy\.sh\/beatmaps\/(\d+)/
   const beatmapIdRegex = /^(\d+)\s*$/
 
   const rounds = []
@@ -128,6 +129,11 @@ export function parseMappool(text) {
     const urlMatch2 = line.match(urlRegex2)
     if (urlMatch2) {
       beatmapId = urlMatch2[1]
+    }
+
+    const urlMatch3 = line.match(urlRegex3)
+    if (urlMatch3) {
+      beatmapId = urlMatch3[1]
     }
 
     const beatmapIdMatch = line.match(beatmapIdRegex)
@@ -169,7 +175,7 @@ export function parseMappool(text) {
   return { rounds: rounds, error: null }
 }
 
-export const isEqual = (arr1, arr2) => {
+export function isEqual(arr1, arr2) {
   if (!arr1 || !arr2) return false
   if (arr1.length !== arr2.length) return false
   for (let i = 0; i < arr1.length; i++) {
@@ -178,8 +184,22 @@ export const isEqual = (arr1, arr2) => {
   return true
 }
 
+export function userOwnsTournament(user, tournament) {
+  if (user?.id === tournament?.uploader.id) {
+    return true
+  }
+  if (tournament.organizers.map((user) => user.id).includes(user.id)) {
+    return true
+  }
+  return false
+}
+
 export function validateEmail(email) {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(email)
+}
+
+export function delay(ms) {
+  return new Promise((res) => setTimeout(res, ms))
 }

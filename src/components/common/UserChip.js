@@ -7,7 +7,7 @@ function UserChip({ id, username }) {
     <S.UserChipContainer $lightbg className='shadow-sm py-1 pl-1 pr-3 mr-2 mb-2'>
       <div className='d-flex align-items-center'>
         <Image className='collection-card-uploader-avatar mr-2' src={`https://a.ppy.sh/${id}`} roundedCircle />
-        <a href={`https://osu.ppy.sh/u/${id}`}>{username}</a>
+        <S.a href={`https://osu.ppy.sh/u/${id}`}>{username}</S.a>
       </div>
     </S.UserChipContainer>
   )
@@ -16,6 +16,12 @@ function UserChip({ id, username }) {
 const S = {}
 S.UserChipContainer = styled(Card)`
   border-radius: 10vh;
+`
+S.a = styled.a`
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
 `
 
 export default UserChip

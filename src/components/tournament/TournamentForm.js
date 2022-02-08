@@ -1,18 +1,15 @@
 // @ts-nocheck
-/* eslint-disable no-unused-vars */
-import axios from 'axios'
-import { useRef } from 'react'
-import { useContext, useState } from 'react'
-import { Alert, Col, Container, Image, Row } from 'react-bootstrap'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { Alert, Container, Spinner } from 'react-bootstrap'
 import styled, { css, ThemeContext } from 'styled-components'
 import { parseMappool } from 'utils/misc'
-import { Button, Card, Form, FloatingLabel, FormControl, InputGroup } from '../../bootstrap-osu-collector'
-import MappoolEditor from '../MappoolEditor'
-import OrganizerIcon from './OrganizerIcon'
+import { Button, Card, Form, FloatingLabel, FormControl, InputGroup } from '../bootstrap-osu-collector'
+import MappoolEditor from '../tournaments/MappoolEditor'
+import OrganizerIcon from '../tournaments/create/OrganizerIcon'
 
 const mappoolTemplate = `# Lines beginning with '#' are ignored
 
-# Make sure links are in order
+# ⚠️ Make sure links are in order 
 # eg. from top to bottom these are: NM1, NM2, NM3, NM4
 
 [qualifiers.NM]
@@ -21,7 +18,7 @@ https://osu.ppy.sh/beatmapsets/1257558#osu/2613136
 https://osu.ppy.sh/beatmapsets/1537691#osu/3144020
 https://osu.ppy.sh/beatmapsets/1306570#osu/2823535
 
-# You can also provide beatmap IDs instead of the full URL
+# ⚠️ You can also provide beatmap IDs instead of the full URL
 # https://osu.ppy.sh/beatmapsets/1306570#osu/2823535 👈 only the last number!!!
 
 [qualifiers.HD]
@@ -39,7 +36,7 @@ https://osu.ppy.sh/beatmapsets/1306570#osu/2823535
 [qualifiers.FM]
 
 
-# Feel free to add or remove sections as you please
+# ⚠️ Feel free to add or remove sections as you please
 
 
 [round of 16.NM]
@@ -202,6 +199,7 @@ https://osu.ppy.sh/beatmapsets/1306570#osu/2823535
 [grand finals.TB]
 `
 
+// eslint-disable-next-line no-unused-vars
 const owcText = `
 [qualifiers.NM]
 https://osu.ppy.sh/beatmapsets/1597778#osu/3263082
@@ -412,12 +410,16 @@ https://osu.ppy.sh/beatmapsets/1245641#osu/3333738
 [grand finals.TB]
 https://osu.ppy.sh/beatmapsets/1633250#osu/3333745`
 
-function CreateTournament() {
+function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament }) {
   const theme = useContext(ThemeContext)
 
+  const tournamentDraft = JSON.parse(localStorage.getItem('Create Tournament Draft'))
+
   const [organizer, setOrganizer] = useState('')
-  const [organizers, setOrganizers] = useState([])
-  const [mappoolText, setMappoolText] = useState(mappoolTemplate)
+  const [organizers, setOrganizers] = useState(tournamentDraft?.organizers || [])
+  const [mappoolText, setMappoolText] = useState(
+    tournamentDraft?.mappoolText || (tournament === null ? '' : mappoolTemplate)
+  )
   // const [mappoolText, setMappoolText] = useState(owcText)
 
   const [error, setError] = useState(false)
@@ -427,6 +429,64 @@ function CreateTournament() {
   const [organizerError, setOrganizerError] = useState('')
   const [mappoolError, setMappoolError] = useState('')
   const [submitButtonClicked, setSubmitButtonClicked] = useState(false)
+
+  const [seconds, setSeconds] = useState(0)
+  const formRef = useRef(null)
+  useEffect(() => {
+    let interval = null
+    if (seconds === 0 && saveDraft) {
+      const tournamentDraft = JSON.parse(localStorage.getItem('Create Tournament Draft'))
+      if (tournamentDraft) {
+        console.log('tournament draft loaded')
+        formRef.current[0].value = tournamentDraft.tournamentName
+        formRef.current[1].value = tournamentDraft.tournamentURL
+        formRef.current[2].value = tournamentDraft.bannerURL
+        formRef.current[5].value = tournamentDraft.description
+        setMappoolText(tournamentDraft.mappoolText)
+      }
+    } else if (seconds % 5 === 0 && seconds !== 0 && saveDraft) {
+      const tournamentName = formRef.current[0].value.trim()
+      const tournamentURL = formRef.current[1].value.trim()
+      const bannerURL = formRef.current[2].value.trim()
+      const description = formRef.current[5].value.trim()
+      const tournamentDraft = {
+        tournamentName,
+        tournamentURL,
+        description,
+        organizers,
+        bannerURL,
+        mappoolText,
+      }
+      localStorage.setItem('Create Tournament Draft', JSON.stringify(tournamentDraft))
+      console.log('tournament draft saved')
+    }
+    interval = setInterval(() => {
+      setSeconds((prev) => prev + 1)
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [seconds])
+
+  useEffect(() => {
+    if (!tournament) {
+      return
+    }
+    formRef.current[0].value = tournament.name
+    formRef.current[1].value = tournament.link
+    formRef.current[2].value = tournament.banner
+    formRef.current[5].value = tournament.description
+    const lines = []
+    for (const round of tournament.rounds) {
+      for (const mod of round.mods) {
+        lines.push(`[${round.round}.${mod.mod}]`)
+        for (const beatmap of mod.maps) {
+          lines.push(beatmap.url || `https://osu.ppy.sh/b/${beatmap}`)
+        }
+        lines.push('')
+      }
+    }
+    setMappoolText(lines.join('\n'))
+    setOrganizers(tournament.organizers.map((user) => user.id))
+  }, [tournament])
 
   const submit = async (event) => {
     event.preventDefault()
@@ -476,26 +536,16 @@ function CreateTournament() {
       return
     }
 
-    if (!mappoolError) {
-      const createTournamentDto = {
-        name: tournamentName,
-        link: tournamentURL,
-        description: description,
-        organizers: organizers,
-        banner: bannerURL,
-        rounds: rounds,
-      }
-      console.log('createTournamentDto', createTournamentDto)
-      try {
-        await axios.post('http://localhost:8000/api/tournaments', createTournamentDto)
-        alert('success!!!')
-      } catch (err) {
-        // TODO: handle 'A tournament with that name already exists'
-        alert(err.message)
-      }
-    } else {
-      alert('Problem reading mappool: ' + error)
+    const createTournamentDto = {
+      name: tournamentName,
+      link: tournamentURL,
+      description: description,
+      organizers: organizers,
+      banner: bannerURL,
+      rounds: rounds,
     }
+    console.log('createTournamentDto', createTournamentDto)
+    onSubmit(createTournamentDto)
   }
 
   const addOrganizer = () => {
@@ -515,8 +565,8 @@ function CreateTournament() {
   return (
     <Container className='pt-4'>
       <Card className='px-5 py-4'>
-        <Form onSubmit={submit} className='pb-5'>
-          <h1 className='text-muted mb-4'>Create Tournament</h1>
+        <Form onSubmit={submit} ref={formRef} className='pb-5'>
+          <h1 className='text-muted mb-4'>{title}</h1>
 
           <Form.Group className='mb-3'>
             <Form.Label>Tournament name</Form.Label>
@@ -594,15 +644,15 @@ function CreateTournament() {
           <Form.Text muted className='my-2'>
             A mappool template is provided below. Please modify it to include the maps in the tournament.
           </Form.Text>
-          <MappoolEditor mappoolText={mappoolText} setMappoolText={setMappoolText} />
+          <MappoolEditor mappoolText={mappoolText} setMappoolText={setMappoolText} mappoolError={mappoolError} />
           {error && (
             <Alert className='mt-4 mb-0' variant='danger'>
               Please fix the above errors and try again
             </Alert>
           )}
-          <Button className='mt-4 w-100' size='lg' variant='primary' type='submit'>
+          <Button disabled={submitLoading} className='mt-4 w-100' size='lg' variant='primary' type='submit'>
             <h3 onClick={() => setSubmitButtonClicked(true)} className='mb-0 py-2'>
-              Submit
+              {submitLoading ? <Spinner animation='border' /> : 'Submit'}
             </h3>
           </Button>
         </Form>
@@ -648,4 +698,4 @@ const textareaFormControlStyle = (theme) =>
       }
     : {}
 
-export default CreateTournament
+export default TournamentForm

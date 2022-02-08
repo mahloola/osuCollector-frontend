@@ -32,7 +32,8 @@ import Success from './components/payments/Success'
 import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 import Tournaments from 'components/tournaments/Tournaments'
 import Tournament from 'components/tournament/Tournament'
-import CreateTournament from 'components/tournaments/create/CreateTournament'
+import CreateTournament from 'components/tournament/CreateTournament'
+import EditTournament from 'components/tournament/EditTournament'
 
 extend([mixPlugin])
 
@@ -164,8 +165,11 @@ function App() {
                 <Route exact path='/tournaments/create'>
                   <CreateTournament />
                 </Route>
-                <Route path='/tournaments/:id'>
-                  <Tournament />
+                <Route exact path='/tournaments/:id'>
+                  <Tournament user={user} />
+                </Route>
+                <Route path='/tournaments/:id/edit'>
+                  <EditTournament />
                 </Route>
                 <Route path='/payments/checkout'>
                   <Checkout />
