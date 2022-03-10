@@ -11,6 +11,7 @@ import { Button, Form, FormControl, InputGroup, Nav, Navbar, ReactPlaceholder } 
 import '../common/Glow.css'
 import LoginButton from './LoginButton'
 import './NavButton.css'
+import './NavigationBar.css'
 import UploadModal from './UploadModal'
 import UserBadge from './UserBadge'
 
@@ -65,7 +66,7 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
     )
 
   return (
-    <div>
+    <div className='navbar-sticky'>
       <Navbar bg='dark' variant='dark' expand='lg' className='pl-3'>
         <Large>
           <LinkContainer to='/'>
