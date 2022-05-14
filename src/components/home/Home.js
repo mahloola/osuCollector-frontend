@@ -67,7 +67,7 @@ function Home({ user, setUser }) {
           <p>
             This is a place where you can view beatmap collections uploaded by other players. It is mainly developed by{' '}
             <a href='https://twitter.com/funorange42'>FunOrange</a> and{' '}
-            <a href='https://twitter.com/mahloola'>Mahloola</a>.
+            <a href='https://twitter.com/mahloola'>mahloola</a>.
             {
               /* {process.env.NODE_ENV !== 'production' && */
               <>
