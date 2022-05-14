@@ -352,10 +352,10 @@ export async function getSubscription(cancelCallback = undefined) {
     if (err.toString() === 'Cancel') {
       return
     }
-    if (err.response.status === 404) {
+    if (err.response?.status === 404) {
       return null
     } else {
-      console.log(`/api/payments/createSubscription responded with ${err.response.status}: ${err.response.data}`)
+      console.error(`/api/payments/createSubscription responded with ${err.response?.status}: ${err.response?.data}`)
       return null
     }
   }
@@ -449,6 +449,15 @@ export async function reportComment(collectionId, commentId) {
         response.status
       }: ${await response.text()}`
     )
+}
+
+export async function logout() {
+  const route = '/api/logout'
+  try {
+    await axios.post(config.get('API_HOST') + route)
+  } catch (error) {
+    console.error(`${route} responded with ${error.response.status}: ${error.response.data}`)
+  }
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -658,6 +667,27 @@ export async function getRecentTournaments(cursor = undefined, perPage = undefin
     {
       cursor,
       perPage,
+    },
+    cancelCallback
+  )
+}
+
+export async function searchTournaments(
+  queryString,
+  cursor,
+  perPage = undefined,
+  sortBy = undefined,
+  orderBy = undefined,
+  cancelCallback = undefined
+) {
+  return getRequestWithQueryParameters(
+    '/api/tournaments/search',
+    {
+      search: queryString,
+      cursor,
+      perPage,
+      sortBy,
+      orderBy,
     },
     cancelCallback
   )

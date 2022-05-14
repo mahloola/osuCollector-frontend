@@ -4,6 +4,7 @@ import { Dropdown } from '../bootstrap-osu-collector'
 import Image from 'react-bootstrap/Image'
 import { LinkContainer } from 'react-router-bootstrap'
 import './UserBadge.css'
+import * as api from '../../utils/api'
 
 const UserBadge = ({ className, user }) => {
   const [show, setShow] = useState(false)
@@ -26,6 +27,15 @@ const UserBadge = ({ className, user }) => {
         <LinkContainer to={`/users/${user.id}/favourites`}>
           <Dropdown.Item onClick={() => setShow(false)}>Favourites</Dropdown.Item>
         </LinkContainer>
+        <Dropdown.Item
+          onClick={async () => {
+            setShow(false)
+            await api.logout()
+            window.location.reload()
+          }}
+        >
+          Logout
+        </Dropdown.Item>
       </div>
     </Dropdown>
   )

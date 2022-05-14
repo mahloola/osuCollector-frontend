@@ -1,5 +1,5 @@
 import { Alert, Button, Card, Container, Form, FormControl, InputGroup } from 'components/bootstrap-osu-collector'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Plus, Search } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
 import styled, { css } from 'styled-components'
@@ -15,6 +15,8 @@ function Tournaments() {
   }
 
   const [searchBarInput, setSearchBarInput] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const typingTimeoutRef = useRef(null)
   const searchSubmit = (event) => {
     event.preventDefault()
     alert(searchBarInput)
@@ -33,6 +35,40 @@ function Tournaments() {
     return cancel
   }, [])
 
+  const handleSearchOnChange = (e) => {
+    setSearchBarInput(e.target.value)
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current)
+    }
+    typingTimeoutRef.current = setTimeout(() => setSearchQuery(e.target.value), 300)
+  }
+
+  useEffect(() => {
+    if (!searchQuery) return
+    console.log('searchQuery', searchQuery)
+    let cancel
+    api
+      .searchTournaments(
+        searchQuery,
+        tournamentPage?.nextPageCursor || 1,
+        18,
+        '_text_match',
+        'desc',
+        (c) => (cancel = c)
+      )
+      .then((_tournamentPage) => {
+        setTournamentPage(_tournamentPage)
+        setTournaments(_tournamentPage.tournaments)
+        setError(null)
+      })
+      .catch((err) => {
+        if (err.toString() !== 'Cancel') {
+          setError(err)
+        }
+      })
+    return cancel
+  }, [searchQuery])
+
   return (
     <Container className='pt-4'>
       <Card className='shadow-lg'>
@@ -50,11 +86,7 @@ function Tournaments() {
           </div>
           <Form onSubmit={searchSubmit} className='ml-3 me-auto'>
             <InputGroup>
-              <S.FormControl
-                onChange={(e) => setSearchBarInput(e.target.value)}
-                type='search'
-                placeholder='Search for tournaments...'
-              />
+              <S.FormControl onChange={handleSearchOnChange} type='search' placeholder='Search for tournaments...' />
               <Button type='submit' variant='primary'>
                 <Search />
               </Button>

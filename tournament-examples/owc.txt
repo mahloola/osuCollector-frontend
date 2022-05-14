@@ -1,0 +1,204 @@
+osu! World Cup 2021
+https://osu.ppy.sh/wiki/en/Tournaments/OWC/2021
+https://i.ppy.sh/b65a884686655adfd481ca3e2f6d2980580fa071/68747470733a2f2f6f73752e7070792e73682f77696b692f696d616765732f7368617265642f6e6577732f323032312d30392d31362d6f73752d776f726c642d6375702d323032312d726567697374726174696f6e732d6e6f772d6f70656e2f6f77632d323032312d62616e6e65722e6a7067
+2051389
+The osu! World Cup 2021 (OWC 2021) was a country-based osu! tournament hosted by the osu! team. It was the twelfth instalment of the osu! World Cup.
+
+[qualifiers.NM]
+https://osu.ppy.sh/beatmaps/3263082
+https://osu.ppy.sh/beatmaps/3263098
+https://osu.ppy.sh/beatmaps/3263248
+https://osu.ppy.sh/beatmaps/3263131
+
+[qualifiers.HD]
+https://osu.ppy.sh/beatmaps/3263097
+https://osu.ppy.sh/beatmaps/3263174
+
+[qualifiers.HR]
+https://osu.ppy.sh/beatmaps/3262706
+https://osu.ppy.sh/beatmaps/3263175
+
+[qualifiers.DT]
+https://osu.ppy.sh/beatmaps/3263112
+https://osu.ppy.sh/beatmaps/3263028
+
+[round of 32.NM]
+https://osu.ppy.sh/beatmaps/3276259
+https://osu.ppy.sh/beatmaps/3276724
+https://osu.ppy.sh/beatmaps/2692632
+https://osu.ppy.sh/beatmaps/3276740
+https://osu.ppy.sh/beatmaps/2613076
+
+[round of 32.HD]
+https://osu.ppy.sh/beatmaps/3276559
+https://osu.ppy.sh/beatmaps/3276441
+
+[round of 32.HR]
+https://osu.ppy.sh/beatmaps/240689
+https://osu.ppy.sh/beatmaps/3099848
+
+[round of 32.DT]
+https://osu.ppy.sh/beatmaps/3276673
+https://osu.ppy.sh/beatmaps/3276823
+https://osu.ppy.sh/beatmaps/3276774
+
+[round of 32.FM]
+https://osu.ppy.sh/beatmaps/3276444
+https://osu.ppy.sh/beatmaps/2791506
+
+[round of 32.TB]
+https://osu.ppy.sh/beatmaps/3276769
+
+[round of 16.NM]
+https://osu.ppy.sh/beatmaps/3287700
+https://osu.ppy.sh/beatmaps/3287781
+https://osu.ppy.sh/beatmaps/3287483
+https://osu.ppy.sh/beatmaps/3287875
+
+[round of 16.HD]
+https://osu.ppy.sh/b/3287711
+https://osu.ppy.sh/beatmaps/3287656
+
+[round of 16.HR]
+https://osu.ppy.sh/beatmaps/990396
+https://osu.ppy.sh/beatmaps/3287751
+
+[round of 16.DT]
+https://osu.ppy.sh/beatmaps/3287743
+https://osu.ppy.sh/beatmaps/3287252
+https://osu.ppy.sh/beatmaps/3142329
+
+[round of 16.FM]
+https://osu.ppy.sh/beatmaps/2819029
+https://osu.ppy.sh/beatmaps/3287758
+
+[round of 16.TB]
+https://osu.ppy.sh/beatmaps/3287767
+
+[quarterfinals.NM]
+https://osu.ppy.sh/beatmaps/3299389
+https://osu.ppy.sh/beatmaps/3299406
+https://osu.ppy.sh/beatmaps/3299411
+https://osu.ppy.sh/beatmaps/1722011
+https://osu.ppy.sh/beatmaps/3297498
+https://osu.ppy.sh/beatmaps/3299412
+
+[quarterfinals.HD]
+https://osu.ppy.sh/beatmaps/1843575
+https://osu.ppy.sh/beatmaps/2623967
+https://osu.ppy.sh/beatmaps/546944
+
+[quarterfinals.HR]
+https://osu.ppy.sh/beatmaps/2633812
+https://osu.ppy.sh/beatmaps/3298820
+https://osu.ppy.sh/beatmaps/2229381
+
+[quarterfinals.DT]
+https://osu.ppy.sh/beatmaps/546514
+https://osu.ppy.sh/beatmaps/3299371
+https://osu.ppy.sh/beatmaps/3155184
+https://osu.ppy.sh/beatmaps/53340
+
+[quarterfinals.FM]
+https://osu.ppy.sh/beatmaps/3299353
+https://osu.ppy.sh/beatmaps/3299402
+https://osu.ppy.sh/beatmaps/3299463
+
+[quarterfinals.TB]
+https://osu.ppy.sh/beatmaps/3299464
+
+[semifinals.NM]
+https://osu.ppy.sh/beatmaps/3311170
+https://osu.ppy.sh/beatmaps/3310526
+https://osu.ppy.sh/beatmaps/3311309
+https://osu.ppy.sh/beatmaps/3311337
+https://osu.ppy.sh/beatmaps/3311312
+https://osu.ppy.sh/beatmaps/3311313
+
+[semifinals.HD]
+https://osu.ppy.sh/beatmaps/3311238
+https://osu.ppy.sh/beatmaps/3311073
+https://osu.ppy.sh/beatmaps/2267887
+
+[semifinals.HR]
+https://osu.ppy.sh/beatmaps/861381
+https://osu.ppy.sh/beatmaps/3311344
+https://osu.ppy.sh/beatmaps/3311036
+
+[semifinals.DT]
+https://osu.ppy.sh/beatmaps/2643135
+https://osu.ppy.sh/beatmaps/3311366
+https://osu.ppy.sh/beatmaps/277274
+https://osu.ppy.sh/beatmaps/3311356
+
+[semifinals.FM]
+https://osu.ppy.sh/beatmaps/3311891
+https://osu.ppy.sh/beatmaps/3311383
+https://osu.ppy.sh/beatmaps/3311375
+
+[semifinals.TB]
+https://osu.ppy.sh/beatmaps/3311391
+
+[finals.NM]
+https://osu.ppy.sh/beatmaps/2675756
+https://osu.ppy.sh/beatmaps/3322513
+https://osu.ppy.sh/beatmaps/3322521
+https://osu.ppy.sh/beatmaps/3322526
+https://osu.ppy.sh/beatmaps/3322566
+https://osu.ppy.sh/beatmaps/3322093
+
+[finals.HD]
+https://osu.ppy.sh/beatmaps/2856086
+https://osu.ppy.sh/beatmaps/3322576
+https://osu.ppy.sh/beatmaps/2633747
+
+[finals.HR]
+https://osu.ppy.sh/beatmaps/438187
+https://osu.ppy.sh/beatmaps/2947341
+https://osu.ppy.sh/beatmaps/3322603
+
+[finals.DT]
+https://osu.ppy.sh/beatmaps/3320894
+https://osu.ppy.sh/beatmaps/3322598
+https://osu.ppy.sh/beatmaps/859667
+https://osu.ppy.sh/beatmaps/3322610
+
+[finals.FM]
+https://osu.ppy.sh/beatmaps/3322611
+https://osu.ppy.sh/beatmaps/2643166
+https://osu.ppy.sh/beatmaps/3322445
+
+[finals.TB]
+https://osu.ppy.sh/beatmaps/3322616
+
+[grand finals.NM]
+https://osu.ppy.sh/beatmaps/3333705
+https://osu.ppy.sh/beatmaps/3333669
+https://osu.ppy.sh/beatmaps/3333699
+https://osu.ppy.sh/beatmaps/3333703
+https://osu.ppy.sh/beatmaps/3333700
+https://osu.ppy.sh/beatmaps/3333701
+
+[grand finals.HD]
+https://osu.ppy.sh/beatmaps/3145691
+https://osu.ppy.sh/beatmaps/3333793
+https://osu.ppy.sh/beatmaps/3333706
+
+[grand finals.HR]
+https://osu.ppy.sh/beatmaps/3081546
+https://osu.ppy.sh/beatmaps/3331199
+https://osu.ppy.sh/beatmaps/3333660
+
+[grand finals.DT]
+https://osu.ppy.sh/beatmaps/3333570
+https://osu.ppy.sh/beatmaps/3333586
+https://osu.ppy.sh/beatmaps/3333770
+https://osu.ppy.sh/beatmaps/3333734
+
+[grand finals.FM]
+https://osu.ppy.sh/beatmaps/3333729
+https://osu.ppy.sh/beatmaps/3333760
+https://osu.ppy.sh/beatmaps/3333738
+
+[grand finals.TB]
+https://osu.ppy.sh/beatmaps/3333745

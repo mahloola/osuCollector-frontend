@@ -167,7 +167,7 @@ export function parseMappool(text) {
 
       // add beatmap to mappool
       // @ts-ignore
-      rounds[roundIndex].mods[modIndex].maps.push(beatmapId)
+      rounds[roundIndex].mods[modIndex].maps.push(Number(beatmapId))
       continue
     }
 
