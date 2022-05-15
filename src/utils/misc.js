@@ -1,3 +1,5 @@
+import axios from 'axios'
+import useSWRImmutable from 'swr/immutable'
 import { useMediaQuery } from 'react-responsive'
 
 export function truncate(inputString, length) {
@@ -226,4 +228,15 @@ export const Breakpoints = {
   XLUp: ({ children }) => (useMediaQuery({ minWidth: 1200 }) ? children : null),
 
   XXL: ({ children }) => (useMediaQuery({ minWidth: 1400 }) ? children : null),
+}
+
+export function useCancellableSWRImmutable(key, swrOptions) {
+  const source = axios.CancelToken.source()
+  const { data, error } = useSWRImmutable(
+    key,
+    (url) => axios.get(url, { cancelToken: source.token }).then((res) => res.data),
+    swrOptions
+  )
+  if (error) console.error(error)
+  return { data, error, loading: !data, cancelToken: source }
 }

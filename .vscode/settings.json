@@ -4,5 +4,9 @@
   "emmet.includeLanguages": {
     "javascript": "javascriptreact"
   },
-  "editor.codeLens": false
+  "editor.codeLens": false,
+  "editor.formatOnSave": true,
+  "javascript.referencesCodeLens.enabled": true,
+  "javascript.referencesCodeLens.showOnAllFunctions": true,
+  "typescript.referencesCodeLens.enabled": true
 }

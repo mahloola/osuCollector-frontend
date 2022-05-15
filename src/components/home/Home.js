@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Card, Col, Container, ReactPlaceholder, Row } from '../bootstrap-osu-collector'
-import * as api from '../../utils/api'
+import {
+  useMetadata,
+  getPopularCollections,
+  getRecentCollections,
+  favouriteCollection,
+  unfavouriteCollection,
+} from '../../utils/api'
 import './Home.css'
 import 'react-placeholder/lib/reactPlaceholder.css'
 import CollectionCard from '../common/CollectionCard'
@@ -10,31 +16,24 @@ import { addFavouritedByUserAttribute, changeCollectionFavouritedStatus } from '
 import { Discord } from 'react-bootstrap-icons'
 
 function Home({ user, setUser }) {
-  const [metadata, setMetadata] = useState(null)
+  const { data: metadata, loading: metadataLoading } = useMetadata()
   const [popular, setPopular] = useState(new Array(6).fill(null))
   const [recent, setRecent] = useState(new Array(3).fill(null))
 
   useEffect(() => {
-    let cancel1, cancel2, cancel3
-    api
-      .getMetadata((c) => (cancel1 = c))
-      .then(setMetadata)
-      .catch(console.log)
-    api
-      .getPopularCollections('week', 1, 6, (c) => (cancel2 = c))
+    let cancel2, cancel3
+    getPopularCollections('week', 1, 6, (c) => (cancel2 = c))
       .then((paginatedCollectionData) => {
         addFavouritedByUserAttribute(paginatedCollectionData.collections, user)
         setPopular(paginatedCollectionData.collections)
       })
       .catch(console.log)
-    api
-      .getRecentCollections(1, 9, (c) => (cancel3 = c))
+    getRecentCollections(1, 9, (c) => (cancel3 = c))
       .then((paginatedCollectionData) => {
         setRecent(paginatedCollectionData.collections)
       })
       .catch(console.log)
     return () => {
-      if (cancel1) cancel1()
       if (cancel2) cancel2()
       if (cancel3) cancel3()
     }
@@ -48,9 +47,9 @@ function Home({ user, setUser }) {
     setRecent(changeCollectionFavouritedStatus(recent, collectionId, favourited))
     setPopular(changeCollectionFavouritedStatus(popular, collectionId, favourited))
     if (favourited) {
-      api.favouriteCollection(collectionId)
+      favouriteCollection(collectionId)
     } else {
-      api.unfavouriteCollection(collectionId)
+      unfavouriteCollection(collectionId)
     }
   }
 
@@ -87,7 +86,7 @@ function Home({ user, setUser }) {
               <Row>
                 <Col xs={7}>Users</Col>
                 <Col xs={5}>
-                  <ReactPlaceholder className='my-1' ready={metadata} showLoadingAnimation type='textRow'>
+                  <ReactPlaceholder className='my-1' ready={!metadataLoading} showLoadingAnimation type='textRow'>
                     <b>{metadata?.userCount}</b>
                   </ReactPlaceholder>
                 </Col>
@@ -95,7 +94,7 @@ function Home({ user, setUser }) {
               <Row>
                 <Col xs={7}>Collections</Col>
                 <Col xs={5}>
-                  <ReactPlaceholder className='my-1' ready={metadata} showLoadingAnimation type='textRow'>
+                  <ReactPlaceholder className='my-1' ready={!metadataLoading} showLoadingAnimation type='textRow'>
                     <b>{metadata?.totalCollections}</b>
                   </ReactPlaceholder>
                 </Col>

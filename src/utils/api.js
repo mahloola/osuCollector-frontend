@@ -1,5 +1,6 @@
 import config from '../config/config'
 import axios from 'axios'
+import { useCancellableSWRImmutable } from './misc'
 
 const getRequestWithQueryParameters = async (route, params = undefined, cancelCallback = undefined) => {
   const res = await axios({
@@ -11,7 +12,6 @@ const getRequestWithQueryParameters = async (route, params = undefined, cancelCa
   return res.data
 }
 
-// <TODO: link to docs>
 export async function getRecentCollections(cursor = undefined, perPage = undefined, cancelCallback = undefined) {
   return getRequestWithQueryParameters(
     '/api/collections/recent',
@@ -201,7 +201,7 @@ export async function downloadCollectionDb(collectionId) {
   }
 }
 
-// Returns PaginatedUserData object: TODO: add link to docs
+// Returns PaginatedUserData object
 export async function getUsers(page, perPage = undefined, cancelCallback = undefined) {
   return getRequestWithQueryParameters(
     '/api/users',
@@ -213,7 +213,7 @@ export async function getUsers(page, perPage = undefined, cancelCallback = undef
   )
 }
 
-// Returns User object or null if 404: TODO: add link to docs
+// Returns User object or null if 404
 export async function getUser(userId) {
   try {
     const res = await fetch(`${config.get('API_HOST')}/api/users/${userId}`)
@@ -239,7 +239,7 @@ export async function getUserFavourites(userId, cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/users/${userId}/favourites`, {}, cancelCallback)
 }
 
-// Returns an array of CollectionData objects: TODO: add link to docs
+// Returns an array of CollectionData objects
 export async function getUserUploads(userId, cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/users/${userId}/uploads`, {}, cancelCallback)
 }
@@ -247,6 +247,7 @@ export async function getUserUploads(userId, cancelCallback = undefined) {
 export async function getMetadata(cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/metadata`, {}, cancelCallback)
 }
+export const useMetadata = () => useCancellableSWRImmutable(`/api/metadata`)
 
 export async function submitOtp(otp, y) {
   return await fetch(`${config.get('API_HOST')}/api/authentication/otp?otp=${otp}&y=${y}`, {
