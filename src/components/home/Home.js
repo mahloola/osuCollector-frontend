@@ -21,10 +21,15 @@ function Home({ user, setUser }) {
   const [popular, setPopular] = useState(new Array(6).fill(null))
 
   const {
-    recentCollections,
+    recentCollections: _recentCollections,
     recentCollectionsError,
     isValidating: recentIsValidating,
   } = useRecentCollections({ initialPage: 1, perPage: 9 })
+  const [recentCollections, setRecentCollections] = useState([])
+  useEffect(() => {
+    if (!_recentCollections) return
+    setRecentCollections(_recentCollections)
+  }, [_recentCollections])
 
   useEffect(() => {
     let cancel2
@@ -45,7 +50,7 @@ function Home({ user, setUser }) {
       ...user,
       favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter((id) => id !== collectionId),
     }))
-    // setRecent((recent) => changeCollectionFavouritedStatus(recent, collectionId, favourited))
+    setRecentCollections((recent) => changeCollectionFavouritedStatus(recent, collectionId, favourited))
     setPopular((popular) => changeCollectionFavouritedStatus(popular, collectionId, favourited))
     if (favourited) {
       favouriteCollection(collectionId)

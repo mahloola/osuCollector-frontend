@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import config from '../config/config'
 import axios from 'axios'
 import { axiosFetcher, formatQueryParams, useCancellableSWRImmutable } from './misc'
@@ -13,17 +14,7 @@ const getRequestWithQueryParameters = async (route, params = undefined, cancelCa
   return res.data
 }
 
-export async function getRecentCollections(cursor = undefined, perPage = undefined, cancelCallback = undefined) {
-  return getRequestWithQueryParameters(
-    '/api/collections/recent',
-    {
-      cursor,
-      perPage,
-    },
-    cancelCallback
-  )
-}
-export function useRecentCollections({ initialPage = 1, perPage = 9 }) {
+function useInfinite(url, { initialPage = 1, perPage = 9 }) {
   const {
     data: pages,
     error,
@@ -36,7 +27,7 @@ export function useRecentCollections({ initialPage = 1, perPage = 9 }) {
         perPage,
         cursor: pageIndex,
       }
-      return '/api/collections/recent?' + formatQueryParams(query);
+      return url + formatQueryParams(query);
     },
     (url) => axiosFetcher(url),
     {
@@ -46,16 +37,34 @@ export function useRecentCollections({ initialPage = 1, perPage = 9 }) {
       revalidateOnReconnect: false
     },
   );
-  const collections = pages?.flatMap(
+
+  // cache object with useMemo
+  // otherwise a new object gets created on each render, causing a render loop if used inside a useEffect dependency array
+  const collections = useMemo(() => pages?.flatMap(
     (page) => page.collections,
-  );
+  ), [JSON.stringify(pages)]);
+
   return {
-    recentCollections: collections,
+    recentCollections: collections ?? [],
     recentCollectionsError: error,
     isValidating,
     currentPage,
     setCurrentPage,
   }
+}
+
+export async function getRecentCollections(cursor = undefined, perPage = undefined, cancelCallback = undefined) {
+  return getRequestWithQueryParameters(
+    '/api/collections/recent',
+    {
+      cursor,
+      perPage,
+    },
+    cancelCallback
+  )
+}
+export function useRecentCollections({ initialPage = 1, perPage = 9 }) {
+  return useInfinite('/api/collections/recent?', { initialPage, perPage })
 }
 
 // range: 'today' or 'week' or 'month' or 'year' or 'alltime'

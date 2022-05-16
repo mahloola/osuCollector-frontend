@@ -20,14 +20,10 @@ function CollectionCard({ user, collection, favouriteButtonClicked }) {
   const theme = useContext(ThemeContext)
 
   const [hovered, setHovered] = useState(false)
-  const [favourited, setFavourited] = useState(collection.favouritedByUser)
-  useEffect(() => setFavourited(collection.favouritedByUser), [collection.favouritedByUser])
 
   const relativeDate = moment.unix(collection.dateUploaded._seconds).fromNow()
-  const heartClicked = () => {
-    setFavourited((prev) => !prev)
-    favouriteButtonClicked(collection.id, !collection.favouritedByUser)
-  }
+  const heartClicked = () => favouriteButtonClicked(collection.id, !collection.favouritedByUser)
+
   const difficultySpread = collection.difficultySpread
     ? collection.difficultySpread
     : {
@@ -84,7 +80,7 @@ function CollectionCard({ user, collection, favouriteButtonClicked }) {
               <div className='d-flex'>
                 <h5 className='mb-0'>
                   <i
-                    className={`fas fa-heart mr-2 ${!user ? 'grey-heart-disabled' : favourited ? 'red-heart-color' : 'grey-heart-color'
+                    className={`fas fa-heart mr-2 ${!user ? 'grey-heart-disabled' : collection.favouritedByUser ? 'red-heart-color' : 'grey-heart-color'
                       }`}
                     onClick={user && heartClicked}
                   />
