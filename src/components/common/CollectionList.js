@@ -10,7 +10,7 @@ const CollectionList = ({ collections, setCollections, hasMore, loadMore, user, 
     console.log(collections)
   }
 
-  const likeButtonClicked = (collectionId, favourited) => {
+  const favouriteButtonClicked = (collectionId, favourited) => {
     setUser({
       ...user,
       favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter((id) => id !== collectionId),
@@ -50,7 +50,7 @@ const CollectionList = ({ collections, setCollections, hasMore, loadMore, user, 
               className='mx-auto'
               style={{ width: '90%', height: '268px' }}
             >
-              {collection && <CollectionCard collection={collection} likeButtonClicked={likeButtonClicked} />}
+              {collection && <CollectionCard collection={collection} favouriteButtonClicked={favouriteButtonClicked} />}
             </ReactPlaceholder>
           </Col>
         ))}

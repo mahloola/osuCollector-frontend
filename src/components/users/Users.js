@@ -18,7 +18,7 @@ function Users() {
         setUserResults(_userResults)
         setUsers(_userResults.users)
       })
-      .catch(console.log)
+      .catch(console.error)
     return cancel
   }, [])
 

@@ -30,7 +30,7 @@ function Popular({ user, setUser }) {
         addFavouritedByUserAttribute(_collectionPage.collections, user)
         setCollections(_collectionPage.collections)
       })
-      .catch(console.log)
+      .catch(console.error)
     return cancel
   }, [range])
 

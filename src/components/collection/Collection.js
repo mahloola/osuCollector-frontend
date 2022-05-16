@@ -141,7 +141,7 @@ function Collection({ user, setUser }) {
         setFavourited(collection.favouritedByUser)
         setFavourites(collection.favourites)
       })
-      .catch(console.log)
+      .catch(console.error)
   }
   useEffect(() => {
     let cancel
@@ -168,7 +168,7 @@ function Collection({ user, setUser }) {
         setBeatmapPage(_beatmapPage)
         setBeatmaps(_beatmapPage.beatmaps)
       })
-      .catch(console.log)
+      .catch(console.error)
     return cancel
   }, [queryOpts])
 
@@ -216,7 +216,7 @@ function Collection({ user, setUser }) {
     }
   }
 
-  const likeButtonClicked = () => {
+  const favouriteButtonClicked = () => {
     if (!collection) return
     if (!user) {
       alert('You must be logged in to favourite collections')
@@ -317,37 +317,37 @@ function Collection({ user, setUser }) {
   const difficultySpread = collection?.difficultySpread
     ? collection.difficultySpread
     : {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
-        8: 0,
-        9: 0,
-        10: 0,
-      }
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+      6: 0,
+      7: 0,
+      8: 0,
+      9: 0,
+      10: 0,
+    }
   const bpmSpread = collection?.bpmSpread
     ? collection.bpmSpread
     : {
-        150: 0,
-        160: 0,
-        170: 0,
-        180: 0,
-        190: 0,
-        200: 0,
-        210: 0,
-        220: 0,
-        230: 0,
-        240: 0,
-        250: 0,
-        260: 0,
-        270: 0,
-        280: 0,
-        290: 0,
-        300: 0,
-      }
+      150: 0,
+      160: 0,
+      170: 0,
+      180: 0,
+      190: 0,
+      200: 0,
+      210: 0,
+      220: 0,
+      230: 0,
+      240: 0,
+      250: 0,
+      260: 0,
+      270: 0,
+      280: 0,
+      290: 0,
+      300: 0,
+    }
   const listing = beatmaps ? groupBeatmapsets(beatmaps) : new Array(50).fill({})
 
   if (collectionSuccessfullyDeleted) {
@@ -532,7 +532,7 @@ function Collection({ user, setUser }) {
                       className='mx-1'
                       favourites={favourites}
                       favourited={favourited}
-                      onClick={likeButtonClicked}
+                      onClick={favouriteButtonClicked}
                     />
                   </div>
                 </Col>

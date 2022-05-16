@@ -6,6 +6,7 @@ import {
   getRecentCollections,
   favouriteCollection,
   unfavouriteCollection,
+  useRecentCollections,
 } from '../../utils/api'
 import './Home.css'
 import 'react-placeholder/lib/reactPlaceholder.css'
@@ -18,34 +19,34 @@ import { Discord } from 'react-bootstrap-icons'
 function Home({ user, setUser }) {
   const { data: metadata, loading: metadataLoading } = useMetadata()
   const [popular, setPopular] = useState(new Array(6).fill(null))
-  const [recent, setRecent] = useState(new Array(3).fill(null))
+
+  const {
+    recentCollections,
+    recentCollectionsError,
+    isValidating: recentIsValidating,
+  } = useRecentCollections({ initialPage: 1, perPage: 9 })
 
   useEffect(() => {
-    let cancel2, cancel3
+    let cancel2
     getPopularCollections('week', 1, 6, (c) => (cancel2 = c))
       .then((paginatedCollectionData) => {
         addFavouritedByUserAttribute(paginatedCollectionData.collections, user)
         setPopular(paginatedCollectionData.collections)
       })
-      .catch(console.log)
-    getRecentCollections(1, 9, (c) => (cancel3 = c))
-      .then((paginatedCollectionData) => {
-        setRecent(paginatedCollectionData.collections)
-      })
-      .catch(console.log)
+      .catch(console.error)
     return () => {
       if (cancel2) cancel2()
-      if (cancel3) cancel3()
     }
   }, [])
 
-  const likeButtonClicked = (collectionId, favourited) => {
-    setUser({
+  const favouriteButtonClicked = (collectionId, favourited) => {
+    if (!user) return
+    setUser((user) => ({
       ...user,
       favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter((id) => id !== collectionId),
-    })
-    setRecent(changeCollectionFavouritedStatus(recent, collectionId, favourited))
-    setPopular(changeCollectionFavouritedStatus(popular, collectionId, favourited))
+    }))
+    // setRecent((recent) => changeCollectionFavouritedStatus(recent, collectionId, favourited))
+    setPopular((popular) => changeCollectionFavouritedStatus(popular, collectionId, favourited))
     if (favourited) {
       favouriteCollection(collectionId)
     } else {
@@ -68,7 +69,6 @@ function Home({ user, setUser }) {
             <a href='https://twitter.com/funorange42'>FunOrange</a> and{' '}
             <a href='https://twitter.com/mahloola'>mahloola</a>.
             {
-              /* {process.env.NODE_ENV !== 'production' && */
               <>
                 &nbsp;If you like the project, consider supporting us to get access to{' '}
                 <LinkContainer to='/client'>
@@ -116,22 +116,25 @@ function Home({ user, setUser }) {
           </div>
           <Container className='p-2'>
             <Row>
-              {popular?.map((collection, i) => (
-                <Col lg={6} xl={4} className='p-0 my-3' key={i}>
-                  <ReactPlaceholder
-                    ready={collection}
-                    showLoadingAnimation
-                    type='rect'
-                    className='mx-auto'
-                    style={{ width: '90%', height: '235px' }}
-                  >
-                    <CollectionCard
-                      collection={collection}
-                      likeButtonClicked={(collectionId, favourited) => likeButtonClicked(collectionId, favourited)}
-                    />
-                  </ReactPlaceholder>
-                </Col>
-              ))}
+              {popular?.map((collection, i) => {
+                return (
+                  <Col lg={6} xl={4} className='p-0 my-3' key={i}>
+                    <ReactPlaceholder
+                      ready={collection}
+                      showLoadingAnimation
+                      type='rect'
+                      className='mx-auto'
+                      style={{ width: '90%', height: '235px' }}
+                    >
+                      <CollectionCard
+                        user={user}
+                        collection={collection}
+                        favouriteButtonClicked={(collectionId, favourited) => favouriteButtonClicked(collectionId, favourited)}
+                      />
+                    </ReactPlaceholder>
+                  </Col>
+                )
+              })}
             </Row>
             <LinkContainer to='/popular?range=week'>
               <Card $lightbg className='shadow-sm mt-1 mx-1 p-3 collection-card-clickable text-center'>
@@ -149,34 +152,39 @@ function Home({ user, setUser }) {
               <h2 className='my-2 ml-2'>Recently Uploaded</h2>
             </div>
           </div>
-          <Container className='p-2'>
-            <Row>
-              {recent?.map((collection, i) => (
-                <Col lg={6} xl={4} className='p-0 my-3' key={i}>
-                  <ReactPlaceholder
-                    ready={collection}
-                    showLoadingAnimation
-                    type='rect'
-                    className='mx-auto'
-                    style={{ width: '90%', height: '235px' }}
-                  >
-                    <CollectionCard
-                      collection={collection}
-                      likeButtonClicked={(collectionId, favourited) => likeButtonClicked(collectionId, favourited)}
-                    />
-                  </ReactPlaceholder>
-                </Col>
-              ))}
-            </Row>
-            <LinkContainer to='/recent'>
-              <Card $lightbg className='shadow-sm mt-1 mx-1 p-3 collection-card-clickable text-center'>
-                <h5 className='mb-0'> See all </h5>
-              </Card>
-            </LinkContainer>
-          </Container>
-        </Card.Body>
-      </Card>
-    </Container>
+          {recentCollectionsError ? (<div style={{ color: 'red', marginLeft: 8 }}>There was an error retrieving collections.</div>) :
+            (
+              <Container className='p-2'>
+                <Row>
+                  {(recentIsValidating ? new Array(9).fill(null) : recentCollections).map((collection, i) => (
+                    <Col lg={6} xl={4} className='p-0 my-3' key={i}>
+                      <ReactPlaceholder
+                        ready={collection}
+                        showLoadingAnimation
+                        type='rect'
+                        className='mx-auto'
+                        style={{ width: '90%', height: '235px' }}
+                      >
+                        <CollectionCard
+                          user={user}
+                          collection={collection}
+                          favouriteButtonClicked={(collectionId, favourited) => favouriteButtonClicked(collectionId, favourited)}
+                        />
+                      </ReactPlaceholder>
+                    </Col>
+                  ))}
+                </Row>
+                <LinkContainer to='/recent'>
+                  <Card $lightbg className='shadow-sm mt-1 mx-1 p-3 collection-card-clickable text-center'>
+                    <h5 className='mb-0'> See all </h5>
+                  </Card>
+                </LinkContainer>
+              </Container>
+            )
+          }
+        </Card.Body >
+      </Card >
+    </Container >
   )
 }
 

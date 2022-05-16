@@ -17,7 +17,7 @@ function EditTournament() {
       .then((tournament) => {
         setTournament(tournament)
       })
-      .catch(console.log)
+      .catch(console.error)
     return cancel
   }, [id])
 

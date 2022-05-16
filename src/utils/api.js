@@ -1,6 +1,7 @@
 import config from '../config/config'
 import axios from 'axios'
-import { useCancellableSWRImmutable } from './misc'
+import { axiosFetcher, formatQueryParams, useCancellableSWRImmutable } from './misc'
+import useSWRInfinite from 'swr/infinite'
 
 const getRequestWithQueryParameters = async (route, params = undefined, cancelCallback = undefined) => {
   const res = await axios({
@@ -21,6 +22,40 @@ export async function getRecentCollections(cursor = undefined, perPage = undefin
     },
     cancelCallback
   )
+}
+export function useRecentCollections({ initialPage = 1, perPage = 9 }) {
+  const {
+    data: pages,
+    error,
+    isValidating,
+    size: currentPage,
+    setSize: setCurrentPage,
+  } = useSWRInfinite(
+    (pageIndex) => {
+      const query = {
+        perPage,
+        cursor: pageIndex,
+      }
+      return '/api/collections/recent?' + formatQueryParams(query);
+    },
+    (url) => axiosFetcher(url),
+    {
+      initialSize: initialPage,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false
+    },
+  );
+  const collections = pages?.flatMap(
+    (page) => page.collections,
+  );
+  return {
+    recentCollections: collections,
+    recentCollectionsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+  }
 }
 
 // range: 'today' or 'week' or 'month' or 'year' or 'alltime'
@@ -417,8 +452,7 @@ export async function likeComment(collectionId, commentId, remove = false) {
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `POST /api/collections/${collectionId}/comments/${commentId}/like responded with ${
-        response.status
+      `POST /api/collections/${collectionId}/comments/${commentId}/like responded with ${response.status
       }: ${await response.text()}`
     )
 }
@@ -430,8 +464,7 @@ export async function deleteComment(collectionId, commentId) {
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `DELETE /api/collections/${collectionId}/comments/${commentId} responded with ${
-        response.status
+      `DELETE /api/collections/${collectionId}/comments/${commentId} responded with ${response.status
       }: ${await response.text()}`
     )
 }
@@ -446,8 +479,7 @@ export async function reportComment(collectionId, commentId) {
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `POST /api/collections/${collectionId}/comments/${commentId}/report responded with ${
-        response.status
+      `POST /api/collections/${collectionId}/comments/${commentId}/report responded with ${response.status
       }: ${await response.text()}`
     )
 }

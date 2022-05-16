@@ -60,7 +60,7 @@ function All({ searchText, setSearchText, user, setUser }) {
         }
         history.push(`/all?${qs.join('&')}`)
       })
-      .catch(console.log)
+      .catch(console.error)
     return cancel
   }, [searchText, queryOpts])
 
@@ -96,7 +96,7 @@ function All({ searchText, setSearchText, user, setUser }) {
       addFavouritedByUserAttribute(_collectionPage.collections, user)
       setCollections([...collections, ..._collectionPage.collections])
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Card, Image, ListGroup, ListGroupItem } from '../bootstrap-osu-collector'
 import moment from 'moment'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -14,27 +14,34 @@ const GraphContainer = styled(Card.Body)`
   background-color: ${(props) => (props.theme.darkMode ? '#121212' : '#eee')};
 `
 
-function CollectionCard({ collection, likeButtonClicked }) {
+function CollectionCard({ user, collection, favouriteButtonClicked }) {
+  if (!collection) return <div></div>
+  // @ts-ignore
   const theme = useContext(ThemeContext)
 
   const [hovered, setHovered] = useState(false)
+  const [favourited, setFavourited] = useState(collection.favouritedByUser)
+  useEffect(() => setFavourited(collection.favouritedByUser), [collection.favouritedByUser])
 
   const relativeDate = moment.unix(collection.dateUploaded._seconds).fromNow()
-  const heartClicked = () => likeButtonClicked(collection.id, !collection.favouritedByUser)
+  const heartClicked = () => {
+    setFavourited((prev) => !prev)
+    favouriteButtonClicked(collection.id, !collection.favouritedByUser)
+  }
   const difficultySpread = collection.difficultySpread
     ? collection.difficultySpread
     : {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
-        8: 0,
-        9: 0,
-        10: 0,
-      }
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+      6: 0,
+      7: 0,
+      8: 0,
+      9: 0,
+      10: 0,
+    }
 
   return (
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
@@ -77,10 +84,9 @@ function CollectionCard({ collection, likeButtonClicked }) {
               <div className='d-flex'>
                 <h5 className='mb-0'>
                   <i
-                    className={`fas fa-heart mr-2 ${
-                      collection.favouritedByUser ? 'red-heart-color' : 'grey-heart-color'
-                    }`}
-                    onClick={heartClicked}
+                    className={`fas fa-heart mr-2 ${!user ? 'grey-heart-disabled' : favourited ? 'red-heart-color' : 'grey-heart-color'
+                      }`}
+                    onClick={user && heartClicked}
                   />
                   <small> {collection.favourites} </small>
                 </h5>
