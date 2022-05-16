@@ -14,7 +14,7 @@ const getRequestWithQueryParameters = async (route, params = undefined, cancelCa
   return res.data
 }
 
-function useInfinite(url, { initialPage = 1, perPage = 9 }) {
+function useInfinite(url, mappingFunction = (x) => x, { initialPage = 1, perPage = 9 }) {
   const {
     data: pages,
     error,
@@ -40,13 +40,11 @@ function useInfinite(url, { initialPage = 1, perPage = 9 }) {
 
   // cache object with useMemo
   // otherwise a new object gets created on each render, causing a render loop if used inside a useEffect dependency array
-  const collections = useMemo(() => pages?.flatMap(
-    (page) => page.collections,
-  ), [JSON.stringify(pages)]);
+  const entities = useMemo(() => pages?.flatMap(mappingFunction) ?? [], [JSON.stringify(pages)]);
 
   return {
-    recentCollections: collections ?? [],
-    recentCollectionsError: error,
+    entities,
+    error,
     isValidating,
     currentPage,
     setCurrentPage,
@@ -64,7 +62,20 @@ export async function getRecentCollections(cursor = undefined, perPage = undefin
   )
 }
 export function useRecentCollections({ initialPage = 1, perPage = 9 }) {
-  return useInfinite('/api/collections/recent?', { initialPage, perPage })
+  const {
+    entities,
+    error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+  } = useInfinite('/api/collections/recent?', (data) => data.collections, { initialPage, perPage })
+  return {
+    recentCollections: entities,
+    recentCollectionsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+  }
 }
 
 // range: 'today' or 'week' or 'month' or 'year' or 'alltime'

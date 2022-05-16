@@ -50,7 +50,7 @@ const CollectionList = ({ collections, setCollections, hasMore, loadMore, user, 
               className='mx-auto'
               style={{ width: '90%', height: '268px' }}
             >
-              {collection && <CollectionCard collection={collection} favouriteButtonClicked={favouriteButtonClicked} />}
+              {collection && <CollectionCard user={user} collection={collection} favouriteButtonClicked={favouriteButtonClicked} />}
             </ReactPlaceholder>
           </Col>
         ))}

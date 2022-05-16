@@ -26,10 +26,7 @@ function Home({ user, setUser }) {
     isValidating: recentIsValidating,
   } = useRecentCollections({ initialPage: 1, perPage: 9 })
   const [recentCollections, setRecentCollections] = useState([])
-  useEffect(() => {
-    if (!_recentCollections) return
-    setRecentCollections(_recentCollections)
-  }, [_recentCollections])
+  useEffect(() => setRecentCollections(_recentCollections), [_recentCollections])
 
   useEffect(() => {
     let cancel2
@@ -63,6 +60,7 @@ function Home({ user, setUser }) {
     <Container className='pt-4 pb-4'>
       <Row>
         <Alert variant='info' className='text-center'>
+          {/* @ts-ignore */}
           <Discord className='mr-2' size={26} />
           Join the <a href='https://discord.gg/WZMQjwF5Vr'>osu!Collector discord</a>! Feel free to message FunOrange
           about any issues you have or suggestions for the site.
