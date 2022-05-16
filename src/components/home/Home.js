@@ -3,10 +3,10 @@ import { Card, Col, Container, ReactPlaceholder, Row } from '../bootstrap-osu-co
 import {
   useMetadata,
   getPopularCollections,
-  getRecentCollections,
   favouriteCollection,
   unfavouriteCollection,
   useRecentCollections,
+  usePopularCollections,
 } from '../../utils/api'
 import './Home.css'
 import 'react-placeholder/lib/reactPlaceholder.css'
@@ -18,28 +18,22 @@ import { Discord } from 'react-bootstrap-icons'
 
 function Home({ user, setUser }) {
   const { data: metadata, loading: metadataLoading } = useMetadata()
-  const [popular, setPopular] = useState(new Array(6).fill(null))
+
+  const {
+    popularCollections: _popularCollections,
+    popularCollectionsError,
+    isValidating: popularIsValidating,
+  } = usePopularCollections({ range: 'week', perPage: 9 })
+  const [popularCollections, setPopularCollections] = useState([])
+  useEffect(() => setPopularCollections(_popularCollections), [_popularCollections])
 
   const {
     recentCollections: _recentCollections,
     recentCollectionsError,
     isValidating: recentIsValidating,
-  } = useRecentCollections({ initialPage: 1, perPage: 9 })
+  } = useRecentCollections({ perPage: 9 })
   const [recentCollections, setRecentCollections] = useState([])
   useEffect(() => setRecentCollections(_recentCollections), [_recentCollections])
-
-  useEffect(() => {
-    let cancel2
-    getPopularCollections('week', 1, 6, (c) => (cancel2 = c))
-      .then((paginatedCollectionData) => {
-        addFavouritedByUserAttribute(paginatedCollectionData.collections, user)
-        setPopular(paginatedCollectionData.collections)
-      })
-      .catch(console.error)
-    return () => {
-      if (cancel2) cancel2()
-    }
-  }, [])
 
   const favouriteButtonClicked = (collectionId, favourited) => {
     if (!user) return
@@ -48,7 +42,7 @@ function Home({ user, setUser }) {
       favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter((id) => id !== collectionId),
     }))
     setRecentCollections((recent) => changeCollectionFavouritedStatus(recent, collectionId, favourited))
-    setPopular((popular) => changeCollectionFavouritedStatus(popular, collectionId, favourited))
+    setPopularCollections((popular) => changeCollectionFavouritedStatus(popular, collectionId, favourited))
     if (favourited) {
       favouriteCollection(collectionId)
     } else {
@@ -119,31 +113,37 @@ function Home({ user, setUser }) {
           </div>
           <Container className='p-2'>
             <Row>
-              {popular?.map((collection, i) => {
-                return (
-                  <Col lg={6} xl={4} className='p-0 my-3' key={i}>
-                    <ReactPlaceholder
-                      ready={collection}
-                      showLoadingAnimation
-                      type='rect'
-                      className='mx-auto'
-                      style={{ width: '90%', height: '235px' }}
-                    >
-                      <CollectionCard
-                        user={user}
-                        collection={collection}
-                        favouriteButtonClicked={(collectionId, favourited) => favouriteButtonClicked(collectionId, favourited)}
-                      />
-                    </ReactPlaceholder>
-                  </Col>
+              {popularCollectionsError ? (<div style={{ color: 'red', marginLeft: 8 }}>There was an error retrieving collections.</div>) :
+                (
+                  <Container className='p-2'>
+                    <Row>
+                      {(popularIsValidating ? new Array(6).fill(null) : popularCollections).map((collection, i) => (
+                        <Col lg={6} xl={4} className='p-0 my-3' key={i}>
+                          <ReactPlaceholder
+                            ready={collection}
+                            showLoadingAnimation
+                            type='rect'
+                            className='mx-auto'
+                            style={{ width: '90%', height: '235px' }}
+                          >
+                            <CollectionCard
+                              user={user}
+                              collection={collection}
+                              favouriteButtonClicked={(collectionId, favourited) => favouriteButtonClicked(collectionId, favourited)}
+                            />
+                          </ReactPlaceholder>
+                        </Col>
+                      ))}
+                    </Row>
+                    <LinkContainer to='/popular?range=week'>
+                      <Card $lightbg className='shadow-sm mt-1 mx-1 p-3 collection-card-clickable text-center'>
+                        <h5 className='mb-0'> See all </h5>
+                      </Card>
+                    </LinkContainer>
+                  </Container>
                 )
-              })}
+              }
             </Row>
-            <LinkContainer to='/popular?range=week'>
-              <Card $lightbg className='shadow-sm mt-1 mx-1 p-3 collection-card-clickable text-center'>
-                <h5 className='mb-0'> See all </h5>
-              </Card>
-            </LinkContainer>
           </Container>
         </Card.Body>
       </Card>
@@ -155,7 +155,10 @@ function Home({ user, setUser }) {
               <h2 className='my-2 ml-2'>Recently Uploaded</h2>
             </div>
           </div>
-          {recentCollectionsError ? (<div style={{ color: 'red', marginLeft: 8 }}>There was an error retrieving collections.</div>) :
+          {recentCollectionsError ? (<Alert variant='danger'>
+            <p>Sorry, there was an error retrieving collections. Please try refreshing the page. Error details:</p>
+            <p>{recentCollectionsError.toString()}</p>
+          </Alert>) :
             (
               <Container className='p-2'>
                 <Row>

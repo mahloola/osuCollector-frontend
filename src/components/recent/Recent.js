@@ -1,52 +1,38 @@
 import { useState, useEffect } from 'react'
 import { Card, Alert, Container } from '../bootstrap-osu-collector'
-import { getRecentCollections } from '../../utils/api'
+import { useRecentCollections } from '../../utils/api'
 import CollectionList from '../common/CollectionList'
 import { addFavouritedByUserAttribute } from 'utils/misc'
 
 function Recent({ user, setUser }) {
-  const [collectionPage, setCollectionPage] = useState(null)
-  const [collections, setCollections] = useState(new Array(18).fill(null))
-  const [error, setError] = useState(null)
+  const {
+    recentCollections: _recentCollections,
+    recentCollectionsError,
+    isValidating: recentIsValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  } = useRecentCollections({ perPage: 18 })
+  const [recentCollections, setRecentCollections] = useState([])
+  useEffect(() => setRecentCollections(_recentCollections), [_recentCollections])
 
-  useEffect(() => {
-    let cancel
-    getRecentCollections(undefined, 18, (c) => (cancel = c))
-      .then((_collectionPage) => {
-        setCollectionPage(_collectionPage)
-        addFavouritedByUserAttribute(_collectionPage.collections, user)
-        setCollections(_collectionPage.collections)
-      })
-      .catch(setError)
-    return cancel
-  }, [])
-
-  const loadMore = async () => {
-    try {
-      const _collectionPage = await getRecentCollections(collectionPage.nextPageCursor, 18)
-      setCollectionPage(_collectionPage)
-      addFavouritedByUserAttribute(_collectionPage.collections, user)
-      setCollections([...collections, ..._collectionPage.collections])
-    } catch (err) {
-      setError(err)
-    }
-  }
+  const loadMore = () => setCurrentPage(currentPage + 1)
 
   return (
     <Container className='pt-4'>
       <Card className='shadow-lg'>
         <Card.Body>
           <h2 className='my-2 ml-3'>Recent Collections</h2>
-          {error ? (
+          {recentCollectionsError ? (
             <Alert variant='danger'>
-              <p>Sorry, an error occurred with the server. Please try refreshing the page. Error details:</p>
-              <p>{error.toString()}</p>
+              <p>Sorry, there was an error retrieving collections. Please try refreshing the page. Error details:</p>
+              <p>{recentCollectionsError.toString()}</p>
             </Alert>
           ) : (
             <CollectionList
-              collections={collections}
-              setCollections={setCollections}
-              hasMore={collectionPage?.hasMore}
+              collections={recentIsValidating && recentCollections.length === 0 ? new Array(18).fill(null) : recentCollections}
+              setCollections={setRecentCollections}
+              hasMore={hasMore}
               loadMore={loadMore}
               user={user}
               setUser={setUser}

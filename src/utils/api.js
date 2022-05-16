@@ -14,7 +14,7 @@ const getRequestWithQueryParameters = async (route, params = undefined, cancelCa
   return res.data
 }
 
-function useInfinite(url, mappingFunction = (x) => x, { initialPage = 1, perPage = 9 }) {
+function useInfinite(url, query, mappingFunction = (x) => x) {
   const {
     data: pages,
     error,
@@ -22,32 +22,32 @@ function useInfinite(url, mappingFunction = (x) => x, { initialPage = 1, perPage
     size: currentPage,
     setSize: setCurrentPage,
   } = useSWRInfinite(
-    (pageIndex) => {
-      const query = {
-        perPage,
-        cursor: pageIndex,
+    (pageIndex, previousPageData) => {
+      let _query = { ...query }
+      if (previousPageData?.nextPageCursor) {
+        _query.cursor = previousPageData.nextPageCursor
       }
-      return url + formatQueryParams(query);
+      return url + formatQueryParams(_query);
     },
     (url) => axiosFetcher(url),
     {
-      initialSize: initialPage,
       revalidateIfStale: false,
       revalidateOnFocus: false,
-      revalidateOnReconnect: false
+      revalidateOnReconnect: false,
+      revalidateFirstPage: false
     },
   );
-
   // cache object with useMemo
   // otherwise a new object gets created on each render, causing a render loop if used inside a useEffect dependency array
   const entities = useMemo(() => pages?.flatMap(mappingFunction) ?? [], [JSON.stringify(pages)]);
-
+  const hasMore = pages?.length > 0 ? pages[pages.length - 1].hasMore : true
   return {
     entities,
     error,
     isValidating,
     currentPage,
     setCurrentPage,
+    hasMore,
   }
 }
 
@@ -61,20 +61,22 @@ export async function getRecentCollections(cursor = undefined, perPage = undefin
     cancelCallback
   )
 }
-export function useRecentCollections({ initialPage = 1, perPage = 9 }) {
+export function useRecentCollections({ perPage = 9 }) {
   const {
     entities,
     error,
     isValidating,
     currentPage,
     setCurrentPage,
-  } = useInfinite('/api/collections/recent?', (data) => data.collections, { initialPage, perPage })
+    hasMore,
+  } = useInfinite('/api/collections/recent?', { perPage }, (data) => data.collections)
   return {
     recentCollections: entities,
     recentCollectionsError: error,
     isValidating,
     currentPage,
     setCurrentPage,
+    hasMore,
   }
 }
 
@@ -95,6 +97,24 @@ export async function getPopularCollections(
     },
     cancelCallback
   )
+}
+export function usePopularCollections({ range = 'today', perPage = 9 }) {
+  const {
+    entities,
+    error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  } = useInfinite('/api/collections/popularv2?', { range, perPage }, (data) => data.collections)
+  return {
+    popularCollections: entities,
+    popularCollectionsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  }
 }
 
 // Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema

@@ -94,7 +94,7 @@ function Tournaments() {
           </Form>
           {error ? (
             <Alert variant='danger'>
-              <p>Sorry, an error occurred with the server. Please try refreshing the page. Error details:</p>
+              <p>Sorry, there was an error retrieving tournaments. Please try refreshing the page. Error details:</p>
               <p>{error.toString()}</p>
             </Alert>
           ) : (
