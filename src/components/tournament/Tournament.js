@@ -195,8 +195,8 @@ function Tournament({ user }) {
                       )}
                     </ReactPlaceholder>
                     <div className='d-flex flex-row my-4'>
-                      <Button className='mr-1'>Download maps</Button>
-                      <Button>Add mappool to osu!</Button>
+                      <Button className='mr-1' onClick={() => alert('coming soon')}>Download maps</Button>
+                      <Button onClick={() => alert('coming soon')}>Add mappool to osu!</Button>
                     </div>
                   </Col>
                   <Col
@@ -272,26 +272,26 @@ function Tournament({ user }) {
                   <Tab.Content>
                     {loading
                       ? [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                          <ReactPlaceholder
-                            key={i}
-                            ready={false}
-                            type='rect'
-                            showLoadingAnimation
-                            style={{ height: '66px' }}
-                            className='mb-1'
-                          >
-                            {' '}
-                          </ReactPlaceholder>
-                        ))
+                        <ReactPlaceholder
+                          key={i}
+                          ready={false}
+                          type='rect'
+                          showLoadingAnimation
+                          style={{ height: '66px' }}
+                          className='mb-1'
+                        >
+                          {' '}
+                        </ReactPlaceholder>
+                      ))
                       : tournament?.rounds.map((round, i) => (
-                          <Tab.Pane key={i} eventKey={i}>
-                            <MappoolRound
-                              round={round}
-                              currentlyPlaying={currentlyPlaying}
-                              setCurrentlyPlaying={setCurrentlyPlaying}
-                            />
-                          </Tab.Pane>
-                        ))}
+                        <Tab.Pane key={i} eventKey={i}>
+                          <MappoolRound
+                            round={round}
+                            currentlyPlaying={currentlyPlaying}
+                            setCurrentlyPlaying={setCurrentlyPlaying}
+                          />
+                        </Tab.Pane>
+                      ))}
                   </Tab.Content>
                 </div>
               </div>
@@ -332,26 +332,26 @@ function Tournament({ user }) {
                   <Tab.Content>
                     {loading
                       ? [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                          <ReactPlaceholder
-                            key={i}
-                            ready={false}
-                            type='rect'
-                            showLoadingAnimation
-                            style={{ height: '66px' }}
-                            className='mb-1'
-                          >
-                            {' '}
-                          </ReactPlaceholder>
-                        ))
+                        <ReactPlaceholder
+                          key={i}
+                          ready={false}
+                          type='rect'
+                          showLoadingAnimation
+                          style={{ height: '66px' }}
+                          className='mb-1'
+                        >
+                          {' '}
+                        </ReactPlaceholder>
+                      ))
                       : tournament?.rounds.map((round, i) => (
-                          <Tab.Pane key={i} eventKey={i}>
-                            <MappoolRound
-                              round={round}
-                              currentlyPlaying={currentlyPlaying}
-                              setCurrentlyPlaying={setCurrentlyPlaying}
-                            />
-                          </Tab.Pane>
-                        ))}
+                        <Tab.Pane key={i} eventKey={i}>
+                          <MappoolRound
+                            round={round}
+                            currentlyPlaying={currentlyPlaying}
+                            setCurrentlyPlaying={setCurrentlyPlaying}
+                          />
+                        </Tab.Pane>
+                      ))}
                   </Tab.Content>
                 </div>
               </div>
