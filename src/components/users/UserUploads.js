@@ -10,7 +10,7 @@ function UserUploads({ user, setUser }) {
 
   // run this code on initial page load
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       // get user id from path, eg. /users/123/uploads
       const match = window.location.pathname.match(/\/users\/(\d+)\/uploads/g)
       if (!match) {
@@ -36,7 +36,7 @@ function UserUploads({ user, setUser }) {
         addFavouritedByUserAttribute(collections, user)
         setCollections(collections)
       })
-      .catch(console.log)
+      .catch(console.error)
     return cancel
   }, [pageUser])
 

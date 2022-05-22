@@ -53,7 +53,8 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
       const collections = await api.uploadCollections([selectedCollection])
       alert(`Collection uploaded!`)
       if (collections.length >= 1) {
-        history.push(`/collections/${collections[0].id}`)
+        // this is easier than mutating useRecentCollections
+        window.location.href = `/collections/${collections[0].id}`
       }
     } catch (err) {
       alert(

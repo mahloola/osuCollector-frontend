@@ -31,6 +31,10 @@ a.nostyle:visited {
   color: #f66;
 }
 
+.grey-heart-disabled {
+  color: grey;
+}
+
 .grey-heart-color {
   color: grey;
 }

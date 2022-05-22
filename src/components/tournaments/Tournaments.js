@@ -73,6 +73,9 @@ function Tournaments() {
     <Container className='pt-4'>
       <Card className='shadow-lg'>
         <Card.Body>
+          <Alert variant='info' className='text-center'>
+            This feature is still a work in progress, however feel free to poke around.
+          </Alert>
           <div className='d-flex justify-content-between align-items-end mb-3'>
             <h2 className='my-2 ml-3 mb-0 mr-4'>Tournaments</h2>
             <LinkContainer to='tournaments/create'>
@@ -94,7 +97,7 @@ function Tournaments() {
           </Form>
           {error ? (
             <Alert variant='danger'>
-              <p>Sorry, an error occurred with the server. Please try refreshing the page. Error details:</p>
+              <p>Sorry, there was an error retrieving tournaments. Please try refreshing the page. Error details:</p>
               <p>{error.toString()}</p>
             </Alert>
           ) : (

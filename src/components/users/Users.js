@@ -18,7 +18,7 @@ function Users() {
         setUserResults(_userResults)
         setUsers(_userResults.users)
       })
-      .catch(console.log)
+      .catch(console.error)
     return cancel
   }, [])
 
@@ -39,7 +39,7 @@ function Users() {
           <h2 className='mt-2 ml-3'>Users</h2>
           {error ? (
             <Alert variant='danger'>
-              <p>Sorry, an error occurred with the server. Please try refreshing the page. Error details:</p>
+              <p>Sorry, there was an error retrieving users. Please try refreshing the page. Error details:</p>
               <p>{error.toString()}</p>
             </Alert>
           ) : (

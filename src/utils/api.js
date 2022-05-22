@@ -1,6 +1,8 @@
+import { useMemo } from 'react'
 import config from '../config/config'
 import axios from 'axios'
-import { useCancellableSWRImmutable } from './misc'
+import { axiosFetcher, formatQueryParams, useCancellableSWRImmutable } from './misc'
+import useSWRInfinite from 'swr/infinite'
 
 const getRequestWithQueryParameters = async (route, params = undefined, cancelCallback = undefined) => {
   const res = await axios({
@@ -12,6 +14,43 @@ const getRequestWithQueryParameters = async (route, params = undefined, cancelCa
   return res.data
 }
 
+function useInfinite(url, query, mappingFunction = (x) => x) {
+  const {
+    data: pages,
+    error,
+    isValidating,
+    size: currentPage,
+    setSize: setCurrentPage,
+  } = useSWRInfinite(
+    (pageIndex, previousPageData) => {
+      let _query = { ...query }
+      if (previousPageData?.nextPageCursor) {
+        _query.cursor = previousPageData.nextPageCursor
+      }
+      return url + formatQueryParams(_query);
+    },
+    (url) => axiosFetcher(url),
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateFirstPage: false
+    },
+  );
+  // cache object with useMemo
+  // otherwise a new object gets created on each render, causing a render loop if used inside a useEffect dependency array
+  const entities = useMemo(() => pages?.flatMap(mappingFunction) ?? [], [JSON.stringify(pages)]);
+  const hasMore = pages?.length > 0 ? pages[pages.length - 1].hasMore : true
+  return {
+    entities,
+    error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  }
+}
+
 export async function getRecentCollections(cursor = undefined, perPage = undefined, cancelCallback = undefined) {
   return getRequestWithQueryParameters(
     '/api/collections/recent',
@@ -21,6 +60,24 @@ export async function getRecentCollections(cursor = undefined, perPage = undefin
     },
     cancelCallback
   )
+}
+export function useRecentCollections({ perPage = 9 }) {
+  const {
+    entities,
+    error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  } = useInfinite('/api/collections/recent?', { perPage }, (data) => data.collections)
+  return {
+    recentCollections: entities,
+    recentCollectionsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  }
 }
 
 // range: 'today' or 'week' or 'month' or 'year' or 'alltime'
@@ -40,6 +97,24 @@ export async function getPopularCollections(
     },
     cancelCallback
   )
+}
+export function usePopularCollections({ range = 'today', perPage = 9 }) {
+  const {
+    entities,
+    error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  } = useInfinite('/api/collections/popularv2?', { range, perPage }, (data) => data.collections)
+  return {
+    popularCollections: entities,
+    popularCollectionsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  }
 }
 
 // Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollections-200-schema
@@ -417,8 +492,7 @@ export async function likeComment(collectionId, commentId, remove = false) {
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `POST /api/collections/${collectionId}/comments/${commentId}/like responded with ${
-        response.status
+      `POST /api/collections/${collectionId}/comments/${commentId}/like responded with ${response.status
       }: ${await response.text()}`
     )
 }
@@ -430,8 +504,7 @@ export async function deleteComment(collectionId, commentId) {
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `DELETE /api/collections/${collectionId}/comments/${commentId} responded with ${
-        response.status
+      `DELETE /api/collections/${collectionId}/comments/${commentId} responded with ${response.status
       }: ${await response.text()}`
     )
 }
@@ -446,8 +519,7 @@ export async function reportComment(collectionId, commentId) {
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `POST /api/collections/${collectionId}/comments/${commentId}/report responded with ${
-        response.status
+      `POST /api/collections/${collectionId}/comments/${commentId}/report responded with ${response.status
       }: ${await response.text()}`
     )
 }

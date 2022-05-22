@@ -85,18 +85,18 @@ function DesktopClient({ user, setUser }) {
     api
       .getTwitchSubStatus((c) => (cancel1 = c))
       .then(setIsSubbedToFunOrange)
-      .catch(console.log)
+      .catch(console.error)
     if (user?.private?.paypalSubscriptionId) {
       api
         .getPaypalSubscription((c) => (cancel2 = c))
         .then(setPaypalSubscription)
-        .catch(console.log)
+        .catch(console.error)
     }
     if (user?.private?.stripeSubscriptionId) {
       api
         .getSubscription((c) => (cancel3 = c))
         .then(setStripeSubscription)
-        .catch(console.log)
+        .catch(console.error)
     }
     return () => {
       if (cancel1) cancel1()

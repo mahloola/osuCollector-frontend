@@ -66,7 +66,7 @@ function App() {
 
   // get query params on initial page load
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       // store logged in user object in app level state
       const user = await getOwnUser()
       // undo theme if user is not subscribed

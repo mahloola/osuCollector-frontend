@@ -1,57 +1,36 @@
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Card, Button, Container } from '../bootstrap-osu-collector'
-import { getPopularCollections } from '../../utils/api'
+import { Card, Button, Container, Alert } from '../bootstrap-osu-collector'
+import { getPopularCollections, usePopularCollections } from '../../utils/api'
 import { useQuery } from '../../utils/hooks'
 import CollectionList from '../common/CollectionList'
 import { addFavouritedByUserAttribute } from 'utils/misc'
 
+const dateRanges = [
+  { range: 'today', label: 'today' },
+  { range: 'week', label: 'this week' },
+  { range: 'month', label: 'this month' },
+  { range: 'year', label: 'this year' },
+  { range: 'alltime', label: 'all time' },
+]
+
 function Popular({ user, setUser }) {
-  const [range, setRange] = useState(null)
-  const [collectionPage, setCollectionPage] = useState(null)
-  const [collections, setCollections] = useState(new Array(18).fill(null))
   const query = useQuery()
+  const [range, setRange] = useState(query.get('range') || 'alltime')
   const history = useHistory()
 
-  useEffect(() => {
-    const queryParamRange = query.get('range')
-    setRange(queryParamRange || 'alltime')
-  }, [])
+  const {
+    popularCollections: _popularCollections,
+    popularCollectionsError,
+    isValidating: popularIsValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  } = usePopularCollections({ range, perPage: 18 })
+  const [popularCollections, setPopularCollections] = useState([])
+  useEffect(() => setPopularCollections(_popularCollections), [_popularCollections])
 
-  useEffect(() => {
-    if (!range) {
-      return
-    }
-    // retrieve the first page of results after date range is changed
-    let cancel
-    getPopularCollections(range, undefined, 18, (c) => (cancel = c))
-      .then((_collectionPage) => {
-        setCollectionPage(_collectionPage)
-        addFavouritedByUserAttribute(_collectionPage.collections, user)
-        setCollections(_collectionPage.collections)
-      })
-      .catch(console.log)
-    return cancel
-  }, [range])
-
-  const loadMore = async () => {
-    try {
-      const _collectionPage = await getPopularCollections(range, collectionPage.nextPageCursor, 18)
-      setCollectionPage(_collectionPage)
-      addFavouritedByUserAttribute(_collectionPage.collections, user)
-      setCollections([...collections, ..._collectionPage.collections])
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  const dateRanges = [
-    { range: 'today', label: 'today' },
-    { range: 'week', label: 'this week' },
-    { range: 'month', label: 'this month' },
-    { range: 'year', label: 'this year' },
-    { range: 'alltime', label: 'all time' },
-  ]
+  const loadMore = () => setCurrentPage(currentPage + 1)
 
   return (
     <Container className='pt-4'>
@@ -69,10 +48,9 @@ function Popular({ user, setUser }) {
                   className='mx-1'
                   disabled={range === opt.range}
                   onClick={() => {
-                    setCollectionPage(null)
-                    setCollections(new Array(18).fill(null))
                     history.push(`/popular?range=${opt.range}`)
                     setRange(opt.range)
+                    setCurrentPage(1)
                   }}
                   variant={range === opt.range ? 'danger' : 'outline-secondary'}
                 >
@@ -81,14 +59,21 @@ function Popular({ user, setUser }) {
               ))}
             </div>
           </div>
-          <CollectionList
-            collections={collections}
-            setCollections={setCollections}
-            hasMore={collectionPage?.hasMore}
-            loadMore={loadMore}
-            user={user}
-            setUser={setUser}
-          />
+          {popularCollectionsError ? (
+            <Alert variant='danger'>
+              <p>Sorry, there was an error retrieving collections. Please try refreshing the page. Error details:</p>
+              <p>{popularCollectionsError.toString()}</p>
+            </Alert>
+          ) : (
+            <CollectionList
+              collections={popularIsValidating && popularCollections.length === 0 ? new Array(18).fill(null) : popularCollections}
+              setCollections={setPopularCollections}
+              hasMore={hasMore}
+              loadMore={loadMore}
+              user={user}
+              setUser={setUser}
+            />
+          )}
         </Card.Body>
       </Card>
     </Container>

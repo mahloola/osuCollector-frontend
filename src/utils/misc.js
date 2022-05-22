@@ -230,13 +230,26 @@ export const Breakpoints = {
   XXL: ({ children }) => (useMediaQuery({ minWidth: 1400 }) ? children : null),
 }
 
-export function useCancellableSWRImmutable(key, swrOptions) {
+export function useCancellableSWRImmutable(key, query) {
   const source = axios.CancelToken.source()
   const { data, error } = useSWRImmutable(
     key,
-    (url) => axios.get(url, { cancelToken: source.token }).then((res) => res.data),
-    swrOptions
+    (url) => axios.get(url, { cancelToken: source.token, params: query }).then((res) => res.data),
   )
   if (error) console.error(error)
   return { data, error, loading: !data, cancelToken: source }
 }
+
+export async function axiosFetcher(url, query) {
+  const result = await axios.get(url, { params: query ?? {} });
+  return result.data;
+};
+
+export const formatQueryParams = (query) => {
+  try {
+    return new URLSearchParams(query).toString();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
