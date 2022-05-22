@@ -437,6 +437,8 @@ function DesktopClient({ user, setUser }) {
                           )}
                         </Button>
                       )}
+                      {user?.private?.twitchError &&
+                        <small className='text-danger text-sm ml-2'> Please unlink and try again. </small>}
                     </div>
                     <div className='d-flex justify-content-start align-items-center'>
                       <div className='text-right mr-3' style={{ minWidth: 120 }}>
