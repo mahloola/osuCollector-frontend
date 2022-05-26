@@ -11,14 +11,14 @@ function UserFavourites({ user, setUser }) {
 
   // run this code on initial page load
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       // get user id from path, eg. /users/123/favourites
-      const match = window.location.pathname.match(/\/users\/(\d+)\/favourites/g)
-      if (!match) {
-        alert('User not found.')
+      const _match = window.location.pathname.match(/\/users\/(\d+)\/favourites/g)
+      if (!_match) {
+        alert(`User not found.`)
         return
       }
-      const userId = Number(match[0].replace('/users/', '').replace('/favourites', '').trim())
+      const userId = Number(_match[0].replace('/users/', '').replace('/favourites', '').trim())
 
       // get user from database
       const user = await api.getUser(userId)
@@ -39,20 +39,20 @@ function UserFavourites({ user, setUser }) {
   }, [pageUser])
 
   return (
-    <Container className='pt-4'>
-      <Card className='shadow-lg'>
+    <Container className="pt-4">
+      <Card className="shadow-lg">
         <Card.Body>
-          <div className='ml-2'>
-            <div className='d-flex justify-content-left align-items-center p-2 pb-0 mb-2'>
+          <div className="ml-2">
+            <div className="d-flex justify-content-left align-items-center p-2 pb-0 mb-2">
               <ReactPlaceholder
                 ready={pageUser}
                 showLoadingAnimation
-                type='round'
-                className='mr-3'
+                type="round"
+                className="mr-3"
                 style={{ width: '48px', height: '48px' }}
               >
                 <Image
-                  className='mr-3 border border-light shadow-sm'
+                  className="mr-3 border border-light shadow-sm"
                   src={`https://a.ppy.sh/${pageUser?.id}`}
                   roundedCircle
                   style={{
@@ -64,20 +64,20 @@ function UserFavourites({ user, setUser }) {
               <ReactPlaceholder
                 ready={pageUser}
                 showLoadingAnimation
-                type='rect'
+                type="rect"
                 style={{ width: '300px', height: '40px' }}
               >
-                <h1 className='mb-0'> {pageUser?.osuweb?.username}&apos;s Favourites </h1>
+                <h1 className="mb-0"> {pageUser?.osuweb?.username}&apos;s Favourites </h1>
               </ReactPlaceholder>
             </div>
             <ReactPlaceholder
               ready={collections.length !== 0 && collections[0] !== null}
               showLoadingAnimation
-              type='rect'
-              className='ml-2 mb-0 mt-3'
+              type="rect"
+              className="ml-2 mb-0 mt-3"
               style={{ width: '140px', height: '30px' }}
             >
-              <h4 className='ml-2 mb-0 mt-3'> {collections.length} collections </h4>
+              <h4 className="ml-2 mb-0 mt-3"> {collections.length} collections </h4>
             </ReactPlaceholder>
           </div>
           <CollectionList

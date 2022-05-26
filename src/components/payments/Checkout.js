@@ -1,6 +1,16 @@
 /* eslint-disable no-unused-vars */
 import { useState } from 'react'
-import { Alert, Button, Card, Col, Container, Form, FormControl, Row, Spinner } from '../bootstrap-osu-collector'
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  FormControl,
+  Row,
+  Spinner,
+} from '../bootstrap-osu-collector'
 import FloatingLabel from 'react-bootstrap-floating-label'
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { ReactSVG } from 'react-svg'
@@ -99,15 +109,15 @@ function Checkout() {
   }
 
   return (
-    <Container className='pt-4'>
+    <Container className="pt-4">
       {/* {process.env.NODE_ENV === 'production' &&
                     <Alert variant='danger'>
                         you shouldnt be here unless youre a dev
                     </Alert>
                 } */}
-      <Row className='justify-content-md-center'>
+      <Row className="justify-content-md-center">
         <Col sm={12} md={9} lg={6}>
-          <Card className='shadow-sm pt-3 px-3 mb-3 mt-4 text-center'>
+          <Card className="shadow-sm pt-3 px-3 mb-3 mt-4 text-center">
             <h3>Desktop Client Subscription</h3>
             <p>
               $1.99 per month
@@ -118,33 +128,44 @@ function Checkout() {
         </Col>
       </Row>
 
-      <Row className='justify-content-md-center'>
+      <Row className="justify-content-md-center">
         <Col sm={12} md={9} lg={6}>
-          <Card className='shadow-sm py-4 px-5 my-4 text-center'>
-            <h5 className='mb-4'>Pay with card</h5>
+          <Card className="shadow-sm py-4 px-5 my-4 text-center">
+            <h5 className="mb-4">Pay with card</h5>
 
             <Form onSubmit={handleFormSubmit}>
-              <FloatingLabel label='Email' className='mb-3'>
-                <FormControl type='email' placeholder='name@example.com' />
+              <FloatingLabel label="Email" className="mb-3">
+                <FormControl type="email" placeholder="name@example.com" />
               </FloatingLabel>
-              <Card className='my-3 p-3'>
+              <Card className="my-3 p-3">
                 <CardElement options={cardElementOpts} onChange={handleCardDetailsChange} />
               </Card>
               {checkoutError && (
                 <>
-                  <Alert className='mt-2 p-2' variant='danger'>
+                  <Alert className="mt-2 p-2" variant="danger">
                     {checkoutError}
                   </Alert>
-                  <Alert className='mt-2 p-2' variant='secondary'>
+                  <Alert className="mt-2 p-2" variant="secondary">
                     If you need help contact funorange42@yahoo.ca
                   </Alert>
                 </>
               )}
               {/* TIP always disable your submit button while processing payments */}
-              <Button type='submit' className='w-100 mb-5' disabled={cardError || processing > 0 || !stripe}>
+              <Button
+                type="submit"
+                className="w-100 mb-5"
+                disabled={cardError || processing > 0 || !stripe}
+              >
                 {processing ? (
                   <>
-                    <Spinner as='span' animation='grow' className='mr-2' size='sm' role='status' aria-hidden='true' />
+                    <Spinner
+                      as="span"
+                      animation="grow"
+                      className="mr-2"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
                     Processing ({processing}/3)
                   </>
                 ) : (
@@ -154,7 +175,7 @@ function Checkout() {
             </Form>
 
             <ReactSVG
-              src='https://cdn.brandfolder.io/KGT2DTA4/at/rvgw5pc69nhv9wkh7rw8ckv/Powered_by_Stripe_-_blurple.svg'
+              src="https://cdn.brandfolder.io/KGT2DTA4/at/rvgw5pc69nhv9wkh7rw8ckv/Powered_by_Stripe_-_blurple.svg"
               beforeInjection={(svg) => {
                 svg.setAttribute('style', 'width: 128px')
               }}

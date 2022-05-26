@@ -18,7 +18,11 @@ import './App.css'
 import UserFavourites from './components/users/UserFavourites'
 import UserUploads from './components/users/UserUploads'
 import EnterOtp from './components/login/EnterOtp'
-import ScrollToTop from 'components/common/ScrollToTop'
+import ScrollToTop from './components/common/ScrollToTop'
+import Tournaments from './components/tournaments/Tournaments'
+import Tournament from './components/tournament/Tournament'
+import CreateTournament from './components/tournament/CreateTournament'
+import EditTournament from './components/tournament/EditTournament'
 
 // website imports
 import NotFound from './components/notfound/NotFound'
@@ -30,10 +34,6 @@ import { Elements } from '@stripe/react-stripe-js'
 import Checkout from './components/payments/Checkout'
 import Success from './components/payments/Success'
 import { PayPalScriptProvider } from '@paypal/react-paypal-js'
-import Tournaments from 'components/tournaments/Tournaments'
-import Tournament from 'components/tournament/Tournament'
-import CreateTournament from 'components/tournament/CreateTournament'
-import EditTournament from 'components/tournament/EditTournament'
 
 extend([mixPlugin])
 
@@ -67,8 +67,16 @@ function App() {
   // get query params on initial page load
   useEffect(() => {
     ; (async () => {
-      // store logged in user object in app level state
-      const user = await getOwnUser()
+      setSearchText(query.get('search') || '')
+
+      let user = null
+      try {
+        user = await getOwnUser()
+      } catch (err) {
+        console.error(err)
+      }
+      setUser(user)
+
       // undo theme if user is not subscribed
       if (!user?.paidFeaturesAccess && currentTheme.darkMode) {
         const newTheme = {
@@ -78,8 +86,6 @@ function App() {
         setCurrentTheme(newTheme)
         localStorage.setItem('theme', JSON.stringify(newTheme))
       }
-      setUser(user)
-      setSearchText(query.get('search') || '')
     })()
   }, [])
 
@@ -122,7 +128,8 @@ function App() {
   return (
     <PayPalScriptProvider
       options={{
-        'client-id': 'AeUARmSkIalUe4gK08KWZjWYJqSq0AKH8iS9cQ3U8nIGiOxyUmrPTPD91vvE2xkVovu-3GlO0K7ISv2R',
+        'client-id':
+          'AeUARmSkIalUe4gK08KWZjWYJqSq0AKH8iS9cQ3U8nIGiOxyUmrPTPD91vvE2xkVovu-3GlO0K7ISv2R',
         vault: true,
         intent: 'subscription',
         components: 'buttons',
@@ -130,63 +137,73 @@ function App() {
     >
       <Elements stripe={stripePromise}>
         <ThemeProvider theme={currentTheme}>
-          <StyledApp className='App'>
-            <NavigationBar user={user} setAuthX={setAuthX} setSearchText={setSearchText} toggleTheme={toggleTheme} />
+          <StyledApp className="App">
+            <NavigationBar
+              user={user}
+              setAuthX={setAuthX}
+              setSearchText={setSearchText}
+              toggleTheme={toggleTheme}
+            />
             <div style={{ minHeight: 'calc(100vh - 56px)' }}>
               <ScrollToTop />
               <Switch>
-                <Route exact path='/'>
+                <Route exact path="/">
                   <Home user={user} setUser={setUser} />
                 </Route>
-                <Route path='/all'>
-                  <All searchText={searchText} setSearchText={setSearchText} user={user} setUser={setUser} />
+                <Route path="/all">
+                  <All
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    user={user}
+                    setUser={setUser}
+                  />
                 </Route>
-                <Route path='/popular'>
+                <Route path="/popular">
                   <Popular user={user} setUser={setUser} />
                 </Route>
-                <Route path='/recent'>
+                <Route path="/recent">
                   <Recent user={user} setUser={setUser} />
                 </Route>
-                <Route exact path='/users'>
+                <Route exact path="/users">
                   <Users />
                 </Route>
-                <Route path='/users/:id/favourites'>
+                <Route path="/users/:id/favourites">
                   <UserFavourites user={user} setUser={setUser} />
                 </Route>
-                <Route path='/users/:id/uploads'>
+                <Route path="/users/:id/uploads">
                   <UserUploads user={user} setUser={setUser} />
                 </Route>
-                <Route path='/client'>
+                <Route path="/client">
                   <DesktopClient user={user} setUser={setUser} />
                 </Route>
-                <Route exact path='/tournaments'>
+                <Route exact path="/tournaments">
                   <Tournaments />
                 </Route>
-                <Route exact path='/tournaments/create'>
+                <Route exact path="/tournaments/create">
                   <CreateTournament />
                 </Route>
-                <Route exact path='/tournaments/:id'>
+                <Route exact path="/tournaments/:id">
                   <Tournament user={user} />
                 </Route>
-                <Route path='/tournaments/:id/edit'>
+                <Route path="/tournaments/:id/edit">
                   <EditTournament />
                 </Route>
-                <Route path='/payments/checkout'>
+                <Route path="/payments/checkout">
                   <Checkout />
                 </Route>
-                <Route path='/payments/success'>
+                <Route path="/payments/success">
                   <Success />
                 </Route>
-                <Route path='/login/enterOtp'>
+                <Route path="/login/enterOtp">
                   <EnterOtp authX={authX} setUser={setUser} />
                 </Route>
-                <Route path='/login/showOtp'>
+                <Route path="/login/showOtp">
                   <ShowOtp />
                 </Route>
-                <Route path='/twitchSuccess'>
+                <Route path="/twitchSuccess">
                   <TwitchSuccess user={user} />
                 </Route>
-                <Route path='/collections/:id'>
+                <Route path="/collections/:id">
                   <Collection user={user} setUser={setUser} />
                 </Route>
                 <Route>

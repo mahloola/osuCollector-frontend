@@ -17,7 +17,7 @@
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "^18.1.0",
-    "react-bootstrap": "^1.6.1",
+    "react-bootstrap": "^1.6.4",
     "react-bootstrap-floating-label": "^1.6.0",
     "react-bootstrap-icons": "^1.5.0",
     "react-codemirror2-react-17": "^1.0.0",

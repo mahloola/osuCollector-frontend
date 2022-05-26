@@ -1,4 +1,12 @@
-import { Alert, Button, Card, Container, Form, FormControl, InputGroup } from 'components/bootstrap-osu-collector'
+import {
+  Alert,
+  Button,
+  Card,
+  Container,
+  Form,
+  FormControl,
+  InputGroup,
+} from 'components/bootstrap-osu-collector'
 import { useEffect, useRef, useState } from 'react'
 import { Plus, Search } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -70,38 +78,49 @@ function Tournaments() {
   }, [searchQuery])
 
   return (
-    <Container className='pt-4'>
-      <Card className='shadow-lg'>
+    <Container className="pt-4">
+      <Card className="shadow-lg">
         <Card.Body>
-          <Alert variant='info' className='text-center'>
+          <Alert variant="info" className="text-center">
             This feature is still a work in progress, however feel free to poke around.
           </Alert>
-          <div className='d-flex justify-content-between align-items-end mb-3'>
-            <h2 className='my-2 ml-3 mb-0 mr-4'>Tournaments</h2>
-            <LinkContainer to='tournaments/create'>
+          <div className="d-flex justify-content-between align-items-end mb-3">
+            <h2 className="my-2 ml-3 mb-0 mr-4">Tournaments</h2>
+            <LinkContainer to="tournaments/create">
               <S.CreateButton>
-                <h4 className='my-2 mx-3 text-muted'>
+                <h4 className="my-2 mx-3 text-muted">
                   <Plus size={28} />
-                  <span className='mr-2'>create a tournament</span>
+                  <span className="mr-2">create a tournament</span>
                 </h4>
               </S.CreateButton>
             </LinkContainer>
           </div>
-          <Form onSubmit={searchSubmit} className='ml-3 me-auto'>
+          <Form onSubmit={searchSubmit} className="ml-3 me-auto">
             <InputGroup>
-              <S.FormControl onChange={handleSearchOnChange} type='search' placeholder='Search for tournaments...' />
-              <Button type='submit' variant='primary'>
+              <S.FormControl
+                onChange={handleSearchOnChange}
+                type="search"
+                placeholder="Search for tournaments..."
+              />
+              <Button type="submit" variant="primary">
                 <Search />
               </Button>
             </InputGroup>
           </Form>
           {error ? (
-            <Alert variant='danger'>
-              <p>Sorry, there was an error retrieving tournaments. Please try refreshing the page. Error details:</p>
+            <Alert variant="danger">
+              <p>
+                Sorry, there was an error retrieving tournaments. Please try refreshing the page.
+                Error details:
+              </p>
               <p>{error.toString()}</p>
             </Alert>
           ) : (
-            <TournamentList tournaments={tournaments} hasMore={tournamentPage?.hasMore} loadMore={loadMore} />
+            <TournamentList
+              tournaments={tournaments}
+              hasMore={tournamentPage?.hasMore}
+              loadMore={loadMore}
+            />
           )}
         </Card.Body>
       </Card>

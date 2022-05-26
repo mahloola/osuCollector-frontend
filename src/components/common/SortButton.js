@@ -33,14 +33,18 @@ function SortButton({ children, className, sortDirection, onClick }) {
   if (sortDirection === null) {
     return (
       <StyledButton className={'px-3 py-1 ' + className} onClick={onClick}>
-        <div className='mr-3'>{children}</div>
+        <div className="mr-3">{children}</div>
       </StyledButton>
     )
   }
   return (
     <StyledButton active={true} className={'px-3 py-1 ' + className} onClick={onClick}>
       {children}
-      {sortDirection === 'asc' ? <i className='ml-2 fas fa-sort-up' /> : <i className='ml-2 fas fa-sort-down' />}
+      {sortDirection === 'asc' ? (
+        <i className="ml-2 fas fa-sort-up" />
+      ) : (
+        <i className="ml-2 fas fa-sort-down" />
+      )}
     </StyledButton>
   )
 }

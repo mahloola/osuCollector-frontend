@@ -3,7 +3,14 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { Alert, Container, Spinner } from 'react-bootstrap'
 import styled, { css, ThemeContext } from 'styled-components'
 import { parseMappool } from 'utils/misc'
-import { Button, Card, Form, FloatingLabel, FormControl, InputGroup } from '../bootstrap-osu-collector'
+import {
+  Button,
+  Card,
+  Form,
+  FloatingLabel,
+  FormControl,
+  InputGroup,
+} from '../bootstrap-osu-collector'
 import MappoolEditor from '../tournaments/MappoolEditor'
 import OrganizerIcon from '../tournaments/create/OrganizerIcon'
 
@@ -563,42 +570,42 @@ function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament 
     }
   }
   return (
-    <Container className='pt-4'>
-      <Card className='px-5 py-4'>
-        <Form onSubmit={submit} ref={formRef} className='pb-5'>
-          <h1 className='text-muted mb-4'>{title}</h1>
+    <Container className="pt-4">
+      <Card className="px-5 py-4">
+        <Form onSubmit={submit} ref={formRef} className="pb-5">
+          <h1 className="text-muted mb-4">{title}</h1>
 
-          <Form.Group className='mb-3'>
+          <Form.Group className="mb-3">
             <Form.Label>Tournament name</Form.Label>
             <FormControl isInvalid={tournamentNameError} />
-            <Form.Control.Feedback type='invalid'>{tournamentNameError}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{tournamentNameError}</Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group className='mb-3'>
+          <Form.Group className="mb-3">
             <Form.Label>Tournament URL</Form.Label>
             <FormControl isInvalid={tournamentURLError} />
-            <Form.Control.Feedback type='invalid'>{tournamentURLError}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{tournamentURLError}</Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group className='mb-3'>
+          <Form.Group className="mb-3">
             <Form.Label>
-              Banner URL <small className='ml-2 text-muted'>only https://i.ppy.sh allowed</small>
+              Banner URL <small className="ml-2 text-muted">only https://i.ppy.sh allowed</small>
             </Form.Label>
             <FormControl isInvalid={bannerURLError} />
-            <Form.Control.Feedback type='invalid'>{bannerURLError}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{bannerURLError}</Form.Control.Feedback>
             <Form.Text muted>
-              You can get the banner URL by going to the tournament page, right clicking the banner image, and clicking
-              &quot;Copy image address&quot;
+              You can get the banner URL by going to the tournament page, right clicking the banner
+              image, and clicking &quot;Copy image address&quot;
             </Form.Text>
           </Form.Group>
 
-          <Form.Group className='mb-3'>
+          <Form.Group className="mb-3">
             <Form.Label>Tournament Organizers</Form.Label>
-            <div className='d-flex'>
-              <InputGroup hasValidation className='mr-4' style={{ width: 366 }}>
+            <div className="d-flex">
+              <InputGroup hasValidation className="mr-4" style={{ width: 366 }}>
                 <S.InputGroupText>https://osu.ppy.sh/users/</S.InputGroupText>
                 <FormControl
-                  placeholder='2051389'
+                  placeholder="2051389"
                   value={organizer}
                   onKeyPress={organizerKeyPress}
                   onChange={(e) => {
@@ -612,47 +619,62 @@ function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament 
                   }}
                   isInvalid={organizerError}
                 />
-                <Button variant='primary' disabled={organizerError} onClick={addOrganizer}>
+                <Button variant="primary" disabled={organizerError} onClick={addOrganizer}>
                   Add
                 </Button>
-                <Form.Control.Feedback type='invalid'>
+                <Form.Control.Feedback type="invalid">
                   <span style={{ paddingLeft: 208 }}>{organizerError}</span>
                 </Form.Control.Feedback>
               </InputGroup>
               {organizers.map((organizerId) => (
-                <div className='d-flex mr-2' key={organizerId}>
+                <div className="d-flex mr-2" key={organizerId}>
                   <OrganizerIcon
                     organizerId={organizerId}
-                    onClick={() => setOrganizers((organizers) => organizers.filter((id) => id !== organizerId))}
+                    onClick={() =>
+                      setOrganizers((organizers) => organizers.filter((id) => id !== organizerId))
+                    }
                     roundedCircle
                   />
                 </div>
               ))}
             </div>
-            <Form.Text muted>Optional: Organizers have permission to make changes to this tournament</Form.Text>
+            <Form.Text muted>
+              Optional: Organizers have permission to make changes to this tournament
+            </Form.Text>
           </Form.Group>
 
-          <Form.Group className='mb-3'>
+          <Form.Group className="mb-3">
             <Form.Label>Description</Form.Label>
-            <Form.Control style={textareaFormControlStyle(theme)} as='textarea' rows={2} />
-            <Form.Text muted className='mb-3'>
+            <Form.Control style={textareaFormControlStyle(theme)} as="textarea" rows={2} />
+            <Form.Text muted className="mb-3">
               Keep it short; for more information users should visit the tournament URL
             </Form.Text>
           </Form.Group>
 
-          <h3 className='mb-0'>Mappool</h3>
-          <Form.Text muted className='my-2'>
-            A mappool template is provided below. Please modify it to include the maps in the tournament.
+          <h3 className="mb-0">Mappool</h3>
+          <Form.Text muted className="my-2">
+            A mappool template is provided below. Please modify it to include the maps in the
+            tournament.
           </Form.Text>
-          <MappoolEditor mappoolText={mappoolText} setMappoolText={setMappoolText} mappoolError={mappoolError} />
+          <MappoolEditor
+            mappoolText={mappoolText}
+            setMappoolText={setMappoolText}
+            mappoolError={mappoolError}
+          />
           {error && (
-            <Alert className='mt-4 mb-0' variant='danger'>
+            <Alert className="mt-4 mb-0" variant="danger">
               Please fix the above errors and try again
             </Alert>
           )}
-          <Button disabled={submitLoading} className='mt-4 w-100' size='lg' variant='primary' type='submit'>
-            <h3 onClick={() => setSubmitButtonClicked(true)} className='mb-0 py-2'>
-              {submitLoading ? <Spinner animation='border' /> : 'Submit'}
+          <Button
+            disabled={submitLoading}
+            className="mt-4 w-100"
+            size="lg"
+            variant="primary"
+            type="submit"
+          >
+            <h3 onClick={() => setSubmitButtonClicked(true)} className="mb-0 py-2">
+              {submitLoading ? <Spinner animation="border" /> : 'Submit'}
             </h3>
           </Button>
         </Form>

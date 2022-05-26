@@ -10,7 +10,7 @@ function MappoolEditor({ mappoolText, setMappoolText, mappoolError }) {
     <>
       <Form.Control
         style={formControlStyle(theme, mappoolError)}
-        as='textarea'
+        as="textarea"
         spellCheck={false}
         rows={mappoolText.split(/\r\n|\r|\n/).length}
         onChange={(e) => {
@@ -21,7 +21,7 @@ function MappoolEditor({ mappoolText, setMappoolText, mappoolError }) {
         value={mappoolText}
         isInvalid={mappoolError}
       />
-      <Form.Control.Feedback type='invalid'>
+      <Form.Control.Feedback type="invalid">
         <span style={{ fontSize: 17 }}>{mappoolError}</span>
       </Form.Control.Feedback>
     </>

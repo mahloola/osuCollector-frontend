@@ -13,11 +13,11 @@ const ClickableCard = styled(Card)`
   cursor: pointer;
   &:hover {
     ${(props) =>
-      props.theme.darkMode
-        ? css`
+    props.theme.darkMode
+      ? css`
             background-color: ${(props) => props.theme.primary25};
           `
-        : css`
+      : css`
             background-color: #eee;
           `}
   }
@@ -27,11 +27,11 @@ const ClickableCardFooter = styled(CardFooter)`
   cursor: pointer;
   &:hover {
     ${(props) =>
-      props.theme.darkMode
-        ? css`
+    props.theme.darkMode
+      ? css`
             background-color: ${(props) => props.theme.primary25};
           `
-        : css`
+      : css`
             background-color: #eee;
           `}
   }
@@ -74,14 +74,16 @@ function Comment({ collectionId, comment, user }) {
       setlocalLikeOffset(comment.upvotes.includes(user.id) ? -1 : 1)
     } else {
       // wtf
-      setlocalLikeOffset(Math.abs(localLikeOffset) > 0.75 ? localLikeOffset / 2 : localLikeOffset * 2)
+      setlocalLikeOffset(
+        Math.abs(localLikeOffset) > 0.75 ? localLikeOffset / 2 : localLikeOffset * 2
+      )
     }
 
     // update on server
     try {
       api.likeComment(collectionId, commentId, remove)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
@@ -91,7 +93,7 @@ function Comment({ collectionId, comment, user }) {
     try {
       await api.deleteComment(collectionId, comment.id)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
@@ -101,41 +103,43 @@ function Comment({ collectionId, comment, user }) {
     try {
       await api.reportComment(collectionId, comment.id)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
   if (locallyDeleted) {
-    return <i className='text-muted'>comment deleted</i>
+    return <i className="text-muted">comment deleted</i>
   }
   return (
-    <div className='d-flex'>
+    <div className="d-flex">
       {/* commenter avatar */}
       <Image
-        className='mr-3 mt-2 collection-card-uploader-avatar shadow-sm border'
+        className="mr-3 mt-2 collection-card-uploader-avatar shadow-sm border"
         src={`https://a.ppy.sh/${comment.userId}`}
         roundedCircle
       />
-      <div className='flex-fill'>
+      <div className="flex-fill">
         {/* username & date */}
-        <div className='d-flex justify-content-between'>
+        <div className="d-flex justify-content-between">
           <div>
-            <small className='text-muted'>
+            <small className="text-muted">
               {' '}
               {comment.username} - {relativeDate}
             </small>
-            {process.env.NODE_ENV === 'development' && <small className='text-muted'> - {comment.id}</small>}
+            {process.env.NODE_ENV === 'development' && (
+              <small className="text-muted"> - {comment.id}</small>
+            )}
           </div>
           {/* report or delete */}
-          <div className='mr-4'>
+          <div className="mr-4">
             {comment.userId === user?.id ? (
-              <small className='text-muted' style={{ cursor: 'pointer' }} onClick={deleteComment}>
+              <small className="text-muted" style={{ cursor: 'pointer' }} onClick={deleteComment}>
                 <u>delete</u>
               </small>
             ) : reported ? (
-              <small className='text-muted'>reported!</small>
+              <small className="text-muted">reported!</small>
             ) : (
-              <small className='text-muted' style={{ cursor: 'pointer' }} onClick={reportComment}>
+              <small className="text-muted" style={{ cursor: 'pointer' }} onClick={reportComment}>
                 <FlagFill />
               </small>
             )}
@@ -144,25 +148,32 @@ function Comment({ collectionId, comment, user }) {
         {/* comment text */}
         <div style={{ whiteSpace: 'pre-line' }}>{comment.message}</div>
         {/* likes */}
-        <div className='d-flex text-secondary mt-1'>
-          <small className='noselect' onClick={() => likeComment(comment.id)} style={{ cursor: 'pointer' }}>
+        <div className="d-flex text-secondary mt-1">
+          <small
+            className="noselect"
+            onClick={() => likeComment(comment.id)}
+            style={{ cursor: 'pointer' }}
+          >
             {localLikeOffset === undefined ? (
               <>
                 {comment.upvotes.includes(user?.id) ? (
-                  <HandThumbsUpFill className='mr-1' style={{ marginTop: -5, color: '#348dff' }} />
+                  <HandThumbsUpFill className="mr-1" style={{ marginTop: -5, color: '#348dff' }} />
                 ) : (
-                  <HandThumbsUpFill className='mr-1' style={{ marginTop: -5 }} />
+                  <HandThumbsUpFill className="mr-1" style={{ marginTop: -5 }} />
                 )}
                 {comment.upvotes?.length || 0}
               </>
             ) : (
               <>
                 {localLikeOffset === -0.5 || localLikeOffset === 1 ? ( // wtf
-                  <HandThumbsUpFill className='mr-1' style={{ marginTop: -5, color: '#348dff' }} />
+                  <HandThumbsUpFill className="mr-1" style={{ marginTop: -5, color: '#348dff' }} />
                 ) : (
-                  <HandThumbsUpFill className='mr-1' style={{ marginTop: -5 }} />
+                  <HandThumbsUpFill className="mr-1" style={{ marginTop: -5 }} />
                 )}
-                {(comment.upvotes?.length || 0) + (Math.abs(localLikeOffset) < 1 ? 0 : localLikeOffset) /* wtf */}
+                {
+                  (comment.upvotes?.length || 0) +
+                  (Math.abs(localLikeOffset) < 1 ? 0 : localLikeOffset) /* wtf */
+                }
               </>
             )}
           </small>
@@ -217,18 +228,22 @@ function Comments({ collectionId, comments, user, refreshCollection }) {
   return (
     <>
       {comments?.length > 0 ? (
-        <Card className='p-0 mt-4 shadow'>
-          <div className='px-3 pt-2 pb-2'>
+        <Card className="p-0 mt-4 shadow">
+          <div className="px-3 pt-2 pb-2">
             {/* top rated comment */}
-            <Comment collectionId={collectionId} comment={comments.sort(sortByLikes)[0]} user={user} />
+            <Comment
+              collectionId={collectionId}
+              comment={comments.sort(sortByLikes)[0]}
+              user={user}
+            />
           </div>
           <ClickableCardFooter onClick={() => setCommentsModalIsOpen(true)}>
-            <div className='text-center'>View all {comments.length} comment(s)</div>
+            <div className="text-center">View all {comments.length} comment(s)</div>
           </ClickableCardFooter>
         </Card>
       ) : (
         <ClickableCard
-          className='mt-4 p-2'
+          className="mt-4 p-2"
           onClick={() => {
             if (!user && (!comments || comments.length === 0)) {
               alert('You must be logged in to comment')
@@ -237,64 +252,77 @@ function Comments({ collectionId, comments, user, refreshCollection }) {
             setCommentsModalIsOpen(true)
           }}
         >
-          <div className='d-flex justify-content-center align-items-center'>
-            <h3 className='text-muted mr-2'>
+          <div className="d-flex justify-content-center align-items-center">
+            <h3 className="text-muted mr-2">
               <ChatFill />
             </h3>
-            <p className='mb-0 text-muted'>No comments. Leave a comment!</p>
+            <p className="mb-0 text-muted">No comments. Leave a comment!</p>
           </div>
         </ClickableCard>
       )}
 
       {/* full comments view */}
-      <Modal show={commentsModalIsOpen} onHide={hideModal} size='lg' centered>
-        <div className='px-4 py-3 d-flex flex-column' style={{ maxHeight: '93vh' }}>
+      <Modal show={commentsModalIsOpen} onHide={hideModal} size="lg" centered>
+        <div className="px-4 py-3 d-flex flex-column" style={{ maxHeight: '93vh' }}>
           {/* comments */}
           {comments?.length > 0 && (
             <>
-              <div className='flex-fill overflow-auto mb-3'>
-                <div className='mb-2 d-flex justify-content-between'>
-                  <h5 className='mr-2'>
+              <div className="flex-fill overflow-auto mb-3">
+                <div className="mb-2 d-flex justify-content-between">
+                  <h5 className="mr-2">
                     {comments?.length} Comment{comments?.length > 1 && 's'}
                   </h5>
-                  <DropdownButton className='mt-1 mr-1' variant='secondary' size='sm' title='Sort by'>
-                    <Dropdown.Item active={sortCommentsBy === 'likes'} onClick={() => setSortCommentsBy('likes')}>
+                  <DropdownButton
+                    className="mt-1 mr-1"
+                    variant="secondary"
+                    size="sm"
+                    title="Sort by"
+                  >
+                    <Dropdown.Item
+                      active={sortCommentsBy === 'likes'}
+                      onClick={() => setSortCommentsBy('likes')}
+                    >
                       Likes
                     </Dropdown.Item>
-                    <Dropdown.Item active={sortCommentsBy === 'date'} onClick={() => setSortCommentsBy('date')}>
+                    <Dropdown.Item
+                      active={sortCommentsBy === 'date'}
+                      onClick={() => setSortCommentsBy('date')}
+                    >
                       Recent
                     </Dropdown.Item>
                   </DropdownButton>
                 </div>
-                {comments.sort(sortCommentsBy === 'likes' ? sortByLikes : sortByDate).map((comment, index) => {
-                  const last = index === comments.length - 1
-                  return (
-                    <div key={index}>
-                      <Comment collectionId={collectionId} comment={comment} user={user} />
-                      {!last && <hr className='my-3 text-secondary' />}
-                    </div>
-                  )
-                })}
+                {comments
+                  .sort(sortCommentsBy === 'likes' ? sortByLikes : sortByDate)
+                  .map((comment, index) => {
+                    const last = index === comments.length - 1
+                    return (
+                      <div key={index}>
+                        <Comment collectionId={collectionId} comment={comment} user={user} />
+                        {!last && <hr className="my-3 text-secondary" />}
+                      </div>
+                    )
+                  })}
               </div>
-              <hr className='mt-0 mb-3' />
+              <hr className="mt-0 mb-3" />
             </>
           )}
           {/* post comment */}
           <div>
-            <h5 className='mb-3'>Leave a comment</h5>
-            <div className='d-flex'>
-              <div className=''>
+            <h5 className="mb-3">Leave a comment</h5>
+            <div className="d-flex">
+              <div className="">
                 {user?.id && (
                   <Image
-                    className='collection-card-uploader-avatar shadow-sm border mr-3'
+                    className="collection-card-uploader-avatar shadow-sm border mr-3"
                     src={`https://a.ppy.sh/${user.id}`}
                     roundedCircle
                   />
                 )}
               </div>
-              <div className='flex-fill'>
+              <div className="flex-fill">
                 <textarea
-                  className='p-2 mb-2'
+                  className="p-2 mb-2"
                   value={unsavedComment}
                   maxLength={200}
                   onChange={(event) => setUnsavedComment(event.target.value)}
@@ -304,10 +332,10 @@ function Comments({ collectionId, comments, user, refreshCollection }) {
                     boxSizing: 'border-box',
                   }}
                 />
-                <div className='d-flex justify-content-end mb-0'>
+                <div className="d-flex justify-content-end mb-0">
                   <Button onClick={postComment} disabled={posting}>
-                    <div className='d-flex justify-content-center align-items-center'>
-                      <ChatFill className='mr-2' />
+                    <div className="d-flex justify-content-center align-items-center">
+                      <ChatFill className="mr-2" />
                       Comment
                     </div>
                   </Button>
@@ -317,8 +345,8 @@ function Comments({ collectionId, comments, user, refreshCollection }) {
           </div>
         </div>
       </Modal>
-      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} size='sm' centered>
-        <div className='p-4 text-center'>Comment posted!</div>
+      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} size="sm" centered>
+        <div className="p-4 text-center">Comment posted!</div>
       </Modal>
     </>
   )

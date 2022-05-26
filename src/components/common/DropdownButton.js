@@ -9,7 +9,7 @@ function DropdownButton({ title, titleAction, menuItems, menuActions, style }) {
   return (
     <>
       <div
-        className='d-flex flex-column'
+        className="d-flex flex-column"
         style={{
           ...style,
           position: 'relative',
@@ -17,14 +17,18 @@ function DropdownButton({ title, titleAction, menuItems, menuActions, style }) {
       >
         <Dropdown as={ButtonGroup}>
           <Button onClick={titleAction}>{title}</Button>
-          <DropdownToggle split style={{ width: 0 }} onClick={() => setDropdownVisible(!dropdownVisible)} />
+          <DropdownToggle
+            split
+            style={{ width: 0 }}
+            onClick={() => setDropdownVisible(!dropdownVisible)}
+          />
         </Dropdown>
         {dropdownVisible &&
           menuItems.map((title, i) => (
             <Button
               key={i}
-              variant='light'
-              className='shadow-sm text-sm'
+              variant="light"
+              className="shadow-sm text-sm"
               style={{
                 position: 'absolute',
                 transform: 'translate(0, 38px)',

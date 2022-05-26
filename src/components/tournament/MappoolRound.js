@@ -1,6 +1,11 @@
 /* eslint-disable no-unused-vars */
 import MappoolBeatmap from './MappoolBeatmap'
-import { calculateARWithDT, calculateARWithHR, calculateODWithDT, calculateODWithHR } from 'utils/diffcalc'
+import {
+  calculateARWithDT,
+  calculateARWithHR,
+  calculateODWithDT,
+  calculateODWithHR,
+} from 'utils/diffcalc'
 import { isEqual } from 'utils/misc'
 
 function MappoolRound({ round, currentlyPlaying, setCurrentlyPlaying }) {
@@ -43,7 +48,7 @@ function MappoolRound({ round, currentlyPlaying, setCurrentlyPlaying }) {
                 beatmap={moddedBeatmap || beatmap}
                 onPlayClick={() => onPlayClick(j, k)}
                 onAudioEnd={onAudioEnd}
-                className='mb-1'
+                className="mb-1"
                 playing={isEqual(currentlyPlaying, [round, j, k])}
               />
             )

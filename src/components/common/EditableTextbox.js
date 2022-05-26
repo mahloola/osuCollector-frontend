@@ -37,7 +37,7 @@ function EditableTextbox({ value, isEditable, submit }) {
     return (
       <div>
         <textarea
-          className='p-2 mb-1'
+          className="p-2 mb-1"
           value={unsavedValue}
           maxLength={3000}
           onChange={(event) => setUnsavedValue(event.target.value)}
@@ -47,11 +47,11 @@ function EditableTextbox({ value, isEditable, submit }) {
             boxSizing: 'border-box',
           }}
         />
-        <div className='d-flex justify-content-end mb-3'>
-          <Button size='sm' variant='secondary' className='mr-2' onClick={cancelEdit}>
+        <div className="d-flex justify-content-end mb-3">
+          <Button size="sm" variant="secondary" className="mr-2" onClick={cancelEdit}>
             Cancel
           </Button>
-          <Button size='sm' onClick={finishEdit}>
+          <Button size="sm" onClick={finishEdit}>
             Save
           </Button>
         </div>
@@ -60,7 +60,7 @@ function EditableTextbox({ value, isEditable, submit }) {
   } else {
     return (
       <ClickableCard
-        className='p-2 mt-2 mb-4'
+        className="p-2 mt-2 mb-4"
         $isClickable={isEditable}
         style={{ minHeight: '176px' }}
         onClick={startEdit}
@@ -69,7 +69,7 @@ function EditableTextbox({ value, isEditable, submit }) {
         {value ? (
           <div style={{ whiteSpace: 'pre-line' }}>{value}</div>
         ) : (
-          <small className='text-muted'>
+          <small className="text-muted">
             {' '}
             <i>no description</i>{' '}
           </small>

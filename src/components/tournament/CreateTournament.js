@@ -20,7 +20,7 @@ function CreateTournament() {
   }
   return (
     <TournamentForm
-      title='Create Tournament'
+      title="Create Tournament"
       onSubmit={createTournament}
       submitLoading={submitLoading}
       saveDraft={true}

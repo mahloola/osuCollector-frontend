@@ -10,15 +10,17 @@ const UserBadge = ({ className, user }) => {
   const [show, setShow] = useState(false)
 
   return (
-    <Dropdown className='d-flex align-items-center'>
+    <Dropdown className="d-flex align-items-center">
       <div
-        className={'user-badge ' + (user?.paidFeaturesAccess ? 'user-badge-supporter ' : '') + className}
+        className={
+          'user-badge ' + (user?.paidFeaturesAccess ? 'user-badge-supporter ' : '') + className
+        }
         onClick={() => {
           setShow(!show)
         }}
       >
-        <Image className='avatar-img' src={user.osuweb.avatar_url + '/50x50'} roundedCircle />
-        <span className='noselect'>{user.osuweb.username}</span>
+        <Image className="avatar-img" src={user.osuweb.avatar_url + '/50x50'} roundedCircle />
+        <span className="noselect">{user.osuweb.username}</span>
       </div>
       <div className={`dropdown-menu ${show ? 'show' : ''}`}>
         <LinkContainer to={`/users/${user.id}/uploads`}>

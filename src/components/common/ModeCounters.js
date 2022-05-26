@@ -32,7 +32,7 @@ const ModeLabel = styled.small`
 function ModeCounters({ collection, className }) {
   return (
     <div className={className}>
-      <div className='d-flex align-items-center'>
+      <div className="d-flex align-items-center">
         {[
           [osuPng, 'osu'],
           [taikoPng, 'taiko'],
@@ -44,8 +44,8 @@ function ModeCounters({ collection, className }) {
             muted = false
           }
           return (
-            <div key={mode} className='d-flex align-items-center mr-3'>
-              <ModeImage src={modePng} size={20} className='mr-1' muted={muted} />
+            <div key={mode} className="d-flex align-items-center mr-3">
+              <ModeImage src={modePng} size={20} className="mr-1" muted={muted} />
               <ModeLabel muted={muted}>{muted ? 0 : collection.modes[mode]}</ModeLabel>
             </div>
           )
