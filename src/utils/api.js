@@ -4,11 +4,7 @@ import axios from 'axios'
 import { axiosFetcher, formatQueryParams, useCancellableSWRImmutable } from './misc'
 import useSWRInfinite from 'swr/infinite'
 
-const getRequestWithQueryParameters = async (
-  route,
-  params = undefined,
-  cancelCallback = undefined
-) => {
+const getRequestWithQueryParameters = async (route, params = undefined, cancelCallback = undefined) => {
   const res = await axios({
     method: 'GET',
     url: config.get('API_HOST') + route,
@@ -55,11 +51,7 @@ function useInfinite(url, query, mappingFunction = (x) => x) {
   }
 }
 
-export async function getRecentCollections(
-  cursor = undefined,
-  perPage = undefined,
-  cancelCallback = undefined
-) {
+export async function getRecentCollections(cursor = undefined, perPage = undefined, cancelCallback = undefined) {
   return getRequestWithQueryParameters(
     '/api/collections/recent',
     {
@@ -181,20 +173,14 @@ export async function uploadCollections(collections) {
     body: JSON.stringify(collections),
   })
   if (response.status === 200) return response.json()
-  else
-    throw new Error(
-      `/api/collections/upload responded with ${response.status}: ${await response.text()}`
-    )
+  else throw new Error(`/api/collections/upload responded with ${response.status}: ${await response.text()}`)
 }
 
 // Returns true on success
 export async function favouriteCollection(collectionId) {
-  const response = await fetch(
-    `${config.get('API_HOST')}/api/collections/${collectionId}/favourite`,
-    {
-      method: 'POST',
-    }
-  )
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/favourite`, {
+    method: 'POST',
+  })
   if (response.status === 200) {
     console.log(`collection ${collectionId} added to favourites`)
     return true
@@ -207,12 +193,9 @@ export async function favouriteCollection(collectionId) {
 
 // Returns true on success
 export async function unfavouriteCollection(collectionId) {
-  const response = await fetch(
-    `${config.get('API_HOST')}/api/collections/${collectionId}/favourite`,
-    {
-      method: 'DELETE',
-    }
-  )
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/favourite`, {
+    method: 'DELETE',
+  })
   if (response.status === 200) {
     console.log(`collection ${collectionId} removed from favourites`)
     return true
@@ -224,18 +207,15 @@ export async function unfavouriteCollection(collectionId) {
 }
 
 export async function editCollectionDescription(collectionId, description) {
-  const response = await fetch(
-    `${config.get('API_HOST')}/api/collections/${collectionId}/description`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        description: description,
-      }),
-    }
-  )
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/description`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      description: description,
+    }),
+  })
   if (response.status === 200) {
     console.log('description successfully edited')
     return true
@@ -405,9 +385,7 @@ export async function cancelPaypalSubscription() {
     await axios.post(config.get('API_HOST') + endpoint)
   } catch (err) {
     if (err.response.status !== 404) {
-      throw new Error(
-        `${endpoint} responded with ${err.response.status}: ${JSON.stringify(err.response.data)}`
-      )
+      throw new Error(`${endpoint} responded with ${err.response.status}: ${JSON.stringify(err.response.data)}`)
     }
   }
 }
@@ -423,10 +401,7 @@ export async function createCustomer(email) {
     }),
   })
   if (response.status === 200) return await response.text()
-  else
-    throw new Error(
-      `/api/payments/createCustomer responded with ${response.status}: ${await response.text()}`
-    )
+  else throw new Error(`/api/payments/createCustomer responded with ${response.status}: ${await response.text()}`)
 }
 
 export async function createSubscription() {
@@ -434,10 +409,7 @@ export async function createSubscription() {
     method: 'POST',
   })
   if (response.status === 200) return response.json()
-  else
-    throw new Error(
-      `/api/payments/createSubscription responded with ${response.status}: ${await response.text()}`
-    )
+  else throw new Error(`/api/payments/createSubscription responded with ${response.status}: ${await response.text()}`)
 }
 
 export async function getSubscription(cancelCallback = undefined) {
@@ -453,9 +425,7 @@ export async function getSubscription(cancelCallback = undefined) {
     if (err.response?.status === 404) {
       return null
     } else {
-      console.error(
-        `/api/payments/createSubscription responded with ${err.response?.status}: ${err.response?.data}`
-      )
+      console.error(`/api/payments/createSubscription responded with ${err.response?.status}: ${err.response?.data}`)
       return null
     }
   }
@@ -476,10 +446,7 @@ export async function unlinkTwitchAccount() {
     method: 'POST',
   })
   if (response.status === 200) return await response.text()
-  else
-    throw new Error(
-      `/api/users/me/unlinkTwitch responded with ${response.status}: ${await response.text()}`
-    )
+  else throw new Error(`/api/users/me/unlinkTwitch responded with ${response.status}: ${await response.text()}`)
 }
 
 export async function getInstallerURL(platform = undefined) {
@@ -490,58 +457,50 @@ export async function getInstallerURL(platform = undefined) {
 }
 
 export async function postComment(collectionId, message) {
-  const response = await fetch(
-    `${config.get('API_HOST')}/api/collections/${collectionId}/comments`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: message,
-      }),
-    }
-  )
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/comments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: message,
+    }),
+  })
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `POST /api/collections/${collectionId}/comments responded with ${response.status
-      }: ${await response.text()}`
+      `POST /api/collections/${collectionId}/comments responded with ${response.status}: ${await response.text()}`
     )
 }
 
 export async function likeComment(collectionId, commentId, remove = false) {
-  const response = await fetch(
-    `${config.get('API_HOST')}/api/collections/${collectionId}/comments/${commentId}/like`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        remove: remove,
-      }),
-    }
-  )
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/comments/${commentId}/like`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      remove: remove,
+    }),
+  })
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `POST /api/collections/${collectionId}/comments/${commentId}/like responded with ${response.status
+      `POST /api/collections/${collectionId}/comments/${commentId}/like responded with ${
+        response.status
       }: ${await response.text()}`
     )
 }
 
 export async function deleteComment(collectionId, commentId) {
-  const response = await fetch(
-    `${config.get('API_HOST')}/api/collections/${collectionId}/comments/${commentId}`,
-    {
-      method: 'DELETE',
-    }
-  )
+  const response = await fetch(`${config.get('API_HOST')}/api/collections/${collectionId}/comments/${commentId}`, {
+    method: 'DELETE',
+  })
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `DELETE /api/collections/${collectionId}/comments/${commentId} responded with ${response.status
+      `DELETE /api/collections/${collectionId}/comments/${commentId} responded with ${
+        response.status
       }: ${await response.text()}`
     )
 }
@@ -556,7 +515,8 @@ export async function reportComment(collectionId, commentId) {
   if (response.status === 200) return await response.text()
   else
     throw new Error(
-      `POST /api/collections/${collectionId}/comments/${commentId}/report responded with ${response.status
+      `POST /api/collections/${collectionId}/comments/${commentId}/report responded with ${
+        response.status
       }: ${await response.text()}`
     )
 }
@@ -771,11 +731,7 @@ export async function editTournament(id, createTournamentDto) {
   return res.data
 }
 
-export async function getRecentTournaments(
-  cursor = undefined,
-  perPage = undefined,
-  cancelCallback = undefined
-) {
+export async function getRecentTournaments(cursor = undefined, perPage = undefined, cancelCallback = undefined) {
   return getRequestWithQueryParameters(
     '/api/tournaments/recent',
     {
@@ -822,5 +778,15 @@ export async function deleteTournament(id) {
     console.log(response)
     console.log(await response.text())
     return false
+  }
+}
+
+export async function linkIrc(ircName) {
+  const route = '/api/users/me/linkIrc'
+  try {
+    const res = await axios.patch(config.get('API_HOST') + route, { ircName })
+    return res.data
+  } catch (error) {
+    throw new Error(`${route} responded with ${error.response.status}: ${error.response.data}`)
   }
 }
