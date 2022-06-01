@@ -70,15 +70,15 @@ function RenameForm({ collection, setCollection, setRenamingCollection }) {
 
   return (
     <Form>
-      <div className="d-flex">
+      <div className='d-flex'>
         <FormControl
-          className="mr-2"
-          size="lg"
+          className='mr-2'
+          size='lg'
           placeholder={collection.name}
           onChange={(event) => setNewCollectionName(event.target.value)}
         />
         <Button
-          className="ml-2 mr-1"
+          className='ml-2 mr-1'
           onClick={() => {
             api.renameCollection(collection.id, newCollectionName)
             setCollection({
@@ -90,7 +90,7 @@ function RenameForm({ collection, setCollection, setRenamingCollection }) {
         >
           Rename
         </Button>
-        <Button className="mx-1" variant="secondary" onClick={() => setRenamingCollection(false)}>
+        <Button className='mx-1' variant='secondary' onClick={() => setRenamingCollection(false)}>
           Cancel
         </Button>
       </div>
@@ -193,6 +193,7 @@ function Collection({ user, setUser }) {
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [collectionSuccessfullyDeleted, setCollectionSuccessfullyDeleted] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [modalMessage, setModalMessage] = useState('')
 
   const submitDescription = (newDescription) => {
     api.editCollectionDescription(collection.id, newDescription)
@@ -250,9 +251,7 @@ function Collection({ user, setUser }) {
       setQueryOpts({
         ...queryOpts,
         sortBy: sortBy,
-        orderBy: ['beatmapset.artist', 'beatmapset.title', 'beatmapset.creator'].includes(sortBy)
-          ? 'asc'
-          : 'desc',
+        orderBy: ['beatmapset.artist', 'beatmapset.title', 'beatmapset.creator'].includes(sortBy) ? 'asc' : 'desc',
         filterMin: undefined,
         filterMax: undefined,
       })
@@ -318,43 +317,43 @@ function Collection({ user, setUser }) {
   const difficultySpread = collection?.difficultySpread
     ? collection.difficultySpread
     : {
-      1: 0,
-      2: 0,
-      3: 0,
-      4: 0,
-      5: 0,
-      6: 0,
-      7: 0,
-      8: 0,
-      9: 0,
-      10: 0,
-    }
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+      }
   const bpmSpread = collection?.bpmSpread
     ? collection.bpmSpread
     : {
-      150: 0,
-      160: 0,
-      170: 0,
-      180: 0,
-      190: 0,
-      200: 0,
-      210: 0,
-      220: 0,
-      230: 0,
-      240: 0,
-      250: 0,
-      260: 0,
-      270: 0,
-      280: 0,
-      290: 0,
-      300: 0,
-    }
+        150: 0,
+        160: 0,
+        170: 0,
+        180: 0,
+        190: 0,
+        200: 0,
+        210: 0,
+        220: 0,
+        230: 0,
+        240: 0,
+        250: 0,
+        260: 0,
+        270: 0,
+        280: 0,
+        290: 0,
+        300: 0,
+      }
   const listing = beatmaps ? groupBeatmapsets(beatmaps) : new Array(50).fill({})
 
   if (collectionSuccessfullyDeleted) {
     return (
-      <Alert variant="danger">
-        <Alert.Heading className="text-center m-0">Collection deleted</Alert.Heading>
+      <Alert variant='danger'>
+        <Alert.Heading className='text-center m-0'>Collection deleted</Alert.Heading>
       </Alert>
     )
   }
@@ -363,18 +362,18 @@ function Collection({ user, setUser }) {
     return <h1>Collection not found!</h1>
   }
   return (
-    <Container className="pt-4">
+    <Container className='pt-4'>
       {/* collection metadata */}
-      <Card className="p-4 pb-0 shadow">
+      <Card className='p-4 pb-0 shadow'>
         <ReactPlaceholder
           ready={collection}
           showLoadingAnimation
-          type="rect"
-          className="mb-3 w-100"
+          type='rect'
+          className='mb-3 w-100'
           style={{ height: '58px' }}
         >
-          <div className="d-flex justify-content-between">
-            <div className="d-flex align-content-center">
+          <div className='d-flex justify-content-between'>
+            <div className='d-flex align-content-center'>
               {renamingCollection ? (
                 <RenameForm
                   collection={collection}
@@ -382,30 +381,26 @@ function Collection({ user, setUser }) {
                   setRenamingCollection={setRenamingCollection}
                 />
               ) : (
-                <h1 className="mb-0 mr-4">{collection?.name}</h1>
+                <h1 className='mb-0 mr-4'>{collection?.name}</h1>
               )}
               {collection?.uploader?.id === user?.id && !renamingCollection && (
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => setRenamingCollection(true)}
-                  style={{ width: 48 }}
-                >
-                  <Pencil className="svg-shadow" size={18} />
+                <Button variant='outline-secondary' onClick={() => setRenamingCollection(true)} style={{ width: 48 }}>
+                  <Pencil className='svg-shadow' size={18} />
                 </Button>
               )}
             </div>
             {collection?.uploader?.id === user?.id && (
               <Button
-                variant="danger"
+                variant='danger'
                 onClick={() => setShowDeleteConfirmationModal(true)}
-                className="p-0"
+                className='p-0'
                 style={{
                   width: '50px',
                   height: '34px',
                   marginTop: '-6px',
                 }}
               >
-                <TrashFill className="svg-shadow" size={18} />
+                <TrashFill className='svg-shadow' size={18} />
               </Button>
             )}
           </div>
@@ -413,57 +408,52 @@ function Collection({ user, setUser }) {
         <ReactPlaceholder
           ready={collection}
           showLoadingAnimation
-          type="rect"
-          className="w-100 mb-4"
+          type='rect'
+          className='w-100 mb-4'
           style={{ height: '304px' }}
         >
           {collection && (
-            <Container className="p-0">
-              <Row className="p-0">
+            <Container className='p-0'>
+              <Row className='p-0'>
                 <Col lg={12} xl={6}>
                   {/* beatmap count grouped by mode */}
-                  <div className="mt-2 mb-3 d-flex align-items-center">
+                  <div className='mt-2 mb-3 d-flex align-items-center'>
                     <ModeCounters collection={collection} className={undefined} />
-                    {(collection.unsubmittedBeatmapCount > 0 ||
-                      collection.unknownChecksums.length > 0) && (
-                        <OverlayTrigger
-                          placement="right"
-                          overlay={
-                            <Tooltip id="">
-                              <div className="px-2">
-                                {collection.unsubmittedBeatmapCount > 0 && (
-                                  <div>
-                                    <small>{collection.unsubmittedBeatmapCount} unsubmitted</small>
-                                  </div>
-                                )}
-                                {collection.unknownChecksums.length > 0 && (
-                                  <div>
-                                    <small>{collection.unknownChecksums.length} processing</small>
-                                  </div>
-                                )}
-                              </div>
-                            </Tooltip>
-                          }
-                        >
-                          <div>
-                            <div className="d-flex align-items-center mr-2">
-                              <ExclamationTriangleFill
-                                className="mr-1"
-                                style={{ color: '#ffd966' }}
-                              />
-                              <small>
-                                {(collection.unsubmittedBeatmapCount || 0) +
-                                  (collection.unknownChecksums.length || 0)}
-                              </small>
+                    {(collection.unsubmittedBeatmapCount > 0 || collection.unknownChecksums.length > 0) && (
+                      <OverlayTrigger
+                        placement='right'
+                        overlay={
+                          <Tooltip id=''>
+                            <div className='px-2'>
+                              {collection.unsubmittedBeatmapCount > 0 && (
+                                <div>
+                                  <small>{collection.unsubmittedBeatmapCount} unsubmitted</small>
+                                </div>
+                              )}
+                              {collection.unknownChecksums.length > 0 && (
+                                <div>
+                                  <small>{collection.unknownChecksums.length} processing</small>
+                                </div>
+                              )}
                             </div>
+                          </Tooltip>
+                        }
+                      >
+                        <div>
+                          <div className='d-flex align-items-center mr-2'>
+                            <ExclamationTriangleFill className='mr-1' style={{ color: '#ffd966' }} />
+                            <small>
+                              {(collection.unsubmittedBeatmapCount || 0) + (collection.unknownChecksums.length || 0)}
+                            </small>
                           </div>
-                        </OverlayTrigger>
-                      )}
+                        </div>
+                      </OverlayTrigger>
+                    )}
                   </div>
-                  <div className="mt-1 mb-3 d-flex justify-content-start align-items-center">
+                  <div className='mt-1 mb-3 d-flex justify-content-start align-items-center'>
                     {/* uploader */}
                     <Image
-                      className="collection-card-uploader-avatar mr-2"
+                      className='collection-card-uploader-avatar mr-2'
                       src={`https://a.ppy.sh/${collection.uploader.id}`}
                       roundedCircle
                     />
@@ -471,16 +461,14 @@ function Collection({ user, setUser }) {
                       <a>{collection.uploader.username}</a>
                     </LinkContainer>
                     {collection.uploader.rank > 0 && (
-                      <small className="text-muted ml-1">#{collection.uploader.rank}</small>
+                      <small className='text-muted ml-1'>#{collection.uploader.rank}</small>
                     )}
                     {/* date */}
-                    <small className="text-muted ml-3">
+                    <small className='text-muted ml-3'>
                       Created {moment.unix(collection.dateUploaded._seconds).fromNow()}
-                      {Math.abs(
-                        collection.dateLastModified._seconds - collection.dateUploaded._seconds
-                      ) > 86400 && (
-                          <>, updated {moment.unix(collection.dateLastModified._seconds).fromNow()}</>
-                        )}
+                      {Math.abs(collection.dateLastModified._seconds - collection.dateUploaded._seconds) > 86400 && (
+                        <>, updated {moment.unix(collection.dateLastModified._seconds).fromNow()}</>
+                      )}
                     </small>
                   </div>
                   {/* description */}
@@ -490,14 +478,13 @@ function Collection({ user, setUser }) {
                     submit={submitDescription}
                   />
                   {/* buttons */}
-                  <div className="d-flex flex-row mb-4">
+                  <div className='d-flex flex-row mb-4'>
                     <Button
-                      className="mr-1"
+                      className='mr-1'
                       onClick={() => {
                         if (user?.paidFeaturesAccess) {
-                          alert(
-                            'Please use the osu!Collector desktop client to access this feature.'
-                          )
+                          setModalMessage('Collection launched in osu!Collector desktop client!')
+                          window.open(`osucollector://collections/${collection.id}`)
                         } else {
                           history.push('/client')
                         }
@@ -506,12 +493,11 @@ function Collection({ user, setUser }) {
                       Download maps
                     </Button>
                     <DropdownButton
-                      title="Add to osu!"
+                      title='Add to osu!'
                       titleAction={() => {
                         if (user?.paidFeaturesAccess) {
-                          alert(
-                            'Please use the osu!Collector desktop client to access this feature.'
-                          )
+                          setModalMessage('Collection launched in osu!Collector desktop client!')
+                          window.open(`osucollector://collections/${collection.id}`)
                         } else {
                           history.push('/client')
                         }
@@ -545,7 +531,7 @@ function Collection({ user, setUser }) {
                       }}
                     />
                     <FavouriteButton
-                      className="mx-1"
+                      className='mx-1'
                       favourites={favourites}
                       favourited={favourited}
                       onClick={favouriteButtonClicked}
@@ -554,7 +540,7 @@ function Collection({ user, setUser }) {
                 </Col>
                 <Col lg={12} xl={6}>
                   {/* Difficulty Spread Graph */}
-                  <GraphContainer className="pt-0 pb-2 mb-3" variant="top">
+                  <GraphContainer className='pt-0 pb-2 mb-3' variant='top'>
                     <BarGraph
                       data={[
                         [
@@ -588,16 +574,14 @@ function Collection({ user, setUser }) {
                         },
                       ]}
                     />
-                    <p className="mt-2 mb-0 text-center text-muted">
+                    <p className='mt-2 mb-0 text-center text-muted'>
                       click on the chart to filter by{' '}
-                      <strong className={theme.darkMode ? 'text-light' : 'text-dark'}>
-                        star rating
-                      </strong>
+                      <strong className={theme.darkMode ? 'text-light' : 'text-dark'}>star rating</strong>
                     </p>
                   </GraphContainer>
 
                   {/* BPM Spread Graph */}
-                  <GraphContainer className="pt-0 pb-2 mb-4" variant="top">
+                  <GraphContainer className='pt-0 pb-2 mb-4' variant='top'>
                     <BarGraph
                       data={[
                         [
@@ -607,16 +591,15 @@ function Collection({ user, setUser }) {
                           { role: 'annotation' },
                           { role: 'tooltip', type: 'string', p: { html: true } },
                         ],
-                        ...[
-                          150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290,
-                          300,
-                        ].map((bpm) => [
-                          bpm.toString(),
-                          bpmSpread[bpm],
-                          bpmToColor(bpm, theme.darkMode),
-                          bpmSpread[bpm],
-                          `${bpm} bpm - ${bpmSpread[bpm]} difficulties`,
-                        ]),
+                        ...[150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300].map(
+                          (bpm) => [
+                            bpm.toString(),
+                            bpmSpread[bpm],
+                            bpmToColor(bpm, theme.darkMode),
+                            bpmSpread[bpm],
+                            `${bpm} bpm - ${bpmSpread[bpm]} difficulties`,
+                          ]
+                        ),
                       ]}
                       height={115}
                       enableInteractivity
@@ -634,7 +617,7 @@ function Collection({ user, setUser }) {
                         },
                       ]}
                     />
-                    <p className="mt-2 mb-0 text-center text-muted">
+                    <p className='mt-2 mb-0 text-center text-muted'>
                       click on the chart to filter by{' '}
                       <strong className={theme.darkMode ? 'text-light' : 'text-dark'}>bpm</strong>
                     </p>
@@ -655,10 +638,10 @@ function Collection({ user, setUser }) {
       />
 
       {/* beatmaps */}
-      <Card className="mt-4 shadow">
+      <Card className='mt-4 shadow'>
         <Card.Header>
-          <div className="d-flex flex-wrap">
-            <div className="p-2 mr-4">Sort by:</div>
+          <div className='d-flex flex-wrap'>
+            <div className='p-2 mr-4'>Sort by:</div>
             {[
               ['beatmapset.artist', 'Artist'],
               ['beatmapset.title', 'Title'],
@@ -667,7 +650,7 @@ function Collection({ user, setUser }) {
               ['bpm', 'BPM'],
               ['hit_length', 'Length'],
             ].map(([field, label]) => (
-              <div key={field} className="p-1 mr-2">
+              <div key={field} className='p-1 mr-2'>
                 <SortButton
                   sortDirection={queryOpts.sortBy !== field ? null : queryOpts.orderBy}
                   onClick={() => setSortBy(field)}
@@ -685,44 +668,35 @@ function Collection({ user, setUser }) {
             next={loadMore}
             hasMore={beatmapPage?.hasMore}
             loader={
-              <div className="d-flex justify-content-center p-2">
-                <Spinner animation="border" />
+              <div className='d-flex justify-content-center p-2'>
+                <Spinner animation='border' />
               </div>
             }
             endMessage={
-              <p className="text-muted" style={{ textAlign: 'center' }}>
+              <p className='text-muted' style={{ textAlign: 'center' }}>
                 <b>Nothing more to show.</b>
               </p>
             }
-            className="row"
+            className='row'
           >
             {listing.map(({ beatmapset, beatmaps }, index) => (
               <ReactPlaceholder
                 key={index}
                 ready={beatmapPage}
                 showLoadingAnimation
-                type="rect"
-                className="w-100 mb-4"
+                type='rect'
+                className='w-100 mb-4'
                 customPlaceholder={
-                  <div className="d-flex">
+                  <div className='d-flex'>
                     {/* beatmapset */}
-                    <RectShape
-                      color="grey"
-                      className="mr-2"
-                      style={{ width: '470px', height: '100px' }}
-                    />
+                    <RectShape color='grey' className='mr-2' style={{ width: '470px', height: '100px' }} />
                     {/* diffs */}
-                    <RectShape
-                      color="grey"
-                      className="mr-0"
-                      rows={1}
-                      style={{ height: '41px' }}
-                    />
+                    <RectShape color='grey' className='mr-0' rows={1} style={{ height: '41px' }} />
                   </div>
                 }
               >
                 <MapsetCard
-                  className="mb-4"
+                  className='mb-4'
                   beatmapset={beatmapset}
                   beatmaps={beatmaps}
                   playing={currentlyPlaying === index}
@@ -735,22 +709,23 @@ function Collection({ user, setUser }) {
         </Card.Body>
       </Card>
 
-      <Modal
-        show={showDeleteConfirmationModal}
-        onHide={() => setShowDeleteConfirmationModal(false)}
-        centered={true}
-      >
+      <Modal show={showDeleteConfirmationModal} onHide={() => setShowDeleteConfirmationModal(false)} centered={true}>
         <Modal.Body>Are you sure you want to delete this collection?</Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowDeleteConfirmationModal(false)}
-            disabled={deleting}
-          >
+          <Button variant='secondary' onClick={() => setShowDeleteConfirmationModal(false)} disabled={deleting}>
             No
           </Button>
-          <Button variant="danger" onClick={deleteCollection} disabled={deleting}>
-            {deleting ? <Spinner size="sm" animation="border"></Spinner> : 'Yes'}
+          <Button variant='danger' onClick={deleteCollection} disabled={deleting}>
+            {deleting ? <Spinner size='sm' animation='border'></Spinner> : 'Yes'}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={!!modalMessage} onHide={() => setModalMessage('')} centered={true}>
+        <Modal.Body className='px-4 py-5'>{modalMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setModalMessage('')} disabled={deleting}>
+            Okay
           </Button>
         </Modal.Footer>
       </Modal>
