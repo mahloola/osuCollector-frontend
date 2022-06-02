@@ -790,3 +790,13 @@ export async function linkIrc(ircName) {
     throw new Error(`${route} responded with ${error.response.status}: ${error.response.data}`)
   }
 }
+
+export async function updateNpCollectionId(collectionId) {
+  const route = '/api/users/me/npCollectionId'
+  try {
+    const res = await axios.patch(config.get('API_HOST') + route, { collectionId })
+    return res.data
+  } catch (error) {
+    console.error(`${route} responded with ${error.response.status}: ${error.response.data}`)
+  }
+}

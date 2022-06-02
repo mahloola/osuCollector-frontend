@@ -25,7 +25,7 @@ import SortButton from '../common/SortButton'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { addFavouritedByUserAttribute, bpmToColor, starToColor } from '../../utils/misc'
 import EditableTextbox from '../common/EditableTextbox'
-import { TrashFill, ExclamationTriangleFill, Pencil } from 'react-bootstrap-icons'
+import { TrashFill, ExclamationTriangleFill, Pencil, QuestionCircleFill } from 'react-bootstrap-icons'
 import styled, { ThemeContext } from 'styled-components'
 import ModeCounters from '../common/ModeCounters'
 import BarGraph from '../common/BarGraph'
@@ -116,6 +116,32 @@ function Collection({ user, setUser }) {
   const [favourited, setFavourited] = useState(false)
   const [favourites, setFavourites] = useState(0)
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
+
+  const [npEnabled, setNpEnabled] = useState(false)
+  useEffect(() => {
+    if (!user?.npCollectionId) return
+    if ((user.npCollectionId === id) !== npEnabled) {
+      setNpEnabled(user.npCollectionId === id)
+    }
+  }, [user?.npCollectionId])
+
+  useEffect(() => {
+    if (user?.npCollectionId === undefined) return
+    console.log('npEnabled:', npEnabled, 'npCollectionId:', user?.npCollectionId)
+    if (npEnabled && user?.npCollectionId !== id) {
+      api.updateNpCollectionId(id)
+      setUser((user) => ({
+        ...user,
+        npCollectionId: id,
+      }))
+    } else if (!npEnabled && user?.npCollectionId === id) {
+      api.updateNpCollectionId(null)
+      setUser((user) => ({
+        ...user,
+        npCollectionId: null,
+      }))
+    }
+  }, [npEnabled, user?.npCollectionId])
 
   const onPlayClick = (index) => {
     if (currentlyPlaying === index) {
@@ -372,6 +398,45 @@ function Collection({ user, setUser }) {
           className='mb-3 w-100'
           style={{ height: '58px' }}
         >
+          {collection?.uploader?.id === user?.id && (
+            <div className='d-flex'>
+              <Form.Check
+                checked={npEnabled}
+                onChange={() => {
+                  setNpEnabled((prev) => !prev)
+                }}
+                id='np-enable-switch'
+                type='switch'
+                className='mb-2'
+                label='/np enable'
+              />
+              <OverlayTrigger
+                placement='right'
+                delay={{ show: 250, hide: 400 }}
+                overlay={(props) => (
+                  <Tooltip id='button-tooltip' {...props}>
+                    <div className='px-2 py-1' style={{}}>
+                      Add maps using /np
+                      <br />
+                      Click for more info
+                    </div>
+                  </Tooltip>
+                )}
+              >
+                <a
+                  href='#'
+                  onClick={() =>
+                    setModalMessage(
+                      'Add beatmaps to this collection by sending /np to FunOrange.\n\nTo get started, message !setup to FunOrange in osu!'
+                    )
+                  }
+                  style={{ marginLeft: '10px', marginTop: '-8px', fontSize: 22 }}
+                >
+                  <QuestionCircleFill className='mr-2' />
+                </a>
+              </OverlayTrigger>
+            </div>
+          )}
           <div className='d-flex justify-content-between'>
             <div className='d-flex align-content-center'>
               {renamingCollection ? (
