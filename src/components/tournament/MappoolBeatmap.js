@@ -12,7 +12,8 @@ function MappoolBeatmap({ beatmap, mod, modIndex, playing, onPlayClick, onAudioE
   const [hovered, setHovered] = useState(false)
 
   const beatmapset = beatmap?.beatmapset
-  const beatmapString = `${beatmapset?.artist} - ${beatmapset?.title} [${beatmap?.version}]`
+  const beatmapName = `${beatmapset?.artist} - ${beatmapset?.title}`
+  const beatmapDiff = `[${beatmap?.version}]`
   const dt = mod.toLowerCase() === 'dt'
   const hr = mod.toLowerCase() === 'hr'
   const diffUp = <span style={{ color: '#cd334f' }}>▲</span>
@@ -74,7 +75,7 @@ function MappoolBeatmap({ beatmap, mod, modIndex, playing, onPlayClick, onAudioE
             {typeof beatmap === 'object' ? (
               <>
                 <S.Truncate hovered={hovered}>
-                  <b>{beatmapString}</b>
+                  {beatmapName} <b>{beatmapDiff}</b>
                 </S.Truncate>
                 <div className='d-flex mt-1' style={{ fontSize: 14 }}>
                   <div className='mr-3 text-muted'>
