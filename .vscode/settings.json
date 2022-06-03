@@ -1,12 +1,5 @@
 {
-  "editor.tabCompletion": "on",
-  "emmet.triggerExpansionOnTab": true,
-  "emmet.includeLanguages": {
-    "javascript": "javascriptreact"
-  },
-  "editor.codeLens": false,
-  "editor.formatOnSave": true,
-  "javascript.referencesCodeLens.enabled": true,
-  "javascript.referencesCodeLens.showOnAllFunctions": true,
-  "typescript.referencesCodeLens.enabled": true
+    "editor.formatOnSave": true,
+    "files.autoSave": "afterDelay",
+    "editor.tabSize": 2
 }

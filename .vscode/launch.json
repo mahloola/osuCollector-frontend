@@ -5,11 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-chrome",
+      "type": "node",
       "request": "launch",
-      "name": "Launch Chrome against localhost",
-      "url": "http://localhost:3001",
-      "webRoot": "${workspaceFolder}"
+      "name": "Electron Main",
+      "runtimeExecutable": "${workspaceFolder}/electron/node_modules/.bin/electron-forge-vscode-nix",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/electron/node_modules/.bin/electron-forge-vscode-win.cmd"
+      },
+      // runtimeArgs will be passed directly to your Electron application
+      "runtimeArgs": ["foo", "bar"],
+      "cwd": "${workspaceFolder}/electron"
     }
   ]
 }

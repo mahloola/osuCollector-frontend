@@ -3,10 +3,27 @@
   "tasks": [
     {
       "type": "npm",
+      "script": "electron:start",
+      "problemMatcher": [],
+      "label": "npm: electron:start",
+      "detail": "concurrently \"yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+      "group": "build"
+    },
+    {
+      "type": "npm",
+      "script": "start",
+      "path": "electron/",
+      "problemMatcher": [],
+      "label": "npm: start - electron",
+      "detail": "electron-forge start",
+      "group": "build"
+    },
+    {
+      "type": "npm",
       "script": "start",
       "problemMatcher": [],
       "label": "npm: start",
-      "detail": "react-scripts start",
+      "detail": "cross-env BROWSER=none react-scripts start",
       "group": {
         "kind": "build",
         "isDefault": true
