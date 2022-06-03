@@ -102,7 +102,8 @@ function Collection({ user, setUser }) {
   const theme = useContext(ThemeContext)
   const history = useHistory()
 
-  let { id } = useParams()
+  // @ts-ignore
+  const { id } = useParams()
   const [queryOpts, setQueryOpts] = useState({
     perPage: 50,
     sortBy: 'beatmapset.artist',
@@ -119,29 +120,25 @@ function Collection({ user, setUser }) {
 
   const [npEnabled, setNpEnabled] = useState(false)
   useEffect(() => {
-    if (!user?.npCollectionId) return
-    if ((user.npCollectionId === id) !== npEnabled) {
-      setNpEnabled(user.npCollectionId === id)
-    }
-  }, [user?.npCollectionId])
+    if (!user) return
+    setNpEnabled(user.npCollectionId === id)
+  }, [user])
 
-  useEffect(() => {
-    if (user?.npCollectionId === undefined) return
-    console.log('npEnabled:', npEnabled, 'npCollectionId:', user?.npCollectionId)
-    if (npEnabled && user?.npCollectionId !== id) {
-      api.updateNpCollectionId(id)
-      setUser((user) => ({
+  const handleNpEnableClick = async () => {
+    if (!user.npCollectionId || user.npCollectionId !== id) {
+      setUser((prev) => ({
         ...user,
         npCollectionId: id,
       }))
-    } else if (!npEnabled && user?.npCollectionId === id) {
-      api.updateNpCollectionId(null)
-      setUser((user) => ({
+      await api.updateNpCollectionId(id)
+    } else if (user.npCollectionId === id) {
+      setUser((prev) => ({
         ...user,
         npCollectionId: null,
       }))
+      await api.updateNpCollectionId(null)
     }
-  }, [npEnabled, user?.npCollectionId])
+  }
 
   const onPlayClick = (index) => {
     if (currentlyPlaying === index) {
@@ -402,9 +399,7 @@ function Collection({ user, setUser }) {
             <div className='d-flex'>
               <Form.Check
                 checked={npEnabled}
-                onChange={() => {
-                  setNpEnabled((prev) => !prev)
-                }}
+                onChange={handleNpEnableClick}
                 id='np-enable-switch'
                 type='switch'
                 className='mb-2'
