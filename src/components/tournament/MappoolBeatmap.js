@@ -2,7 +2,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Card } from 'components/bootstrap-osu-collector'
 import styled, { ThemeContext } from 'styled-components'
-import { secondsToHHMMSS, starToColor } from 'utils/misc'
+import { secondsToHHMMSS, starToColor, openInBrowser } from 'utils/misc'
 import { PlayFill, StopFill } from 'react-bootstrap-icons'
 import { Breakpoints } from 'utils/misc'
 
@@ -148,7 +148,7 @@ function MappoolBeatmap({ beatmap, mod, modIndex, playing, onPlayClick, onAudioE
           {hovered && (
             <div className='d-flex pr-2'>
               <Button
-                href={beatmap.url || `https://osu.ppy.sh/b/${beatmap}`}
+                onClick={() => openInBrowser(beatmap.url || `https://osu.ppy.sh/b/${beatmap}`)}
                 target='blank'
                 variant='outline-secondary'
                 className='ms-auto px-2 mr-1'

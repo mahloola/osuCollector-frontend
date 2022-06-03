@@ -4,28 +4,11 @@ import { useHistory } from 'react-router-dom'
 import * as api from '../../utils/api'
 import './uploadModal.css'
 import moment from 'moment'
-import { useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { parseCollectionDb } from '../../utils/collectionsDb'
 
-function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollections }) {
+function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollections, localCollections }) {
   const [selectedCollection, setSelectedCollection] = useState(null)
   const [uploading, setUploading] = useState(false)
   const history = useHistory()
-  const [file, setFile] = useState(null)
-  const [localCollections, setLocalCollections] = useState([])
-  const onDrop = useCallback((acceptedFiles) => {
-    let file = acceptedFiles[0]
-    setFile(file)
-    console.log(file)
-    let reader = new FileReader()
-    reader.onload = async () => {
-      setLocalCollections(parseCollectionDb(reader.result))
-      console.log('collections', localCollections)
-    }
-    reader.readAsArrayBuffer(file)
-  }, [])
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   const onCheck = ({ target }) => {
     const { value, checked } = target
@@ -53,8 +36,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
       const collections = await api.uploadCollections([selectedCollection])
       alert(`Collection uploaded!`)
       if (collections.length >= 1) {
-        // this is easier than mutating useRecentCollections
-        window.location.href = `/collections/${collections[0].id}`
+        history.push(`/collections/${collections[0].id}`) // TODO: mutate useRecentCollections
       }
     } catch (err) {
       alert(
@@ -68,29 +50,11 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
   return (
     <Modal show={uploadModalIsOpen} onHide={() => setUploadModalIsOpen(false)} size='xl' centered>
       <ModalBody className='px-5 py-4'>
-        <h3>1. Open collection.db</h3>
-        collection.db is a file that contains all of your osu! collections. It is located in your osu! install folder.
-        Example:
-        <pre className='bg-light my-2 py-1 px-3'>
-          <code>C:\Users\jun\AppData\Local\osu!\collection.db</code>
-        </pre>
-        <br></br>
         <Form>
-          <div className='dragon-drop' {...getRootProps()}>
-            <input {...getInputProps()} />
-            {file != null ? (
-              file.name
-            ) : isDragActive ? (
-              <span>Drop the file here ...</span>
-            ) : (
-              <span>Choose a file or drag it here.</span>
-            )}
-          </div>
-          <br />
           {localCollections.length > 0 && (
             <div>
-              <h3>2. Select a collection to upload or update</h3>
-              <div style={{ height: '52vh', overflowY: 'scroll' }}>
+              <h3>Select a collection to upload or update</h3>
+              <div style={{ maxHeight: '77vh', overflowY: 'scroll' }}>
                 {localCollections.map((collection, index) => (
                   <Card $lightbg key={index} className='shadow-sm mx-2 my-2 py-2 px-4'>
                     <div className='d-flex text-right'>

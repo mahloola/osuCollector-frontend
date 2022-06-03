@@ -1,5 +1,5 @@
 {
   "CLIENT_ID": 7512,
   "OAUTH_CALLBACK": "https://osucollector.com/authentication",
-  "API_HOST": ""
+  "API_HOST": "https://osucollector.com"
 }

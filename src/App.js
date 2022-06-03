@@ -1,4 +1,4 @@
-import { Route, Switch, useHistory } from 'react-router-dom'
+import { Redirect, Route, Router, Switch, useHistory } from 'react-router-dom'
 import { getOwnUser } from './utils/api'
 import { useState, useEffect } from 'react'
 import { useQuery } from './utils/hooks'
@@ -24,24 +24,9 @@ import Tournament from './components/tournament/Tournament'
 import CreateTournament from './components/tournament/CreateTournament'
 import EditTournament from './components/tournament/EditTournament'
 
-// website imports
-import NotFound from './components/notfound/NotFound'
-import DesktopClient from './components/client/DesktopClient'
-import ShowOtp from './components/login/ShowOtp'
-import TwitchSuccess from './components/twitchSuccess/TwitchSuccess'
-import { loadStripe } from '@stripe/stripe-js'
-import { Elements } from '@stripe/react-stripe-js'
-import Checkout from './components/payments/Checkout'
-import Success from './components/payments/Success'
-import { PayPalScriptProvider } from '@paypal/react-paypal-js'
-import LinkIrc from './components/login/LinkIrc'
-
 extend([mixPlugin])
 
-// const stripePromise = loadStripe("pk_test_51JVjhhKoq9U17mD0sDkdxbLmHsLEvF0eeUUhgaJEeZgG0Iskojm8KV6UQPp4KeccpCU06rDqPmlb1EhMTOy9TrVN001tIYiti9")
-const stripePromise = loadStripe(
-  'pk_live_51JVjhhKoq9U17mD0DFdbNlJ7dBkPDBZd6lMrLcfd3AfKiuSp7beXY16YpttOc4ZzS4ulVJ7vwSoLeCfe2tTuYnF100TETgqT2M'
-)
+const { ipcRenderer } = window.require('electron')
 
 const StyledApp = styled.div`
   ${(props) =>
@@ -64,6 +49,17 @@ function App() {
   // eslint-disable-next-line no-unused-vars
   const [authX, setAuthX] = useState('')
 
+  // Preferences
+  const [preferences, setPreferences] = useState(undefined)
+
+  // Downloads
+  const [downloadsModalIsOpen, setDownloadsModalIsOpen] = useState(false)
+  const [showDownloadTroubleshootText, setShowDownloadTroubleshootText] = useState(false)
+  const [collectionDownloads, setCollectionDownloads] = useState([])
+
+  // collection.db
+  const [localCollections, setLocalCollections] = useState([])
+
   // get query params on initial page load
   useEffect(() => {
     ;(async () => {
@@ -77,20 +73,29 @@ function App() {
       }
       setUser(user)
 
-      // undo theme if user is not subscribed
-      if (!user?.paidFeaturesAccess && currentTheme.darkMode) {
-        const newTheme = {
-          ...currentTheme,
-          darkMode: false,
-        }
-        setCurrentTheme(newTheme)
-        localStorage.setItem('darkMode', 'false')
-      }
+      ipcRenderer.send('check-startup-location')
+      ipcRenderer.on('open-collection', (_event, collectionId) => {
+        console.log(`history.push('/collections/${collectionId}')`)
+        history.push(`/collections/${collectionId}`)
+      })
+      ipcRenderer.on('open-tournament', (_event, tournamentId) => {
+        console.log(`history.push('/tournaments/${tournamentId}')`)
+        history.push(`/tournaments/${tournamentId}`)
+      })
+
+      ipcRenderer.send('reload-preferences')
+      ipcRenderer.on('preferences-changed', (_event, _preferences) => {
+        setPreferences(_preferences)
+      })
+
+      ipcRenderer.on('download-progress', (_event, _collectionDownloads) => {
+        setCollectionDownloads(_collectionDownloads)
+      })
     })()
   }, [])
 
   const theme = {
-    darkMode: false,
+    darkMode: true,
     primary: '#86AAFC',
   }
   for (const i of Array(100).keys()) {
@@ -103,11 +108,6 @@ function App() {
     darkMode: JSON.parse(localStorage.getItem('darkMode')) ?? true,
   })
   const toggleTheme = () => {
-    if (!user?.paidFeaturesAccess) {
-      // redirect to /client
-      history.push('/client')
-      return
-    }
     setCurrentTheme((prev) => ({
       ...prev,
       darkMode: !prev.darkMode,
@@ -116,87 +116,84 @@ function App() {
   }
 
   return (
-    <PayPalScriptProvider
-      options={{
-        'client-id': 'AeUARmSkIalUe4gK08KWZjWYJqSq0AKH8iS9cQ3U8nIGiOxyUmrPTPD91vvE2xkVovu-3GlO0K7ISv2R',
-        vault: true,
-        intent: 'subscription',
-        components: 'buttons',
-      }}
-    >
-      <Elements stripe={stripePromise}>
-        <ThemeProvider theme={currentTheme}>
-          <StyledApp className='App'>
-            <NavigationBar user={user} setAuthX={setAuthX} setSearchText={setSearchText} toggleTheme={toggleTheme} />
-            <div style={{ minHeight: 'calc(100vh - 56px)' }}>
-              <ScrollToTop />
-              <Switch>
-                <Route exact path='/'>
-                  <Home user={user} setUser={setUser} />
-                </Route>
-                <Route path='/all'>
-                  <All searchText={searchText} setSearchText={setSearchText} user={user} setUser={setUser} />
-                </Route>
-                <Route path='/popular'>
-                  <Popular user={user} setUser={setUser} />
-                </Route>
-                <Route path='/recent'>
-                  <Recent user={user} setUser={setUser} />
-                </Route>
-                <Route exact path='/users'>
-                  <Users />
-                </Route>
-                <Route path='/users/:id/favourites'>
-                  <UserFavourites user={user} setUser={setUser} />
-                </Route>
-                <Route path='/users/:id/uploads'>
-                  <UserUploads user={user} setUser={setUser} />
-                </Route>
-                <Route path='/client'>
-                  <DesktopClient user={user} setUser={setUser} />
-                </Route>
-                <Route exact path='/tournaments'>
-                  <Tournaments />
-                </Route>
-                <Route exact path='/tournaments/create'>
-                  <CreateTournament />
-                </Route>
-                <Route exact path='/tournaments/:id'>
-                  <Tournament user={user} />
-                </Route>
-                <Route path='/tournaments/:id/edit'>
-                  <EditTournament />
-                </Route>
-                <Route path='/payments/checkout'>
-                  <Checkout />
-                </Route>
-                <Route path='/payments/success'>
-                  <Success />
-                </Route>
-                <Route path='/login/enterOtp'>
-                  <EnterOtp authX={authX} setUser={setUser} />
-                </Route>
-                <Route path='/login/showOtp'>
-                  <ShowOtp />
-                </Route>
-                <Route path='/login/linkIrc'>
-                  <LinkIrc user={user} />
-                </Route>
-                <Route path='/twitchSuccess'>
-                  <TwitchSuccess user={user} />
-                </Route>
-                <Route path='/collections/:id'>
-                  <Collection user={user} setUser={setUser} />
-                </Route>
-                <Route>
-                  <NotFound />
-                </Route>
-              </Switch>
-            </div>
-          </StyledApp>
-        </ThemeProvider>
-      </Elements>
-    </PayPalScriptProvider>
+    <ThemeProvider theme={currentTheme}>
+      <StyledApp className='App'>
+        <NavigationBar
+          user={user}
+          setAuthX={setAuthX}
+          setSearchText={setSearchText}
+          toggleTheme={toggleTheme}
+          collectionDownloads={collectionDownloads}
+          downloadsModalIsOpen={downloadsModalIsOpen}
+          setDownloadsModalIsOpen={setDownloadsModalIsOpen}
+          showDownloadTroubleshootText={showDownloadTroubleshootText}
+          setShowDownloadTroubleshootText={setShowDownloadTroubleshootText}
+          preferences={preferences}
+          localCollections={localCollections}
+          setLocalCollections={setLocalCollections}
+        />
+        <div style={{ minHeight: 'calc(100vh - 56px)' }}>
+          <ScrollToTop />
+          <Switch>
+            <Route exact path='/'>
+              <Home user={user} setUser={setUser} />
+            </Route>
+            <Route path='/all'>
+              <All searchText={searchText} setSearchText={setSearchText} user={user} setUser={setUser} />
+            </Route>
+            <Route path='/popular'>
+              <Popular user={user} setUser={setUser} />
+            </Route>
+            <Route path='/recent'>
+              <Recent user={user} setUser={setUser} />
+            </Route>
+            <Route exact path='/users'>
+              <Users />
+            </Route>
+            {/* use component={...} so that child can access match prop */}
+            <Route
+              path='/users/:id/favourites'
+              component={(props) => <UserFavourites user={user} setUser={setUser} {...props} />}
+            />
+            <Route
+              path='/users/:id/uploads'
+              component={(props) => <UserUploads user={user} setUser={setUser} {...props} />}
+            />
+            <Route exact path='/tournaments'>
+              <Tournaments />
+            </Route>
+            <Route exact path='/tournaments/create'>
+              <CreateTournament />
+            </Route>
+            <Route exact path='/tournaments/:id'>
+              <Tournament
+                user={user}
+                setDownloadsModalIsOpen={setDownloadsModalIsOpen}
+                localCollections={localCollections}
+                setLocalCollections={setLocalCollections}
+              />
+            </Route>
+            <Route path='/tournaments/:id/edit'>
+              <EditTournament />
+            </Route>
+            <Route path='/login/enterOtp'>
+              <EnterOtp authX={authX} setUser={setUser} />
+            </Route>
+            <Route path='/collections/:id'>
+              <Collection
+                user={user}
+                setUser={setUser}
+                setDownloadsModalIsOpen={setDownloadsModalIsOpen}
+                setShowDownloadTroubleshootText={setShowDownloadTroubleshootText}
+              />
+            </Route>
+            <Route>
+              <Redirect to='/' />
+            </Route>
+          </Switch>
+        </div>
+      </StyledApp>
+    </ThemeProvider>
   )
 }
 

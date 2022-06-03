@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import './UserCard.css'
 import Flags from 'country-flag-icons/react/3x2'
-import { useFallbackImg } from '../../utils/misc'
+import { openInBrowser, useFallbackImg } from '../../utils/misc'
 import usercoverfallback from './usercoverfallback.jpg'
 import styled from 'styled-components'
 
@@ -65,7 +65,9 @@ const UserCard = ({ user }) => {
         </div>
         <CardBody $lightbg className='text-center'>
           <div className='d-flex justify-content-center'>
-            <Username href={`https://osu.ppy.sh/users/${user.id}`}>{user.osuweb.username}</Username>
+            <Username onClick={() => openInBrowser(`https://osu.ppy.sh/users/${user.id}`)}>
+              {user.osuweb.username}
+            </Username>
             <div className='d-flex flex-column ml-3 pt-1'>
               <h5 className='m-0 p-0 text-left'> #{user.osuweb.statistics.global_rank} </h5>
               <div className='d-flex' style={{ paddingLeft: '2px', marginTop: '-1px' }}>

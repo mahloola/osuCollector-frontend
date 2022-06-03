@@ -12,7 +12,7 @@ import {
   Row,
 } from '../bootstrap-osu-collector'
 import { PlayFill, StopFill } from 'react-bootstrap-icons'
-import { bpmToColor, secondsToHHMMSS, useFallbackImg } from '../../utils/misc'
+import { bpmToColor, openInBrowser, secondsToHHMMSS, useFallbackImg } from '../../utils/misc'
 import './MapsetCard.css'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import DifficultyBadge from '../common/DifficultyBadge'
@@ -144,8 +144,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                     </Truncate>
                   </div>
                   <Button
-                    href={beatmap.url}
-                    target='blank'
+                    onClick={() => openInBrowser(beatmap.url)}
                     variant='outline-secondary'
                     className='ms-auto px-2 py-0 mr-1'
                     size='sm'
@@ -245,8 +244,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                           )}
                           <b className='mr-2'>{beatmap.version}</b>
                           <Button
-                            href={beatmap.url}
-                            target='blank'
+                            onClick={() => openInBrowser(beatmap.url)}
                             variant='outline-secondary'
                             className='ms-auto px-2 py-0 mr-1'
                             size='sm'

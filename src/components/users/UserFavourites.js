@@ -5,7 +5,7 @@ import CollectionList from '../common/CollectionList'
 import * as api from '../../utils/api'
 import { addFavouritedByUserAttribute } from 'utils/misc'
 
-function UserFavourites({ user, setUser }) {
+function UserFavourites({ user, setUser, match }) {
   const [pageUser, setPageUser] = useState(null)
   const [collections, setCollections] = useState(new Array(3).fill(null))
 
@@ -13,9 +13,9 @@ function UserFavourites({ user, setUser }) {
   useEffect(() => {
     ;(async () => {
       // get user id from path, eg. /users/123/favourites
-      const _match = window.location.pathname.match(/\/users\/(\d+)\/favourites/g)
+      const _match = match.url.match(/\/users\/(\d+)\/favourites/g)
       if (!_match) {
-        alert(`User not found.`)
+        alert(`User not found.\n${match.url}`)
         return
       }
       const userId = Number(_match[0].replace('/users/', '').replace('/favourites', '').trim())

@@ -31,7 +31,7 @@ const UserBadge = ({ className, user }) => {
           onClick={async () => {
             setShow(false)
             await api.logout()
-            window.location.reload()
+            window.location.reload() // TODO: mutate user
           }}
         >
           Logout

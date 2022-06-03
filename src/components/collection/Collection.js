@@ -34,6 +34,8 @@ import Comments from './Comments'
 import DropdownButton from '../common/DropdownButton'
 import moment from 'moment'
 
+const { ipcRenderer } = window.require('electron')
+
 const groupBeatmapsets = (beatmaps) => {
   if (beatmaps?.length === 0) {
     return []
@@ -95,7 +97,7 @@ function RenameForm({ collection, mutateCollection, setRenamingCollection }) {
   )
 }
 
-function Collection({ user, setUser }) {
+function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTroubleshootText }) {
   const theme = useContext(ThemeContext)
   const history = useHistory()
 
@@ -154,10 +156,29 @@ function Collection({ user, setUser }) {
   }
 
   // message modal
+  const [showMessageModal, setShowMessageModal] = useState(false)
+  const [messageModalText, setMessageModalText] = useState('')
+  const [importing, setImporting] = useState(false)
+  const [showImportWarningModal, setShowImportWarningModal] = useState(false)
+  const [genericImportWarning, setGenericImportWarning] = useState(false)
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [collectionSuccessfullyDeleted, setCollectionSuccessfullyDeleted] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
+
+  const checkUserPermissions = () => {
+    if (!user) {
+      setMessageModalText('You must be logged in to use this feature')
+      setShowMessageModal(true)
+      return false
+    }
+    if (!user?.paidFeaturesAccess) {
+      setMessageModalText('You must be subscribed to use this feature')
+      setShowMessageModal(true)
+      return false
+    }
+    return true
+  }
 
   const submitDescription = async (newDescription) => {
     await api.editCollectionDescription(collection.id, newDescription)
@@ -174,6 +195,61 @@ function Collection({ user, setUser }) {
       setCollectionSuccessfullyDeleted(true)
     } else {
       alert('Delete failed. Check console for more info.')
+    }
+  }
+
+  const downloadButtonClicked = async () => {
+    if (!checkUserPermissions()) {
+      return
+    }
+    const error = await ipcRenderer.invoke('start-download', collection)
+    if (error) {
+      setMessageModalText(error)
+      setShowMessageModal(true)
+    } else {
+      setShowDownloadTroubleshootText(true)
+      setDownloadsModalIsOpen(true)
+    }
+  }
+
+  const importCollections = async () => {
+    setImporting(true)
+    const importResult = await ipcRenderer.invoke('import-collection', collection)
+    if (importResult?.error) {
+      console.log(importResult)
+      setMessageModalText(importResult.error)
+      setShowMessageModal(true)
+      setImporting(false)
+      return
+    }
+    const isOsuCurrentlyRunning = await ipcRenderer.invoke('check-osu-running')
+    let message = 'Collection successfully imported! '
+    message +=
+      isOsuCurrentlyRunning && !isOsuCurrentlyRunning.error
+        ? ' Please restart osu! immediately for changes to take effect.'
+        : ' You should see the collection the next time you open up osu!'
+
+    if (importResult.missingBeatmapsets.length) {
+      message += `\n\nYou may still need to download an estimated ${importResult.missingBeatmapsets.length} missing mapsets.`
+    }
+    setImporting(false)
+    setMessageModalText(message)
+    setShowMessageModal(true)
+  }
+
+  const importButtonClicked = async () => {
+    if (!checkUserPermissions()) {
+      return
+    }
+    const osuIsRunning = await ipcRenderer.invoke('check-osu-running')
+    if (osuIsRunning.error) {
+      setGenericImportWarning(true)
+      setShowImportWarningModal(true)
+    } else if (osuIsRunning) {
+      setGenericImportWarning(false)
+      setShowImportWarningModal(true)
+    } else {
+      importCollections()
     }
   }
 
@@ -477,29 +553,18 @@ function Collection({ user, setUser }) {
                   />
                   {/* buttons */}
                   <div className='d-flex flex-row mb-4'>
-                    <Button
-                      className='mr-1'
-                      onClick={() => {
-                        if (user?.paidFeaturesAccess) {
-                          setModalMessage('Collection launched in osu!Collector desktop client!')
-                          window.open(`osucollector://collections/${collection.id}`)
-                        } else {
-                          history.push('/client')
-                        }
-                      }}
-                    >
+                    <Button className='mr-1' onClick={downloadButtonClicked}>
                       Download maps
                     </Button>
                     <DropdownButton
-                      title='Add to osu!'
-                      titleAction={() => {
-                        if (user?.paidFeaturesAccess) {
-                          setModalMessage('Collection launched in osu!Collector desktop client!')
-                          window.open(`osucollector://collections/${collection.id}`)
-                        } else {
-                          history.push('/client')
-                        }
-                      }}
+                      title={
+                        importing ? (
+                          <Spinner animation='grow' size='sm' role='status' aria-hidden='true' />
+                        ) : (
+                          'Add to osu!'
+                        )
+                      }
+                      titleAction={importButtonClicked}
                       menuItems={['Download as collection.db']}
                       menuActions={[
                         async () => {
@@ -546,7 +611,11 @@ function Collection({ user, setUser }) {
                           '',
                           { role: 'style' },
                           { role: 'annotation' },
-                          { role: 'tooltip', type: 'string', p: { html: true } },
+                          {
+                            role: 'tooltip',
+                            type: 'string',
+                            p: { html: true },
+                          },
                         ],
                         ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => [
                           star.toString(),
@@ -587,7 +656,11 @@ function Collection({ user, setUser }) {
                           '',
                           { role: 'style' },
                           { role: 'annotation' },
-                          { role: 'tooltip', type: 'string', p: { html: true } },
+                          {
+                            role: 'tooltip',
+                            type: 'string',
+                            p: { html: true },
+                          },
                         ],
                         ...[150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300].map(
                           (bpm) => [
@@ -692,6 +765,40 @@ function Collection({ user, setUser }) {
         </Card.Body>
       </Card>
 
+      <Modal show={showMessageModal} onHide={() => setShowMessageModal(false)} size='lg' centered={true}>
+        <Modal.Body style={{ whiteSpace: 'pre-wrap' }}>{messageModalText}</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setShowMessageModal(false)} variant='secondary'>
+            Okay
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showImportWarningModal} onHide={() => setShowImportWarningModal(false)} size='md' centered={true}>
+        <Modal.Body>
+          {genericImportWarning ? (
+            <>Just to be safe, don&apos;t import collections while osu is running!</>
+          ) : (
+            <>
+              It looks like osu! is currently running. If you proceed, any changes made to your local collections since
+              you last opened the game will probably be lost. Continue?
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setShowImportWarningModal(false)} variant='secondary'>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setShowImportWarningModal(false)
+              importCollections()
+            }}
+            variant={genericImportWarning ? 'primary' : 'danger'}
+          >
+            Continue
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Modal show={showDeleteConfirmationModal} onHide={() => setShowDeleteConfirmationModal(false)} centered={true}>
         <Modal.Body>Are you sure you want to delete this collection?</Modal.Body>
         <Modal.Footer>

@@ -4,7 +4,7 @@ import CollectionList from '../common/CollectionList'
 import * as api from '../../utils/api'
 import { addFavouritedByUserAttribute } from 'utils/misc'
 
-function UserUploads({ user, setUser }) {
+function UserUploads({ user, setUser, match }) {
   const [pageUser, setPageUser] = useState(null)
   const [collections, setCollections] = useState(new Array(3).fill(null))
 
@@ -12,12 +12,12 @@ function UserUploads({ user, setUser }) {
   useEffect(() => {
     ;(async () => {
       // get user id from path, eg. /users/123/uploads
-      const match = window.location.pathname.match(/\/users\/(\d+)\/uploads/g)
-      if (!match) {
-        alert('User not found.')
+      const _match = match.url.match(/\/users\/(\d+)\/uploads/g)
+      if (!_match) {
+        alert(`User not found.\n${match.url}`)
         return
       }
-      const userId = Number(match[0].replace('/users/', '').replace('/uploads', '').trim())
+      const userId = Number(_match[0].replace('/users/', '').replace('/uploads', '').trim())
 
       // get user from database
       const user = await api.getUser(userId)

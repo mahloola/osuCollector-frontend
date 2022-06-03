@@ -4,9 +4,9 @@ import UserChip from 'components/common/UserChip'
 import { useEffect, useState } from 'react'
 import { Globe, PencilSquare, TrashFill } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { Breakpoints, useFallbackImg, userOwnsTournament } from 'utils/misc'
+import { Breakpoints, useFallbackImg, userOwnsTournament, openInBrowser } from 'utils/misc'
 import * as api from '../../utils/api'
 import {
   Alert,
@@ -23,9 +23,12 @@ import {
 } from '../bootstrap-osu-collector'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import MappoolRound from './MappoolRound'
+import ImportMappoolModal from './ImportMappoolModal'
+import RemoveMappoolModal from './RemoveMappoolModal'
 
-function Tournament({ user }) {
-  const history = useHistory()
+const { ipcRenderer } = window.require('electron')
+
+function Tournament({ user, setDownloadsModalIsOpen, localCollections, setLocalCollections }) {
   // @ts-ignore
   let { id } = useParams()
   const { tournament } = api.useTournament(id)
@@ -33,7 +36,49 @@ function Tournament({ user }) {
   const [error, setError] = useState(null)
 
   // modals
+  const [importModalIsOpen, setImportModalIsOpen] = useState(false)
+  const [removeModalIsOpen, setRemoveModalIsOpen] = useState(false)
   const [messageModalText, setMessageModalText] = useState('')
+
+  // download
+  const checkUserPermissions = () => {
+    if (!user) {
+      setMessageModalText('You must be logged in to use this feature')
+      return false
+    }
+    if (!user?.paidFeaturesAccess) {
+      setMessageModalText('You must be subscribed to use this feature')
+      return false
+    }
+    return true
+  }
+  const downloadButtonClicked = async () => {
+    if (!checkUserPermissions()) {
+      return
+    }
+    try {
+      await ipcRenderer.invoke('start-tournament-download', tournament)
+      setDownloadsModalIsOpen(true)
+    } catch (error) {
+      setMessageModalText(error.message)
+    }
+  }
+
+  // read collection.db to show preview of mappool collections to be removed
+  const loadCollectionDb = async () => {
+    const { error, data } = await ipcRenderer.invoke('parse-collection-db')
+    if (error) {
+      alert(error + '\n\nPlease check that your osu! install folder is configured properly in settings.')
+      return
+    }
+    setLocalCollections(
+      data.collection.map((collection) => ({
+        name: collection.name,
+        beatmapChecksums: collection.beatmapsMd5,
+      }))
+    )
+  }
+
   // message modal
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -85,15 +130,6 @@ function Tournament({ user }) {
         </div>
       </Container>
     )
-  }
-
-  const actionButtonClicked = () => {
-    if (user?.paidFeaturesAccess) {
-      setMessageModalText('Tournament launched in osu!Collector desktop client!')
-      window.open(`osucollector://tournaments/${tournament.id}`)
-    } else {
-      history.push('/client')
-    }
   }
 
   const loading = tournament === undefined
@@ -169,7 +205,10 @@ function Tournament({ user }) {
                           <div className='d-flex align-items-center mb-4'>
                             <Globe />
                             <span className='mx-2'> Info: </span>
-                            <a href={tournament?.link}>
+                            <a
+                              style={{ color: '#0d6efd', cursor: 'pointer' }}
+                              onClick={() => openInBrowser(tournament?.link)}
+                            >
                               <small>{tournament?.link}</small>
                             </a>
                           </div>
@@ -180,11 +219,15 @@ function Tournament({ user }) {
                       )}
                     </ReactPlaceholder>
                     <div className='d-flex flex-row my-4' style={{ gap: '5px' }}>
-                      <Button className='mr-1' onClick={actionButtonClicked}>
-                        Download all maps
-                      </Button>
-                      <Button onClick={actionButtonClicked}>Add mappool to osu!</Button>
-                      <Button onClick={actionButtonClicked} variant='secondary'>
+                      <Button onClick={downloadButtonClicked}>Download all maps</Button>
+                      <Button onClick={() => setImportModalIsOpen((prev) => !prev)}>Import collections</Button>
+                      <Button
+                        variant='secondary'
+                        onClick={() => {
+                          loadCollectionDb()
+                          setRemoveModalIsOpen((prev) => !prev)
+                        }}
+                      >
                         Remove imported collections
                       </Button>
                     </div>
@@ -350,6 +393,19 @@ function Tournament({ user }) {
         </Card>
       </Container>
 
+      <ImportMappoolModal
+        tournament={tournament}
+        importModalIsOpen={importModalIsOpen}
+        setImportModalIsOpen={setImportModalIsOpen}
+      />
+      <RemoveMappoolModal
+        tournament={tournament}
+        localCollections={localCollections}
+        setLocalCollections={setLocalCollections}
+        removeModalIsOpen={removeModalIsOpen}
+        setRemoveModalIsOpen={setRemoveModalIsOpen}
+      />
+
       <Modal show={showDeleteConfirmationModal} onHide={() => setShowDeleteConfirmationModal(false)} centered={true}>
         <Modal.Body>Are you sure you want to delete this tournament?</Modal.Body>
         <Modal.Footer>
@@ -362,10 +418,12 @@ function Tournament({ user }) {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={!!messageModalText} onHide={() => setMessageModalText('')} centered={true}>
-        <Modal.Body className='px-4 py-5'>{messageModalText}</Modal.Body>
+      <Modal show={!!messageModalText} onHide={() => setMessageModalText('')} size='lg' centered={true}>
+        <Modal.Body style={{ whiteSpace: 'pre-wrap' }}>{messageModalText}</Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setMessageModalText('')}>Okay</Button>
+          <Button onClick={() => setMessageModalText('')} variant='secondary'>
+            Okay
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

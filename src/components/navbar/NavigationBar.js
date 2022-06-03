@@ -9,24 +9,47 @@ import config from '../../config/config'
 import * as api from '../../utils/api'
 import { Button, Form, FormControl, InputGroup, Nav, Navbar, ReactPlaceholder } from '../bootstrap-osu-collector'
 import '../common/Glow.css'
-import LoginButton from './LoginButton'
 import './NavButton.css'
 import './NavigationBar.css'
 import UploadModal from './UploadModal'
 import UserBadge from './UserBadge'
 
-const Medium = ({ children }) => (useMediaQuery({ maxWidth: 992 - 1 }) ? children : null)
-const Large = ({ children }) => (useMediaQuery({ minWidth: 992 }) ? children : null)
+// desktop imports
+import { useEffect } from 'react'
+import DownloadsModal from './DownloadsModal'
+import { CloudDownload } from 'react-bootstrap-icons'
+import { FaCog } from 'react-icons/fa'
+import PreferencesModal from './PreferencesModal'
+import { ArrowLeftShort, ArrowRightShort } from 'react-bootstrap-icons'
+
+const { ipcRenderer } = window.require('electron')
+
+const Large = ({ children }) => (useMediaQuery({ maxWidth: 1200 - 1 }) ? children : null)
+const ExtraLarge = ({ children }) => (useMediaQuery({ minWidth: 1200 }) ? children : null)
 
 const openInNewTab = (url) => {
   const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
   if (newWindow) newWindow.opener = null
 }
 
-function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
+function NavigationBar({
+  user,
+  setAuthX,
+  setSearchText,
+  toggleTheme,
+  collectionDownloads,
+  downloadsModalIsOpen,
+  setDownloadsModalIsOpen,
+  showDownloadTroubleshootText,
+  setShowDownloadTroubleshootText,
+  preferences,
+  localCollections,
+  setLocalCollections,
+}) {
   // @ts-ignore
   const theme = useContext(ThemeContext)
 
+  const [preferencesModalIsOpen, setPreferencesModalIsOpen] = useState(false)
   const [remoteCollections, setRemoteCollections] = useState([])
   const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false)
   const [searchBarInput, setSearchBarInput] = useState('')
@@ -56,20 +79,44 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
     setRemoteCollections(collections)
   }
 
-  const loginButton =
-    process.env.NODE_ENV === 'production' ? (
-      <LoginButton />
-    ) : (
-      <Button className='ml-2' onClick={otpLogin}>
-        {' '}
-        Login{' '}
-      </Button>
+  const loadCollectionDb = async () => {
+    const { error, data } = await ipcRenderer.invoke('parse-collection-db')
+    if (error) {
+      alert(error + '\n\nPlease check that your osu! install folder is configured properly in settings.')
+      return
+    }
+    setLocalCollections(
+      data.collection.map((collection) => ({
+        name: collection.name,
+        beatmapChecksums: collection.beatmapsMd5,
+      }))
     )
+  }
+
+  useEffect(() => {
+    if (preferences === null) {
+      setPreferencesModalIsOpen(true)
+    }
+  }, [preferences])
+
+  const preferencesShouldGlow =
+    preferences !== undefined &&
+    (preferences === null ||
+      preferences?.osuInstallDirectory?.trim() === '' ||
+      preferences?.osuSongsDirectory?.trim() === '')
 
   return (
     <div className='navbar-sticky'>
-      <Navbar bg='dark' variant='dark' expand='lg' className='pl-3'>
-        <Large>
+      <Navbar bg='dark' variant='dark' expand='xl' className='pl-3'>
+        <ExtraLarge>
+          <div className='d-flex' style={{ marginLeft: -8 }}>
+            <div onClick={history.goBack} className='nav-button mx-0'>
+              <ArrowLeftShort style={{ margin: '0 auto' }} size={32} />
+            </div>
+            <div onClick={history.goForward} className='nav-button mr-2'>
+              <ArrowRightShort style={{ margin: '0 auto' }} size={32} />
+            </div>
+          </div>
           <LinkContainer to='/'>
             <Navbar.Brand>
               osu!<strong>Collector</strong>
@@ -88,10 +135,6 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
 
               <LinkContainer to='/users'>
                 <Nav.Link>Users</Nav.Link>
-              </LinkContainer>
-
-              <LinkContainer to='/client'>
-                <Nav.Link>Desktop Client</Nav.Link>
               </LinkContainer>
 
               <LinkContainer to='/tournaments'>
@@ -116,11 +159,24 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
               <Button className='ml-2' variant='outline-secondary' onClick={toggleTheme}>
                 {theme.darkMode ? <LightbulbFill /> : <Moon />}
               </Button>
+              <Button
+                className='ml-3'
+                onClick={() => {
+                  setShowDownloadTroubleshootText(false)
+                  setDownloadsModalIsOpen(true)
+                }}
+              >
+                <div className='d-flex align-items-center'>
+                  <CloudDownload className='mr-2' />
+                  Downloads
+                </div>
+              </Button>
 
               <Button
                 className='ml-2'
                 onClick={() => {
                   if (user) {
+                    loadCollectionDb()
                     getRemoteCollections()
                     setUploadModalIsOpen(true)
                   } else {
@@ -138,19 +194,33 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
                 ready={user !== undefined}
                 showLoadingAnimation
                 type='rect'
-                className='ml-3 mr-0'
+                className='mx-3'
                 style={{
                   width: '120px',
                   height: 'auto',
                   borderRadius: '30px',
                 }}
               >
-                {user ? <UserBadge className='ml-3' user={user} /> : loginButton}
+                {user ? (
+                  <UserBadge className='mx-3' user={user} />
+                ) : (
+                  <Button className='mx-2' onClick={otpLogin}>
+                    Login
+                  </Button>
+                )}
               </ReactPlaceholder>
+
+              <Button
+                className={preferencesShouldGlow ? 'glowing' : ''}
+                variant='secondary'
+                onClick={() => setPreferencesModalIsOpen(true)}
+              >
+                <FaCog />
+              </Button>
             </Nav>
           </Navbar.Collapse>
-        </Large>
-        <Medium>
+        </ExtraLarge>
+        <Large>
           <LinkContainer to='/'>
             <Navbar.Brand>
               osu!<strong>Collector</strong>
@@ -171,10 +241,6 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
                 <Nav.Link>Users</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to='/client'>
-                <Nav.Link>Desktop Client</Nav.Link>
-              </LinkContainer>
-
               <LinkContainer to='/tournaments'>
                 <Nav.Link>Tournaments</Nav.Link>
               </LinkContainer>
@@ -182,6 +248,16 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
               <Nav.Link onClick={toggleTheme}>
                 {theme.darkMode ? <LightbulbFill className='mr-2' /> : <Moon className='mr-2' />}
                 {theme.darkMode ? 'Light Mode' : 'Dark Mode'}
+              </Nav.Link>
+
+              <Nav.Link
+                onClick={() => {
+                  setShowDownloadTroubleshootText(false)
+                  setDownloadsModalIsOpen(true)
+                }}
+              >
+                <CloudDownload className='mr-2' />
+                Downloads
               </Nav.Link>
 
               <Nav.Link
@@ -195,6 +271,11 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
               </Nav.Link>
 
               {!user && <Nav.Link onClick={otpLogin}>Login</Nav.Link>}
+
+              <Nav.Link onClick={() => setPreferencesModalIsOpen(true)}>
+                <FaCog className='mr-2' />
+                Settings
+              </Nav.Link>
 
               <Form onSubmit={searchSubmit} className='me-auto my-2'>
                 <InputGroup>
@@ -211,12 +292,26 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
               </Form>
             </Nav>
           </Navbar.Collapse>
-        </Medium>
+        </Large>
       </Navbar>
       <UploadModal
         uploadModalIsOpen={uploadModalIsOpen}
         setUploadModalIsOpen={setUploadModalIsOpen}
         remoteCollections={remoteCollections}
+        localCollections={localCollections}
+      />
+      <DownloadsModal
+        preferences={preferences}
+        collectionDownloads={collectionDownloads}
+        downloadsModalIsOpen={downloadsModalIsOpen}
+        setDownloadsModalIsOpen={setDownloadsModalIsOpen}
+        showDownloadTroubleshootText={showDownloadTroubleshootText}
+        setShowDownloadTroubleshootText={setShowDownloadTroubleshootText}
+      />
+      <PreferencesModal
+        preferences={preferences}
+        preferencesModalIsOpen={preferencesModalIsOpen}
+        setPreferencesModalIsOpen={setPreferencesModalIsOpen}
       />
     </div>
   )

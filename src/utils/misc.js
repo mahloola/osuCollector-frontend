@@ -3,6 +3,11 @@ import useSWRImmutable from 'swr/immutable'
 import { useMediaQuery } from 'react-responsive'
 import config from '../config/config'
 
+const { ipcRenderer } = window.require('electron')
+export const openInBrowser = (url) => {
+  ipcRenderer.send('open-in-browser', url)
+}
+
 export function truncate(inputString, length) {
   return inputString.length > length ? inputString.substring(0, length) + '...' : inputString
 }

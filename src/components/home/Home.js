@@ -15,6 +15,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { Alert } from 'react-bootstrap'
 import { addFavouritedByUserAttribute, changeCollectionFavouritedStatus } from 'utils/misc'
 import { Discord } from 'react-bootstrap-icons'
+import { openInBrowser } from '../../utils/misc'
 
 function Home({ user, setUser }) {
   const { data: metadata, loading: metadataLoading } = useMetadata()
@@ -56,24 +57,18 @@ function Home({ user, setUser }) {
         <Alert variant='info' className='text-center'>
           {/* @ts-ignore */}
           <Discord className='mr-2' size={26} />
-          Join the <a href='https://discord.gg/WZMQjwF5Vr'>osu!Collector discord</a>! Feel free to message FunOrange
-          about any issues you have or suggestions for the site.
+          Join the{' '}
+          <a href='#' onClick={() => openInBrowser('https://discord.gg/WZMQjwF5Vr')}>
+            osu!Collector discord
+          </a>
+          ! Feel free to message FunOrange about any issues you have or suggestions for the site.
         </Alert>
         <Col className='px-5 my-2' md={12} lg={9}>
           <h2>Welcome to osu!Collector!</h2>
           <p>
             This is a place where you can view beatmap collections uploaded by other players. It is mainly developed by{' '}
-            <a href='https://twitter.com/funorange42'>FunOrange</a> and{' '}
-            <a href='https://twitter.com/mahloola'>mahloola</a>.
-            {
-              <>
-                &nbsp;If you like the project, consider supporting us to get access to{' '}
-                <LinkContainer to='/client'>
-                  <a>extra features</a>
-                </LinkContainer>
-                .
-              </>
-            }
+            <a onClick={() => openInBrowser('https://twitter.com/funorange42')}>FunOrange</a> and{' '}
+            <a onClick={() => openInBrowser('https://twitter.com/mahloola')}>Mahloola</a>.
           </p>
         </Col>
         <Col md={12} lg={3} className='mb-3'>
