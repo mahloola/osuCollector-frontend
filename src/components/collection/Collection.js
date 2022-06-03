@@ -360,7 +360,7 @@ function Collection({ user, setUser }) {
                   href='#'
                   onClick={() =>
                     setModalMessage(
-                      'Add beatmaps to this collection by sending /np to FunOrange.\n\nTo get started, message !setup to FunOrange in osu!\n\n\nNote: Only one collection can be /np enabled at a time.'
+                      'Add beatmaps to this collection by sending /np to FunOrange.\n\nTo get started, message !setup to FunOrange in osu!'
                     )
                   }
                   style={{ marginLeft: '10px', marginTop: '-8px', fontSize: 22 }}
