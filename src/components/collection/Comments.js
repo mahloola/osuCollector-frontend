@@ -172,7 +172,7 @@ function Comment({ collectionId, comment, user }) {
   )
 }
 
-function Comments({ collectionId, comments, user, refreshCollection }) {
+function Comments({ collectionId, comments, user, mutateCollection }) {
   const [commentsModalIsOpen, setCommentsModalIsOpen] = useState(false)
   const [sortCommentsBy, setSortCommentsBy] = useState('likes')
   const [unsavedComment, setUnsavedComment] = useState('')
@@ -206,12 +206,12 @@ function Comments({ collectionId, comments, user, refreshCollection }) {
     }
     setCommentsModalIsOpen(false)
     setShowSuccessModal(true)
-    refreshCollection()
+    mutateCollection()
   }
 
   const hideModal = () => {
     setCommentsModalIsOpen(false)
-    refreshCollection()
+    mutateCollection()
   }
 
   return (

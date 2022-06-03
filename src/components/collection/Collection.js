@@ -65,7 +65,7 @@ const GraphContainer = styled(Card.Body)`
   background-color: ${(props) => (props.theme.darkMode ? '#121212' : '#eee')};
 `
 
-function RenameForm({ collection, setCollection, setRenamingCollection }) {
+function RenameForm({ collection, mutateCollection, setRenamingCollection }) {
   const [newCollectionName, setNewCollectionName] = useState('')
 
   return (
@@ -79,13 +79,10 @@ function RenameForm({ collection, setCollection, setRenamingCollection }) {
         />
         <Button
           className='ml-2 mr-1'
-          onClick={() => {
-            api.renameCollection(collection.id, newCollectionName)
-            setCollection({
-              ...collection,
-              name: newCollectionName,
-            })
+          onClick={async () => {
             setRenamingCollection(false)
+            await api.renameCollection(collection.id, newCollectionName)
+            mutateCollection()
           }}
         >
           Rename
@@ -111,9 +108,13 @@ function Collection({ user, setUser }) {
     filterMin: undefined,
     filterMax: undefined,
   })
-  const [collection, setCollection] = useState(undefined)
-  const [beatmapPage, setBeatmapPage] = useState(null)
-  const [beatmaps, setBeatmaps] = useState(null)
+  const { collection: _collection, mutateCollection } = api.useCollection(id)
+  const collection = addFavouritedByUserAttribute(_collection, user, { makeCopy: true })
+  const { collectionBeatmaps, isValidating, currentPage, setCurrentPage, hasMore } = api.useCollectionBeatmaps(
+    id,
+    queryOpts
+  )
+
   const [favourited, setFavourited] = useState(false)
   const [favourites, setFavourites] = useState(0)
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
@@ -152,78 +153,15 @@ function Collection({ user, setUser }) {
     setCurrentlyPlaying(null)
   }
 
-  // run this code on initial load
-  const refreshCollection = (cancelCallback = undefined) => {
-    // GET collection
-    api
-      .getCollection(id, cancelCallback)
-      .then((collection) => {
-        addFavouritedByUserAttribute(collection, user)
-        setCollection(collection)
-        setFavourited(collection.favouritedByUser)
-        setFavourites(collection.favourites)
-      })
-      .catch(console.error)
-  }
-  useEffect(() => {
-    let cancel
-    refreshCollection((c) => (cancel = c))
-    return cancel
-  }, [])
-
-  useEffect(() => {
-    // GET beatmaps
-    let cancel
-    setBeatmapPage(null)
-    api
-      .getCollectionBeatmaps(
-        id,
-        undefined, // retrieve first page
-        queryOpts.perPage,
-        queryOpts.sortBy,
-        queryOpts.orderBy,
-        queryOpts.filterMin,
-        queryOpts.filterMax,
-        (c) => (cancel = c)
-      )
-      .then((_beatmapPage) => {
-        setBeatmapPage(_beatmapPage)
-        setBeatmaps(_beatmapPage.beatmaps)
-      })
-      .catch(console.error)
-    return cancel
-  }, [queryOpts])
-
-  const loadMore = async () => {
-    try {
-      const _beatmapPage = await api.getCollectionBeatmaps(
-        id,
-        beatmapPage.nextPageCursor,
-        queryOpts.perPage,
-        queryOpts.sortBy,
-        queryOpts.orderBy,
-        queryOpts.filterMin,
-        queryOpts.filterMax
-      )
-      setBeatmapPage(_beatmapPage)
-      setBeatmaps([...beatmaps, ..._beatmapPage.beatmaps])
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
   // message modal
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [collectionSuccessfullyDeleted, setCollectionSuccessfullyDeleted] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
 
-  const submitDescription = (newDescription) => {
-    api.editCollectionDescription(collection.id, newDescription)
-    setCollection({
-      ...collection,
-      description: newDescription,
-    })
+  const submitDescription = async (newDescription) => {
+    await api.editCollectionDescription(collection.id, newDescription)
+    mutateCollection()
   }
   const [renamingCollection, setRenamingCollection] = useState(false)
 
@@ -371,7 +309,7 @@ function Collection({ user, setUser }) {
         290: 0,
         300: 0,
       }
-  const listing = beatmaps ? groupBeatmapsets(beatmaps) : new Array(50).fill({})
+  const listing = collectionBeatmaps ? groupBeatmapsets(collectionBeatmaps) : new Array(50).fill({})
 
   if (collectionSuccessfullyDeleted) {
     return (
@@ -437,7 +375,7 @@ function Collection({ user, setUser }) {
               {renamingCollection ? (
                 <RenameForm
                   collection={collection}
-                  setCollection={setCollection}
+                  mutateCollection={mutateCollection}
                   setRenamingCollection={setRenamingCollection}
                 />
               ) : (
@@ -694,7 +632,7 @@ function Collection({ user, setUser }) {
         comments={collection?.comments}
         collectionId={collection?.id}
         user={user}
-        refreshCollection={refreshCollection}
+        mutateCollection={mutateCollection}
       />
 
       {/* beatmaps */}
@@ -724,9 +662,9 @@ function Collection({ user, setUser }) {
         </Card.Header>
         <Card.Body className={`p-4 ${theme.darkMode ? '' : 'bg-light'}`}>
           <InfiniteScroll
-            dataLength={beatmaps?.length || false}
-            next={loadMore}
-            hasMore={beatmapPage?.hasMore}
+            dataLength={collectionBeatmaps?.length}
+            next={() => setCurrentPage(currentPage + 1)}
+            hasMore={hasMore}
             loader={
               <div className='d-flex justify-content-center p-2'>
                 <Spinner animation='border' />
@@ -740,30 +678,15 @@ function Collection({ user, setUser }) {
             className='row'
           >
             {listing.map(({ beatmapset, beatmaps }, index) => (
-              <ReactPlaceholder
+              <MapsetCard
                 key={index}
-                ready={beatmapPage}
-                showLoadingAnimation
-                type='rect'
-                className='w-100 mb-4'
-                customPlaceholder={
-                  <div className='d-flex'>
-                    {/* beatmapset */}
-                    <RectShape color='grey' className='mr-2' style={{ width: '470px', height: '100px' }} />
-                    {/* diffs */}
-                    <RectShape color='grey' className='mr-0' rows={1} style={{ height: '41px' }} />
-                  </div>
-                }
-              >
-                <MapsetCard
-                  className='mb-4'
-                  beatmapset={beatmapset}
-                  beatmaps={beatmaps}
-                  playing={currentlyPlaying === index}
-                  onPlayClick={() => onPlayClick(index)}
-                  onAudioEnd={onAudioEnd}
-                />
-              </ReactPlaceholder>
+                className='mb-4'
+                beatmapset={beatmapset}
+                beatmaps={beatmaps}
+                playing={currentlyPlaying === index}
+                onPlayClick={() => onPlayClick(index)}
+                onAudioEnd={onAudioEnd}
+              />
             ))}
           </InfiniteScroll>
         </Card.Body>

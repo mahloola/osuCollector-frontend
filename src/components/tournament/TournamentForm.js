@@ -679,11 +679,11 @@ S.FloatingLabel = styled(FloatingLabel)`
       & > input {
         background-color: ${({ theme }) => theme.primary20};
         border-color: ${({ theme }) => theme.primary20};
-        color: ${({ theme }) => theme.light};
+        color: #f8f8f2;
         &:focus {
           background-color: ${({ theme }) => theme.primary20};
           border-color: ${({ theme }) => theme.primary20};
-          color: ${({ theme }) => theme.light};
+          color: #f8f8f2;
         }
       }
     `};
@@ -694,7 +694,7 @@ const textareaFormControlStyle = (theme) =>
     ? {
         backgroundColor: theme.primary20,
         borderColor: theme.primary40,
-        color: theme.light,
+        color: '#f8f8f2',
       }
     : {}
 

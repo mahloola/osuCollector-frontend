@@ -116,7 +116,7 @@ S.FormControl = styled(FormControl)`
     css`
       background-color: ${({ theme }) => theme.primary20};
       border-color: ${({ theme }) => theme.primary40};
-      color: ${({ theme }) => theme.light};
+      color: #f8f8f2;
       &:focus {
         background-color: ${({ theme }) => theme.primary20};
         border: 0;

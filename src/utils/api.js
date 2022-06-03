@@ -3,6 +3,7 @@ import config from '../config/config'
 import axios from 'axios'
 import { axiosFetcher, formatQueryParams, useCancellableSWRImmutable } from './misc'
 import useSWRInfinite from 'swr/infinite'
+import useSWRImmutable from 'swr/immutable'
 
 const getRequestWithQueryParameters = async (route, params = undefined, cancelCallback = undefined) => {
   const res = await axios({
@@ -27,7 +28,7 @@ function useInfinite(url, query, mappingFunction = (x) => x) {
       if (previousPageData?.nextPageCursor) {
         _query.cursor = previousPageData.nextPageCursor
       }
-      return url + formatQueryParams(_query)
+      return url + '?' + formatQueryParams(_query)
     },
     (url) => axiosFetcher(url),
     {
@@ -37,10 +38,12 @@ function useInfinite(url, query, mappingFunction = (x) => x) {
       revalidateFirstPage: false,
     }
   )
+  if (error) console.error(error)
   // cache object with useMemo
   // otherwise a new object gets created on each render, causing a render loop if used inside a useEffect dependency array
   const entities = useMemo(() => pages?.flatMap(mappingFunction) ?? [], [JSON.stringify(pages)])
   const hasMore = pages?.length > 0 ? pages[pages.length - 1].hasMore : true
+
   return {
     entities,
     error,
@@ -63,7 +66,7 @@ export async function getRecentCollections(cursor = undefined, perPage = undefin
 }
 export function useRecentCollections({ perPage = 9 }) {
   const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
-    '/api/collections/recent?',
+    '/api/collections/recent',
     { perPage },
     (data) => data.collections
   )
@@ -97,7 +100,7 @@ export async function getPopularCollections(
 }
 export function usePopularCollections({ range = 'today', perPage = 9 }) {
   const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
-    '/api/collections/popularv2?',
+    '/api/collections/popularv2',
     { range, perPage },
     (data) => data.collections
   )
@@ -137,6 +140,11 @@ export async function searchCollections(
 export async function getCollection(id, cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/collections/${id}`, {}, cancelCallback)
 }
+export function useCollection(id) {
+  const { data, error, mutate } = useSWRImmutable(`/api/collections/${id}`, axiosFetcher)
+  if (error) console.error(error)
+  return { collection: data, collectionError: error, mutateCollection: mutate }
+}
 
 // Returns PaginatedCollectionData object: https://osucollector.com/docs.html#responses-getCollectionBeatmaps-200-schema
 export async function getCollectionBeatmaps(
@@ -149,18 +157,37 @@ export async function getCollectionBeatmaps(
   filterMax = undefined,
   cancelCallback = undefined
 ) {
-  return getRequestWithQueryParameters(
+  const query = {
+    cursor,
+    perPage,
+    sortBy,
+    orderBy,
+    filterMin: filterMin && ['difficulty_rating', 'bpm'].includes(sortBy) ? filterMin : undefined,
+    filterMax: filterMax && ['difficulty_rating', 'bpm'].includes(sortBy) ? filterMax : undefined,
+  }
+  return getRequestWithQueryParameters(`/api/collections/${id}/beatmapsv2`, query, cancelCallback)
+}
+export function useCollectionBeatmaps(id, { perPage, sortBy, orderBy, filterMin, filterMax }) {
+  const query = {
+    perPage,
+    sortBy,
+    orderBy,
+    filterMin: filterMin && ['difficulty_rating', 'bpm'].includes(sortBy) ? filterMin : undefined,
+    filterMax: filterMax && ['difficulty_rating', 'bpm'].includes(sortBy) ? filterMax : undefined,
+  }
+  const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
     `/api/collections/${id}/beatmapsv2`,
-    {
-      cursor,
-      perPage,
-      sortBy,
-      orderBy,
-      filterMin: filterMin && ['difficulty_rating', 'bpm'].includes(sortBy) ? filterMin : undefined,
-      filterMax: filterMax && ['difficulty_rating', 'bpm'].includes(sortBy) ? filterMax : undefined,
-    },
-    cancelCallback
+    query,
+    (data) => data.beatmaps
   )
+  return {
+    collectionBeatmaps: entities,
+    collectionBeatmapsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  }
 }
 
 // throws error on upload failure
@@ -765,6 +792,11 @@ export async function searchTournaments(
 
 export async function getTournament(id, cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/tournaments/${id}`, {}, cancelCallback)
+}
+export function useTournament(id) {
+  const { data, error, mutate } = useSWRImmutable(`/api/tournaments/${id}`, axiosFetcher)
+  if (error) console.error(error)
+  return { tournament: data, tournamentError: error, mutateTournament: mutate }
 }
 
 export async function deleteTournament(id) {

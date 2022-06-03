@@ -65,11 +65,11 @@ const FormControl = styled(ReactBootstrap.Form.Control)`
     css`
       background-color: ${({ theme }) => theme.primary20};
       border-color: ${({ theme }) => theme.primary40};
-      color: ${({ theme }) => theme.light};
+      color: #f8f8f2;
       &:focus {
         background-color: ${({ theme }) => theme.primary20};
         border: 0;
-        color: ${({ theme }) => theme.light};
+        color: #f8f8f2;
       }
     `}
 `
@@ -88,11 +88,11 @@ const FloatingLabel = styled(ReactBootstrapFloatingLabel)`
     css`
       background-color: ${({ theme }) => theme.primary20};
       border-color: ${({ theme }) => theme.primary40};
-      color: ${({ theme }) => theme.light};
+      color: #f8f8f2;
       &:focus {
         background-color: ${({ theme }) => theme.primary20};
         border: 0;
-        color: ${({ theme }) => theme.light};
+        color: #f8f8f2;
       }
     `}
 `

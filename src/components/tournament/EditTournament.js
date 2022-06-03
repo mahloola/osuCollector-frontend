@@ -4,22 +4,11 @@ import * as api from '../../utils/api'
 import { useEffect, useState } from 'react'
 
 function EditTournament() {
-  let { id } = useParams()
+  // @ts-ignore
+  const { id } = useParams()
+  const { tournament, mutateTournament } = api.useTournament(id)
   const history = useHistory()
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [tournament, setTournament] = useState(null)
-
-  useEffect(() => {
-    let cancel
-    // GET tournament
-    api
-      .getTournament(id, (c) => (cancel = c))
-      .then((tournament) => {
-        setTournament(tournament)
-      })
-      .catch(console.error)
-    return cancel
-  }, [id])
 
   const editTournament = async (createTournamentDto) => {
     try {
@@ -31,6 +20,7 @@ function EditTournament() {
       setSubmitLoading(false)
       alert(err.message)
     }
+    mutateTournament()
   }
   return (
     <TournamentForm

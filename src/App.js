@@ -53,13 +53,12 @@ const StyledApp = styled.div`
 `
 
 function App() {
-  const history = useHistory()
-
   // undefined (loading) -> [{...} OR null]
   const [user, setUser] = useState(undefined)
   // searchText is shared between NavigationBar and All
   const [searchText, setSearchText] = useState('')
   const query = useQuery()
+  const history = useHistory()
 
   // For authentication using OTP (react dev environment, electron app)
   // eslint-disable-next-line no-unused-vars
@@ -85,14 +84,13 @@ function App() {
           darkMode: false,
         }
         setCurrentTheme(newTheme)
-        localStorage.setItem('theme', JSON.stringify(newTheme))
+        localStorage.setItem('darkMode', 'false')
       }
     })()
   }, [])
 
   const theme = {
     darkMode: false,
-    light: '#f8f8f2',
     primary: '#86AAFC',
   }
   for (const i of Array(100).keys()) {
@@ -100,30 +98,21 @@ function App() {
       .mix(theme.primary, i / 100)
       .toHex()
   }
-  const readTheme = () => {
-    try {
-      const _theme = JSON.parse(localStorage.getItem('theme'))
-      if (!_theme.light) {
-        _theme.light = '#f8f8f2'
-      }
-      return _theme
-    } catch (err) {
-      return null
-    }
-  }
-  const [currentTheme, setCurrentTheme] = useState(readTheme() || theme)
+  const [currentTheme, setCurrentTheme] = useState({
+    ...theme,
+    darkMode: JSON.parse(localStorage.getItem('darkMode')) ?? true,
+  })
   const toggleTheme = () => {
     if (!user?.paidFeaturesAccess) {
       // redirect to /client
       history.push('/client')
       return
     }
-    const newTheme = {
-      ...currentTheme,
-      darkMode: !currentTheme.darkMode,
-    }
-    setCurrentTheme(newTheme)
-    localStorage.setItem('theme', JSON.stringify(newTheme))
+    setCurrentTheme((prev) => ({
+      ...prev,
+      darkMode: !prev.darkMode,
+    }))
+    localStorage.setItem('darkMode', currentTheme.darkMode ? 'false' : 'true')
   }
 
   return (

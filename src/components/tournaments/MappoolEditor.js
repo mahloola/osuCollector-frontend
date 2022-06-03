@@ -34,7 +34,7 @@ const formControlStyle = (theme, isInvalid) => ({
   ...(theme.darkMode && {
     backgroundColor: theme.primary20,
     borderColor: isInvalid ? '#dc3545' : theme.primary40,
-    color: theme.light,
+    color: '#f8f8f2',
   }),
 })
 

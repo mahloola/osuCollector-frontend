@@ -23,45 +23,20 @@ import {
 } from '../bootstrap-osu-collector'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import MappoolRound from './MappoolRound'
-import Truncate from 'react-truncate'
-import { Ellipsis } from 'react-bootstrap/esm/PageItem'
-import { Tabs } from 'react-bootstrap'
 
 function Tournament({ user }) {
   const history = useHistory()
   // @ts-ignore
   let { id } = useParams()
-  const [tournament, setTournament] = useState(undefined)
+  const { tournament } = api.useTournament(id)
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
   const [error, setError] = useState(null)
 
-  // run this code on initial load
-  const refreshTournament = (cancelCallback = undefined) => {
-    // GET tournament
-    api
-      .getTournament(id, cancelCallback)
-      .then((tournament) => {
-        setTournament(tournament)
-      })
-      .catch((err) => {
-        if (err.response?.status === 404) {
-          setTournament(null)
-        } else {
-          console.error(err)
-          setError(err)
-        }
-      })
-  }
-  useEffect(() => {
-    let cancel
-    refreshTournament((c) => (cancel = c))
-    return cancel
-  }, [])
-
+  // modals
+  const [messageModalText, setMessageModalText] = useState('')
   // message modal
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [modalMessage, setModalMessage] = useState('')
 
   const deleteTournament = async () => {
     setDeleting(true)
@@ -110,6 +85,15 @@ function Tournament({ user }) {
         </div>
       </Container>
     )
+  }
+
+  const actionButtonClicked = () => {
+    if (user?.paidFeaturesAccess) {
+      setMessageModalText('Tournament launched in osu!Collector desktop client!')
+      window.open(`osucollector://tournaments/${tournament.id}`)
+    } else {
+      history.push('/client')
+    }
   }
 
   const loading = tournament === undefined
@@ -186,8 +170,7 @@ function Tournament({ user }) {
                             <Globe />
                             <span className='mx-2'> Info: </span>
                             <a href={tournament?.link}>
-                              {' '}
-                              <small>{tournament?.link}</small>{' '}
+                              <small>{tournament?.link}</small>
                             </a>
                           </div>
                           <p className='pr-4' style={{ whiteSpace: 'pre-line' }}>
@@ -196,31 +179,13 @@ function Tournament({ user }) {
                         </>
                       )}
                     </ReactPlaceholder>
-                    <div className='d-flex flex-row my-4'>
-                      <Button
-                        className='mr-1'
-                        onClick={() => {
-                          if (user?.paidFeaturesAccess) {
-                            setModalMessage('Tournament launched in osu!Collector desktop client!')
-                            window.open(`osucollector://tournaments/${tournament.id}`)
-                          } else {
-                            history.push('/client')
-                          }
-                        }}
-                      >
-                        Download maps
+                    <div className='d-flex flex-row my-4' style={{ gap: '5px' }}>
+                      <Button className='mr-1' onClick={actionButtonClicked}>
+                        Download all maps
                       </Button>
-                      <Button
-                        onClick={() => {
-                          if (user?.paidFeaturesAccess) {
-                            setModalMessage('Tournament launched in osu!Collector desktop client!')
-                            window.open(`osucollector://tournaments/${tournament.id}`)
-                          } else {
-                            history.push('/client')
-                          }
-                        }}
-                      >
-                        Add mappool to osu!
+                      <Button onClick={actionButtonClicked}>Add mappool to osu!</Button>
+                      <Button onClick={actionButtonClicked} variant='secondary'>
+                        Remove imported collections
                       </Button>
                     </div>
                   </Col>
@@ -397,12 +362,10 @@ function Tournament({ user }) {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={!!modalMessage} onHide={() => setModalMessage('')} centered={true}>
-        <Modal.Body className='px-4 py-5'>{modalMessage}</Modal.Body>
+      <Modal show={!!messageModalText} onHide={() => setMessageModalText('')} centered={true}>
+        <Modal.Body className='px-4 py-5'>{messageModalText}</Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setModalMessage('')} disabled={deleting}>
-            Okay
-          </Button>
+          <Button onClick={() => setMessageModalText('')}>Okay</Button>
         </Modal.Footer>
       </Modal>
     </>

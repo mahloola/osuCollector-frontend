@@ -1,6 +1,7 @@
 import axios from 'axios'
 import useSWRImmutable from 'swr/immutable'
 import { useMediaQuery } from 'react-responsive'
+import config from '../config/config'
 
 export function truncate(inputString, length) {
   return inputString.length > length ? inputString.substring(0, length) + '...' : inputString
@@ -76,16 +77,35 @@ export function useFallbackImg(ev, fallbackImg) {
   ev.target.src = fallbackImg
 }
 
-export function addFavouritedByUserAttribute(collections, user) {
-  if (!user) return
+export function addFavouritedByUserAttribute(collections, user, { makeCopy } = { makeCopy: false }) {
+  if (!collections) return
+  if (!user) {
+    if (!makeCopy) return
+    return Array.isArray(collections) ? [...collections] : { ...collections }
+  }
   if (Array.isArray(collections)) {
-    for (const collection of collections) {
-      collection.favouritedByUser = Boolean(user.favourites && user.favourites.includes(collection.id))
+    if (makeCopy) {
+      return collections.map((collection) => ({
+        ...collection,
+        favouritedByUser: Boolean(user.favourites && user.favourites.includes(collection.id)),
+      }))
+    } else {
+      for (const collection of collections) {
+        collection.favouritedByUser = Boolean(user.favourites && user.favourites.includes(collection.id))
+      }
     }
   } else {
     // case: single collection
     const collection = collections
-    collection.favouritedByUser = Boolean(user.favourites && user.favourites.includes(collection.id))
+    if (makeCopy) {
+      return {
+        ...collection,
+        favouritedByUser: Boolean(user.favourites && user.favourites.includes(collection.id)),
+      }
+    } else {
+      const collection = collections
+      collection.favouritedByUser = Boolean(user.favourites && user.favourites.includes(collection.id))
+    }
   }
 }
 
@@ -233,22 +253,108 @@ export const Breakpoints = {
 export function useCancellableSWRImmutable(key, query) {
   const source = axios.CancelToken.source()
   const { data, error } = useSWRImmutable(key, (url) =>
-    axios.get(url, { cancelToken: source.token, params: query }).then((res) => res.data)
+    axios
+      .get(url, {
+        params: query ?? {},
+        baseURL: config.get('API_HOST'),
+        cancelToken: source.token,
+      })
+      .then((res) => res.data)
   )
   if (error) console.error(error)
   return { data, error, loading: !data, cancelToken: source }
 }
 
 export async function axiosFetcher(url, query) {
-  const result = await axios.get(url, { params: query ?? {} })
+  const result = await axios.get(url, { params: query ?? {}, baseURL: config.get('API_HOST') })
   return result.data
 }
 
 export const formatQueryParams = (query) => {
   try {
-    return new URLSearchParams(query).toString()
+    const _query = { ...query }
+    Object.keys(_query)
+      .filter((key) => _query[key] === undefined)
+      .forEach((key) => delete _query[key])
+    return new URLSearchParams(_query).toString()
   } catch (error) {
     console.error(error)
     return null
   }
 }
+
+export const getMappoolCollections = (tournament, groupBy) => {
+  if (!tournament) return null
+  const tournamentCollection = [
+    {
+      name: tournament?.name,
+      beatmaps: tournament?.rounds?.map((round) => round.mods.map((mod) => mod.maps))?.flat(2),
+    },
+  ]
+
+  const roundCollections = tournament?.rounds
+    .map((round) => {
+      const beatmaps = round.mods.map((mod) => mod.maps)
+      return {
+        name: tournament.name + ' - ' + round.round,
+        beatmaps: beatmaps.flat(1),
+      }
+    })
+    .map((collection, i) => ({
+      ...collection,
+      name: collection.name.replace(
+        tournament.name + ' - ',
+        tournament.name + ` - ${(i + 1).toString().padStart(3, '0')}. `
+      ),
+    }))
+
+  const modCollections = tournament?.rounds
+    .map((round) => {
+      const collections = round.mods.map((mod) => ({
+        name: tournament.name + ' - ' + round.round + ': ' + mod.mod,
+        beatmaps: mod.maps,
+      }))
+      return collections
+    })
+    .flat(1)
+    .map((collection, i) => ({
+      ...collection,
+      name: collection.name.replace(
+        tournament.name + ' - ',
+        tournament.name + ` - ${(i + 1).toString().padStart(3, '0')}. `
+      ),
+    }))
+
+  const beatmapCollections = tournament?.rounds
+    .map((round) => {
+      const collections = round.mods.map((mod) =>
+        mod.maps.map((beatmap, index) => ({
+          name: tournament.name + ' - ' + round.round + ': ' + mod.mod + (index + 1),
+          beatmaps: [beatmap],
+        }))
+      )
+      return collections
+    })
+    .flat(2)
+    .map((collection, i) => ({
+      ...collection,
+      name: collection.name.replace(
+        tournament.name + ' - ',
+        tournament.name + ` - ${(i + 1).toString().padStart(3, '0')}. `
+      ),
+    }))
+
+  const collectionsGroupedBy = {
+    ['tournament']: tournamentCollection,
+    ['round']: roundCollections,
+    ['mod']: modCollections,
+    ['beatmap']: beatmapCollections,
+  }
+  if (groupBy) {
+    return collectionsGroupedBy[groupBy]
+  } else {
+    return collectionsGroupedBy
+  }
+}
+
+export const sleep = async (ms) => await new Promise((r) => setTimeout(r, ms))
