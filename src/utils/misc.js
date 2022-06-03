@@ -80,16 +80,12 @@ export function addFavouritedByUserAttribute(collections, user) {
   if (!user) return
   if (Array.isArray(collections)) {
     for (const collection of collections) {
-      collection.favouritedByUser = Boolean(
-        user.favourites && user.favourites.includes(collection.id)
-      )
+      collection.favouritedByUser = Boolean(user.favourites && user.favourites.includes(collection.id))
     }
   } else {
     // case: single collection
     const collection = collections
-    collection.favouritedByUser = Boolean(
-      user.favourites && user.favourites.includes(collection.id)
-    )
+    collection.favouritedByUser = Boolean(user.favourites && user.favourites.includes(collection.id))
   }
 }
 

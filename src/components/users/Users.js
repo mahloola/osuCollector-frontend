@@ -1,14 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import {
-  Alert,
-  Card,
-  Container,
-  Col,
-  ReactPlaceholder,
-  Spinner,
-} from '../bootstrap-osu-collector'
+import { Alert, Card, Container, Col, ReactPlaceholder, Spinner } from '../bootstrap-osu-collector'
 import { getUsers } from '../../utils/api'
 import UserCard from './UserCard'
 
@@ -40,43 +33,40 @@ function Users() {
   }
 
   return (
-    <Container className="pt-4">
-      <Card className="shadow-lg">
+    <Container className='pt-4'>
+      <Card className='shadow-lg'>
         <Card.Body>
-          <h2 className="mt-2 ml-3">Users</h2>
+          <h2 className='mt-2 ml-3'>Users</h2>
           {error ? (
-            <Alert variant="danger">
-              <p>
-                Sorry, there was an error retrieving users. Please try refreshing the page. Error
-                details:
-              </p>
+            <Alert variant='danger'>
+              <p>Sorry, there was an error retrieving users. Please try refreshing the page. Error details:</p>
               <p>{error.toString()}</p>
             </Alert>
           ) : (
-            <Container className="p-2">
+            <Container className='p-2'>
               <InfiniteScroll
                 dataLength={users.length}
                 next={loadMore}
                 hasMore={userResults !== null}
                 loader={
-                  <div className="d-flex justify-content-center p-2">
-                    <Spinner animation="border" />
+                  <div className='d-flex justify-content-center p-2'>
+                    <Spinner animation='border' />
                   </div>
                 }
                 endMessage={
-                  <p className="text-muted" style={{ textAlign: 'center' }}>
+                  <p className='text-muted' style={{ textAlign: 'center' }}>
                     <b>Nothing more to show.</b>
                   </p>
                 }
-                className="row"
+                className='row'
               >
                 {users.map((user, i) => (
-                  <Col lg={6} xl={3} className="p-0 my-3" key={i}>
+                  <Col lg={6} xl={3} className='p-0 my-3' key={i}>
                     <ReactPlaceholder
                       ready={user !== null}
                       showLoadingAnimation
-                      type="rect"
-                      className="mx-auto"
+                      type='rect'
+                      className='mx-auto'
                       style={{ width: '90%', height: '210px' }}
                     >
                       {user && <UserCard user={user}></UserCard>}

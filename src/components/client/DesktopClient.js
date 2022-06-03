@@ -145,40 +145,38 @@ function DesktopClient({ user, setUser }) {
   )
 
   return (
-    <div className="pb-5">
+    <div className='pb-5'>
       {/* {process.env.NODE_ENV === 'production' &&
                 <Alert variant='danger'>
                     you shouldnt be here unless youre a dev
                 </Alert>
             } */}
 
-      <div className="bg-dark px-4 py-5 text-center">
-        <div className="mt-5">
-          <h1 className="display-5 fw-bold text-white">
-            Support us to gain access to these features!
-          </h1>
+      <div className='bg-dark px-4 py-5 text-center'>
+        <div className='mt-5'>
+          <h1 className='display-5 fw-bold text-white'>Support us to gain access to these features!</h1>
           {/* <div className="col-lg-6 mx-auto">
                         <p className="fs-5 mb-4 text-secondary">The greatest thing FunOrange has made since osu! trainer</p>
                     </div> */}
         </div>
       </div>
       <Divider />
-      <div className="px-4 py-5 text-center">
-        <div className="container col-xxl-8">
-          <div className="row flex-lg-row-reverse align-items-center g-5">
-            <div className="col-10 col-sm-8 col-lg-6">
+      <div className='px-4 py-5 text-center'>
+        <div className='container col-xxl-8'>
+          <div className='row flex-lg-row-reverse align-items-center g-5'>
+            <div className='col-10 col-sm-8 col-lg-6'>
               <ShadowImg
                 src={downloadsPng}
-                className="d-block mx-lg-auto img-fluid"
-                width="700"
-                height="500"
-                loading="lazy"
+                className='d-block mx-lg-auto img-fluid'
+                width='700'
+                height='500'
+                loading='lazy'
               />
             </div>
-            <div className="col-lg-6">
-              <h1 className="display-5 fw-bold lh-1 mb-3">Download entire collections</h1>
-              <p className="lead text-secondary">osu!Collector Desktop feature</p>
-              <p className="lead text-secondary">
+            <div className='col-lg-6'>
+              <h1 className='display-5 fw-bold lh-1 mb-3'>Download entire collections</h1>
+              <p className='lead text-secondary'>osu!Collector Desktop feature</p>
+              <p className='lead text-secondary'>
                 Download all the beatmaps in a collection with one click.
                 <br />
                 <small>
@@ -192,61 +190,59 @@ function DesktopClient({ user, setUser }) {
         </div>
       </div>
       <Divider />
-      <div className="px-4 py-5 text-center">
-        <div className="container col-xxl-8">
-          <div className="row flex-lg-row-reverse align-items-center g-5">
-            <div className="col-10 col-sm-8 col-lg-6">
+      <div className='px-4 py-5 text-center'>
+        <div className='container col-xxl-8'>
+          <div className='row flex-lg-row-reverse align-items-center g-5'>
+            <div className='col-10 col-sm-8 col-lg-6'>
               <ShadowImg
                 src={importPng}
-                className="d-block mx-lg-auto img-fluid"
-                width="700"
-                height="500"
-                loading="lazy"
+                className='d-block mx-lg-auto img-fluid'
+                width='700'
+                height='500'
+                loading='lazy'
               />
             </div>
-            <div className="col-lg-6">
-              <h1 className="display-5 fw-bold lh-1 mb-3">Import collections</h1>
-              <p className="lead text-secondary">osu!Collector Desktop feature</p>
-              <p className="lead text-secondary">
-                Directly add collections to osu! with the click of a button
-              </p>
+            <div className='col-lg-6'>
+              <h1 className='display-5 fw-bold lh-1 mb-3'>Import collections</h1>
+              <p className='lead text-secondary'>osu!Collector Desktop feature</p>
+              <p className='lead text-secondary'>Directly add collections to osu! with the click of a button</p>
             </div>
           </div>
         </div>
       </div>
       <Divider />
-      <div className="px-4 py-5 text-center">
-        <div className="container col-xxl-8">
-          <div className="row flex-lg-row-reverse align-items-center g-5">
-            <div className="col-10 col-sm-8 col-lg-6">
+      <div className='px-4 py-5 text-center'>
+        <div className='container col-xxl-8'>
+          <div className='row flex-lg-row-reverse align-items-center g-5'>
+            <div className='col-10 col-sm-8 col-lg-6'>
               <ShadowImg
                 src={darkmodePng}
-                className="d-block mx-lg-auto img-fluid"
-                width="700"
-                height="500"
-                loading="lazy"
+                className='d-block mx-lg-auto img-fluid'
+                width='700'
+                height='500'
+                loading='lazy'
               />
             </div>
-            <div className="col-lg-6">
-              <h1 className="display-5 fw-bold lh-1 mb-3">Dark mode</h1>
-              <p className="lead text-secondary">Also available on the website</p>
+            <div className='col-lg-6'>
+              <h1 className='display-5 fw-bold lh-1 mb-3'>Dark mode</h1>
+              <p className='lead text-secondary'>Also available on the website</p>
             </div>
           </div>
         </div>
       </div>
       <Divider />
-      <div className="px-4 py-5 text-center">
-        <div className="container col-xxl-8">
-          <div className="row flex-lg-row-reverse align-items-center g-5">
-            <div className="col-10 col-sm-8 col-lg-6">
-              <ShadowHeart className="my-4" style={{ color: '#FF66AB', width: 200, height: 200 }} />
+      <div className='px-4 py-5 text-center'>
+        <div className='container col-xxl-8'>
+          <div className='row flex-lg-row-reverse align-items-center g-5'>
+            <div className='col-10 col-sm-8 col-lg-6'>
+              <ShadowHeart className='my-4' style={{ color: '#FF66AB', width: 200, height: 200 }} />
             </div>
-            <div className="col-lg-6">
-              <h1 className="display-5 fw-bold lh-1 mb-3">Help pay for server costs</h1>
-              <p className="lead text-secondary">
-                I had to find some way to monetize this project so that it could continue running on
-                its own. I figured something in similar vein to osu! supporter would be the best
-                approach. Any support you give us is greatly appreciated!
+            <div className='col-lg-6'>
+              <h1 className='display-5 fw-bold lh-1 mb-3'>Help pay for server costs</h1>
+              <p className='lead text-secondary'>
+                I had to find some way to monetize this project so that it could continue running on its own. I figured
+                something in similar vein to osu! supporter would be the best approach. Any support you give us is
+                greatly appreciated!
               </p>
             </div>
           </div>
@@ -254,11 +250,11 @@ function DesktopClient({ user, setUser }) {
       </div>
       <Divider />
 
-      <Container className="pt-4">
-        <Card className="shadow-sm mt-4 mb-5">
+      <Container className='pt-4'>
+        <Card className='shadow-sm mt-4 mb-5'>
           <CardBody>
             <Card.Title>
-              <h3 id="download">
+              <h3 id='download'>
                 <strong>Download osu!Collector Desktop</strong>
               </h3>
             </Card.Title>
@@ -266,7 +262,7 @@ function DesktopClient({ user, setUser }) {
               <Button
                 disabled={!user?.paidFeaturesAccess}
                 variant={user?.paidFeaturesAccess ? 'primary' : 'outline-secondary'}
-                className="mr-2 my-2"
+                className='mr-2 my-2'
                 onClick={() => downloadInstaller('win32')}
               >
                 Windows 64-bit
@@ -274,7 +270,7 @@ function DesktopClient({ user, setUser }) {
               <Button
                 disabled={!user?.paidFeaturesAccess}
                 variant={user?.paidFeaturesAccess ? 'primary' : 'outline-secondary'}
-                className="mr-2 my-2"
+                className='mr-2 my-2'
                 onClick={() => downloadInstaller('linux')}
               >
                 Linux x64 .deb
@@ -287,48 +283,47 @@ function DesktopClient({ user, setUser }) {
           </CardBody>
         </Card>
 
-        <h2 className="text-center">Two ways to support us!</h2>
+        <h2 className='text-center'>Two ways to support us!</h2>
         <p>
           Please note that supporting us with both methods at the same time{' '}
-          <strong>will not extend your supporter status!</strong>&nbsp; If you want to save money we
-          recommend doing only 1 option.
+          <strong>will not extend your supporter status!</strong>&nbsp; If you want to save money we recommend doing
+          only 1 option.
         </p>
         <Row>
           <Col md={12} lg={6}>
-            <Card className="shadow mb-4">
+            <Card className='shadow mb-4'>
               <CardBody>
                 <Card.Title>
-                  <span className="mr-2">Option 1</span>{' '}
-                  <i style={{ marginTop: 1 }}>free with Twitch Prime</i>
-                  <Twitch size={28} className="ml-3 mb-1" style={{ color: '#8a43f2' }} />
+                  <span className='mr-2'>Option 1</span> <i style={{ marginTop: 1 }}>free with Twitch Prime</i>
+                  <Twitch size={28} className='ml-3 mb-1' style={{ color: '#8a43f2' }} />
                 </Card.Title>
-                <Card className="shadow-sm p-3 mx-3 my-4">
+                <Card className='shadow-sm p-3 mx-3 my-4'>
                   <p>
-                    <strong className="mr-2">1</strong> Link your Twitch account with osu!Collector
+                    <strong className='mr-2'>1</strong> Link your Twitch account with osu!Collector
                   </p>
                   {!user ? (
-                    <Button disabled variant="outline-secondary">
+                    <Button disabled variant='outline-secondary'>
                       You are not logged in
                     </Button>
                   ) : user?.private?.linkedTwitchAccount ? (
-                    <Button disabled variant="outline-secondary">
+                    <Button disabled variant='outline-secondary'>
                       Already linked: {user.private.linkedTwitchAccount.displayName}
                     </Button>
                   ) : (
                     <Button
-                      href="https://id.twitch.tv/oauth2/authorize?client_id=q0uygwcj9cplrb0sb20x7fthkc4wcd&redirect_uri=https%3A%2F%2Fosucollector.com%2Fauthentication%2Ftwitch&response_type=code&scope=user:read:subscriptions"
-                      variant="outline-primary"
+                      href='https://id.twitch.tv/oauth2/authorize?client_id=q0uygwcj9cplrb0sb20x7fthkc4wcd&redirect_uri=https%3A%2F%2Fosucollector.com%2Fauthentication%2Ftwitch&response_type=code&scope=user:read:subscriptions'
+                      variant='outline-primary'
                     >
                       Link Twitch Account
                     </Button>
                   )}
                 </Card>
-                <Card className="shadow-sm p-3 mx-3 my-4">
+                <Card className='shadow-sm p-3 mx-3 my-4'>
                   <p>
-                    <strong className="mr-2">2</strong> Subscribe to FunOrange&apos;s Twitch channel
-                    (if you haven&apos;t already)
+                    <strong className='mr-2'>2</strong> Subscribe to FunOrange&apos;s Twitch channel (if you
+                    haven&apos;t already)
                   </p>
-                  <Button href="https://www.twitch.tv/funorange42" variant="outline-primary">
+                  <Button href='https://www.twitch.tv/funorange42' variant='outline-primary'>
                     FunOrange&apos;s Twitch Channel
                   </Button>
                 </Card>
@@ -336,31 +331,31 @@ function DesktopClient({ user, setUser }) {
             </Card>
           </Col>
           <Col md={12} lg={6}>
-            <Card className="shadow mb-4">
+            <Card className='shadow mb-4'>
               <CardBody>
                 <Card.Title>Option 2</Card.Title>
                 <Card.Subtitle>
                   {!user ? (
-                    <Alert variant="warning" className="mt-4 mx-3 py-2 text-center">
+                    <Alert variant='warning' className='mt-4 mx-3 py-2 text-center'>
                       <small>You are not logged in</small>
                     </Alert>
                   ) : paidSub ? (
-                    <Alert variant="success" className="mt-4 mx-3 py-2 text-center">
+                    <Alert variant='success' className='mt-4 mx-3 py-2 text-center'>
                       <small>You already have a paid subscription</small>
                     </Alert>
                   ) : (
                     twitchSub && (
-                      <Alert variant="warning" className="mt-4 mx-3 py-2 text-center">
+                      <Alert variant='warning' className='mt-4 mx-3 py-2 text-center'>
                         <small>You are already subbed to FunOrange&apos;s Twitch channel!</small>
                       </Alert>
                     )
                   )}
                   {paypalError && (
-                    <Alert variant="danger" className="mt-4 mx-3 py-2 text-center">
+                    <Alert variant='danger' className='mt-4 mx-3 py-2 text-center'>
                       <small>{paypalError.message}</small>
                     </Alert>
                   )}
-                  <Card className="shadow-sm p-3 mx-3 my-4">
+                  <Card className='shadow-sm p-3 mx-3 my-4'>
                     <p>Purchase the desktop client for $1.99 per month</p>
                     <PayPalButtons
                       style={{
@@ -370,7 +365,7 @@ function DesktopClient({ user, setUser }) {
                         layout: 'vertical',
                       }}
                       disabled={!user || paidSub}
-                      fundingSource="paypal"
+                      fundingSource='paypal'
                       createSubscription={(data, actions) => {
                         return actions.subscription.create({
                           plan_id: 'P-5DC05698WC351562JMGZFV6Y', // production: $1.99 per month
@@ -387,14 +382,14 @@ function DesktopClient({ user, setUser }) {
                         setPaypalError(error)
                       }}
                     />
-                    <div className="d-flex my-2">
-                      <hr className="flex-fill" />
-                      <span className="mx-3 my-1 text-muted">Or pay with card</span>
-                      <hr className="flex-fill" />
+                    <div className='d-flex my-2'>
+                      <hr className='flex-fill' />
+                      <span className='mx-3 my-1 text-muted'>Or pay with card</span>
+                      <hr className='flex-fill' />
                     </div>
-                    <LinkContainer to="/payments/checkout">
-                      <Button variant="outline-primary" disabled={!user || paidSub}>
-                        <p className="my-1">Pay with credit card</p>
+                    <LinkContainer to='/payments/checkout'>
+                      <Button variant='outline-primary' disabled={!user || paidSub}>
+                        <p className='my-1'>Pay with credit card</p>
                       </Button>
                     </LinkContainer>
                   </Card>
@@ -404,29 +399,26 @@ function DesktopClient({ user, setUser }) {
           </Col>
         </Row>
 
-        <Card className="shadow-sm my-5">
+        <Card className='shadow-sm my-5'>
           <CardBody>
             <Card.Title>
-              <h5 id="status">Current status</h5>
+              <h5 id='status'>Current status</h5>
             </Card.Title>
             <Card.Subtitle>
               <p>
-                You are <strong>{!user?.paidFeaturesAccess && 'not'} currently supporting</strong>{' '}
-                osu!Collector.
+                You are <strong>{!user?.paidFeaturesAccess && 'not'} currently supporting</strong> osu!Collector.
               </p>
               <Row>
                 <Col md={12} lg={6}>
-                  <Card className="shadow-sm p-3 mb-4">
-                    <div className="mb-2 d-flex justify-content-start align-items-center">
-                      <div className="text-right mr-3" style={{ minWidth: 120 }}>
+                  <Card className='shadow-sm p-3 mb-4'>
+                    <div className='mb-2 d-flex justify-content-start align-items-center'>
+                      <div className='text-right mr-3' style={{ minWidth: 120 }}>
                         Twitch account
                       </div>
                       <div>
                         <Badge
-                          variant={
-                            user?.private?.linkedTwitchAccount?.displayName ? 'info' : 'secondary'
-                          }
-                          className="py-1 px-2 mr-2"
+                          variant={user?.private?.linkedTwitchAccount?.displayName ? 'info' : 'secondary'}
+                          className='py-1 px-2 mr-2'
                         >
                           {linkedTwitchAccountStatus}
                         </Badge>
@@ -435,73 +427,52 @@ function DesktopClient({ user, setUser }) {
                         <Button
                           onClick={unlinkTwitchAccount}
                           style={{ width: 60, padding: '0 0 0 0' }}
-                          size="sm"
-                          variant="outline-secondary"
+                          size='sm'
+                          variant='outline-secondary'
                         >
                           {unlinkingTwitchAccount ? (
-                            <Spinner
-                              as="span"
-                              animation="grow"
-                              size="sm"
-                              role="status"
-                              aria-hidden="true"
-                            />
+                            <Spinner as='span' animation='grow' size='sm' role='status' aria-hidden='true' />
                           ) : (
                             <small>Unlink</small>
                           )}
                         </Button>
                       )}
                       {user?.private?.twitchError && (
-                        <small className="text-danger text-sm ml-2">
-                          {' '}
-                          Please unlink and try again.{' '}
-                        </small>
+                        <small className='text-danger text-sm ml-2'> Please unlink and try again. </small>
                       )}
                     </div>
-                    <div className="d-flex justify-content-start align-items-center">
-                      <div className="text-right mr-3" style={{ minWidth: 120 }}>
+                    <div className='d-flex justify-content-start align-items-center'>
+                      <div className='text-right mr-3' style={{ minWidth: 120 }}>
                         Twitch Sub
                       </div>
                       <div>
-                        <Badge
-                          variant={isSubbedToFunOrange ? 'success' : 'secondary'}
-                          className="py-1 px-2"
-                        >
+                        <Badge variant={isSubbedToFunOrange ? 'success' : 'secondary'} className='py-1 px-2'>
                           {twitchSubStatus}
                         </Badge>
                       </div>
                     </div>
                     {user?.private?.error && (
-                      <span className="mt-2 ml-2 text-danger">
+                      <span className='mt-2 ml-2 text-danger'>
                         An error occurred. Please try to unlink and relink your twitch account.
                       </span>
                     )}
                   </Card>
                 </Col>
                 <Col md={12} lg={6}>
-                  <Card className="shadow-sm p-3 mb-2">
-                    <div className="mb-3 d-flex justify-content-start align-items-center">
-                      <div className="text-right mr-3">Paid Subscription</div>
+                  <Card className='shadow-sm p-3 mb-2'>
+                    <div className='mb-3 d-flex justify-content-start align-items-center'>
+                      <div className='text-right mr-3'>Paid Subscription</div>
                       <Badge
                         variant={
-                          paidSubscriptionActive(user, paypalSubscription, stripeSubscription)
-                            ? 'success'
-                            : 'secondary'
+                          paidSubscriptionActive(user, paypalSubscription, stripeSubscription) ? 'success' : 'secondary'
                         }
-                        className="py-1 px-2 mr-3"
+                        className='py-1 px-2 mr-3'
                       >
-                        {paidSubscriptionActive(user, paypalSubscription, stripeSubscription)
-                          ? 'Active'
-                          : 'Inactive'}
+                        {paidSubscriptionActive(user, paypalSubscription, stripeSubscription) ? 'Active' : 'Inactive'}
                       </Badge>
                     </div>
-                    {(user?.private?.paypalSubscriptionId ||
-                      user?.private?.stripeSubscriptionId) && (
-                      <Button
-                        onClick={() => setPaymentModalVisible(true)}
-                        size="sm"
-                        variant="outline-secondary"
-                      >
+                    {(user?.private?.paypalSubscriptionId || user?.private?.stripeSubscriptionId) && (
+                      <Button onClick={() => setPaymentModalVisible(true)} size='sm' variant='outline-secondary'>
                         Show details
                       </Button>
                     )}
@@ -512,15 +483,15 @@ function DesktopClient({ user, setUser }) {
           </CardBody>
         </Card>
 
-        <svg height="0" xmlns="http://www.w3.org/2000/svg">
-          <filter id="drop-shadow">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-            <feOffset dx={offsetX} dy={offsetY} result="offsetblur" />
-            <feFlood floodColor="rgba(0,0,0,0.15)" />
-            <feComposite in2="offsetblur" operator="in" />
+        <svg height='0' xmlns='http://www.w3.org/2000/svg'>
+          <filter id='drop-shadow'>
+            <feGaussianBlur in='SourceAlpha' stdDeviation='2' />
+            <feOffset dx={offsetX} dy={offsetY} result='offsetblur' />
+            <feFlood floodColor='rgba(0,0,0,0.15)' />
+            <feComposite in2='offsetblur' operator='in' />
             <feMerge>
               <feMergeNode />
-              <feMergeNode in="SourceGraphic" />
+              <feMergeNode in='SourceGraphic' />
             </feMerge>
           </filter>
         </svg>

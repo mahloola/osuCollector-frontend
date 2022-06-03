@@ -19,24 +19,19 @@ function Recent({ user, setUser }) {
   const loadMore = () => setCurrentPage(currentPage + 1)
 
   return (
-    <Container className="pt-4">
-      <Card className="shadow-lg">
+    <Container className='pt-4'>
+      <Card className='shadow-lg'>
         <Card.Body>
-          <h2 className="my-2 ml-3">Recent Collections</h2>
+          <h2 className='my-2 ml-3'>Recent Collections</h2>
           {recentCollectionsError ? (
-            <Alert variant="danger">
-              <p>
-                Sorry, there was an error retrieving collections. Please try refreshing the page.
-                Error details:
-              </p>
+            <Alert variant='danger'>
+              <p>Sorry, there was an error retrieving collections. Please try refreshing the page. Error details:</p>
               <p>{recentCollectionsError.toString()}</p>
             </Alert>
           ) : (
             <CollectionList
               collections={
-                recentIsValidating && recentCollections.length === 0
-                  ? new Array(18).fill(null)
-                  : recentCollections
+                recentIsValidating && recentCollections.length === 0 ? new Array(18).fill(null) : recentCollections
               }
               setCollections={setRecentCollections}
               hasMore={hasMore}

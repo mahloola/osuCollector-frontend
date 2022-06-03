@@ -44,23 +44,22 @@ function EnterOtp({ authX, setUser }) {
   }
 
   return (
-    <Container className="pt-4">
-      <Card className="px-4 py-5 my-5 text-center">
-        <h1 className="display-5 fw-bold">One time password</h1>
-        <div className="mx-auto">
-          <p className="lead mb-4">
-            After authenticating through the osu! website, osu!Collector should show you a one time
-            password.
+    <Container className='pt-4'>
+      <Card className='px-4 py-5 my-5 text-center'>
+        <h1 className='display-5 fw-bold'>One time password</h1>
+        <div className='mx-auto'>
+          <p className='lead mb-4'>
+            After authenticating through the osu! website, osu!Collector should show you a one time password.
             <br />
             Please enter it here to finish logging in.
           </p>
         </div>
         <FormControl
-          className="col-1 mx-auto"
-          type="text"
-          size="lg"
+          className='col-1 mx-auto'
+          type='text'
+          size='lg'
           style={{ textAlign: 'center' }}
-          placeholder="1234"
+          placeholder='1234'
           onChange={onOtpChanged}
         />
       </Card>

@@ -58,9 +58,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
       }
     } catch (err) {
       alert(
-        err.message +
-        '\n\n' +
-        'If this is your first time seeing this, you can try uploading the collection again.'
+        err.message + '\n\n' + 'If this is your first time seeing this, you can try uploading the collection again.'
       )
     }
     setUploading(false)
@@ -68,17 +66,17 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
   }
 
   return (
-    <Modal show={uploadModalIsOpen} onHide={() => setUploadModalIsOpen(false)} size="xl" centered>
-      <ModalBody className="px-5 py-4">
+    <Modal show={uploadModalIsOpen} onHide={() => setUploadModalIsOpen(false)} size='xl' centered>
+      <ModalBody className='px-5 py-4'>
         <h3>1. Open collection.db</h3>
-        collection.db is a file that contains all of your osu! collections. It is located in your
-        osu! install folder. Example:
-        <pre className="bg-light my-2 py-1 px-3">
+        collection.db is a file that contains all of your osu! collections. It is located in your osu! install folder.
+        Example:
+        <pre className='bg-light my-2 py-1 px-3'>
           <code>C:\Users\jun\AppData\Local\osu!\collection.db</code>
         </pre>
         <br></br>
         <Form>
-          <div className="dragon-drop" {...getRootProps()}>
+          <div className='dragon-drop' {...getRootProps()}>
             <input {...getInputProps()} />
             {file != null ? (
               file.name
@@ -94,29 +92,23 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
               <h3>2. Select a collection to upload or update</h3>
               <div style={{ height: '52vh', overflowY: 'scroll' }}>
                 {localCollections.map((collection, index) => (
-                  <Card $lightbg key={index} className="shadow-sm mx-2 my-2 py-2 px-4">
-                    <div className="d-flex text-right">
-                      <div className="flex-fill text-left">
+                  <Card $lightbg key={index} className='shadow-sm mx-2 my-2 py-2 px-4'>
+                    <div className='d-flex text-right'>
+                      <div className='flex-fill text-left'>
                         {collection.name}
-                        <span className="text-muted ml-3">
-                          {collection.beatmapChecksums.length} beatmaps
-                        </span>
+                        <span className='text-muted ml-3'>{collection.beatmapChecksums.length} beatmaps</span>
                       </div>
                       {isUploaded(collection) && (
                         <>
-                          <span className="text-muted ml-3">
+                          <span className='text-muted ml-3'>
                             <small>
                               last updated{' '}
-                              {moment
-                                .unix(
-                                  getRemoteCollection(collection.name).dateLastModified._seconds
-                                )
-                                .fromNow()}
+                              {moment.unix(getRemoteCollection(collection.name).dateLastModified._seconds).fromNow()}
                             </small>
                           </span>
                           <Badge
-                            className="mx-3"
-                            variant="info"
+                            className='mx-3'
+                            variant='info'
                             style={{
                               minWidth: '50px',
                               height: '24px',
@@ -127,7 +119,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
                           </Badge>
                         </>
                       )}
-                      <div className="ml-2">
+                      <div className='ml-2'>
                         <Form.Check
                           checked={selectedCollection?.name === collection.name}
                           value={index}
@@ -139,7 +131,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
                 ))}
               </div>
               <br></br>
-              <div className="upload-buttons">
+              <div className='upload-buttons'>
                 <Button
                   style={{ width: '11em' }}
                   onClick={submit}
@@ -149,12 +141,12 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
                   {uploading ? (
                     <>
                       <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                        className="mx-2"
-                        aria-hidden="true"
+                        as='span'
+                        animation='border'
+                        size='sm'
+                        role='status'
+                        className='mx-2'
+                        aria-hidden='true'
                       />
                       {isUploaded(selectedCollection) ? 'Updating...' : 'Uploading...'}
                     </>

@@ -19,13 +19,8 @@ function FavouriteButton({ className, favourites, favourited, onClick }) {
   const currentStyle = favourited ? favouritedStyle : notFavouritedStyle
 
   return (
-    <Button
-      variant="default"
-      className={'favourite-button ' + className}
-      style={currentStyle}
-      onClick={onClick}
-    >
-      {favourited ? <HeartFill className="mr-2" /> : <Heart className="mr-2" />}
+    <Button variant='default' className={'favourite-button ' + className} style={currentStyle} onClick={onClick}>
+      {favourited ? <HeartFill className='mr-2' /> : <Heart className='mr-2' />}
       Favorite
       {favourites ? ` (${favourites})` : ''}
     </Button>

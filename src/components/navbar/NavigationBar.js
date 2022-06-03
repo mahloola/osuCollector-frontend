@@ -7,15 +7,7 @@ import { useHistory } from 'react-router-dom'
 import { ThemeContext } from 'styled-components'
 import config from '../../config/config'
 import * as api from '../../utils/api'
-import {
-  Button,
-  Form,
-  FormControl,
-  InputGroup,
-  Nav,
-  Navbar,
-  ReactPlaceholder,
-} from '../bootstrap-osu-collector'
+import { Button, Form, FormControl, InputGroup, Nav, Navbar, ReactPlaceholder } from '../bootstrap-osu-collector'
 import '../common/Glow.css'
 import LoginButton from './LoginButton'
 import './NavButton.css'
@@ -68,65 +60,65 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
     process.env.NODE_ENV === 'production' ? (
       <LoginButton />
     ) : (
-      <Button className="ml-2" onClick={otpLogin}>
+      <Button className='ml-2' onClick={otpLogin}>
         {' '}
         Login{' '}
       </Button>
     )
 
   return (
-    <div className="navbar-sticky">
-      <Navbar bg="dark" variant="dark" expand="lg" className="pl-3">
+    <div className='navbar-sticky'>
+      <Navbar bg='dark' variant='dark' expand='lg' className='pl-3'>
         <Large>
-          <LinkContainer to="/">
+          <LinkContainer to='/'>
             <Navbar.Brand>
               osu!<strong>Collector</strong>
             </Navbar.Brand>
           </LinkContainer>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav" className="justify-content-between">
-            <Nav className="me-auto">
-              <LinkContainer to="/recent">
+          <Navbar.Toggle aria-controls='basic-navbar-nav' />
+          <Navbar.Collapse id='basic-navbar-nav' className='justify-content-between'>
+            <Nav className='me-auto'>
+              <LinkContainer to='/recent'>
                 <Nav.Link>Recent</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="/popular?range=alltime">
+              <LinkContainer to='/popular?range=alltime'>
                 <Nav.Link>Popular</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="/users">
+              <LinkContainer to='/users'>
                 <Nav.Link>Users</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="/client">
+              <LinkContainer to='/client'>
                 <Nav.Link>Desktop Client</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="/tournaments">
+              <LinkContainer to='/tournaments'>
                 <Nav.Link>Tournaments</Nav.Link>
               </LinkContainer>
             </Nav>
 
-            <Form onSubmit={searchSubmit} className="ml-3 me-auto">
+            <Form onSubmit={searchSubmit} className='ml-3 me-auto'>
               <InputGroup>
                 <FormControl
                   onChange={(e) => setSearchBarInput(e.target.value)}
-                  type="search"
-                  placeholder="tech, aim, speed"
+                  type='search'
+                  placeholder='tech, aim, speed'
                 />
-                <Button type="submit" variant="primary">
+                <Button type='submit' variant='primary'>
                   Search
                 </Button>
               </InputGroup>
             </Form>
 
             <Nav>
-              <Button className="ml-2" variant="outline-secondary" onClick={toggleTheme}>
+              <Button className='ml-2' variant='outline-secondary' onClick={toggleTheme}>
                 {theme.darkMode ? <LightbulbFill /> : <Moon />}
               </Button>
 
               <Button
-                className="ml-2"
+                className='ml-2'
                 onClick={() => {
                   if (user) {
                     getRemoteCollections()
@@ -136,8 +128,8 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
                   }
                 }}
               >
-                <div className="d-flex align-items-center">
-                  <CloudUpload className="mr-2" />
+                <div className='d-flex align-items-center'>
+                  <CloudUpload className='mr-2' />
                   Upload
                 </div>
               </Button>
@@ -145,50 +137,50 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
               <ReactPlaceholder
                 ready={user !== undefined}
                 showLoadingAnimation
-                type="rect"
-                className="ml-3 mr-0"
+                type='rect'
+                className='ml-3 mr-0'
                 style={{
                   width: '120px',
                   height: 'auto',
                   borderRadius: '30px',
                 }}
               >
-                {user ? <UserBadge className="ml-3" user={user} /> : loginButton}
+                {user ? <UserBadge className='ml-3' user={user} /> : loginButton}
               </ReactPlaceholder>
             </Nav>
           </Navbar.Collapse>
         </Large>
         <Medium>
-          <LinkContainer to="/">
+          <LinkContainer to='/'>
             <Navbar.Brand>
               osu!<strong>Collector</strong>
             </Navbar.Brand>
           </LinkContainer>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav" className="justify-content-between">
-            <Nav className="me-auto">
-              <LinkContainer to="/recent">
+          <Navbar.Toggle aria-controls='basic-navbar-nav' />
+          <Navbar.Collapse id='basic-navbar-nav' className='justify-content-between'>
+            <Nav className='me-auto'>
+              <LinkContainer to='/recent'>
                 <Nav.Link>Recent</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="/popular?range=alltime">
+              <LinkContainer to='/popular?range=alltime'>
                 <Nav.Link>Popular</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="/users">
+              <LinkContainer to='/users'>
                 <Nav.Link>Users</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="/client">
+              <LinkContainer to='/client'>
                 <Nav.Link>Desktop Client</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="/tournaments">
+              <LinkContainer to='/tournaments'>
                 <Nav.Link>Tournaments</Nav.Link>
               </LinkContainer>
 
               <Nav.Link onClick={toggleTheme}>
-                {theme.darkMode ? <LightbulbFill className="mr-2" /> : <Moon className="mr-2" />}
+                {theme.darkMode ? <LightbulbFill className='mr-2' /> : <Moon className='mr-2' />}
                 {theme.darkMode ? 'Light Mode' : 'Dark Mode'}
               </Nav.Link>
 
@@ -198,21 +190,21 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
                   else alert('Please log in!')
                 }}
               >
-                <CloudUpload className="mr-2" />
+                <CloudUpload className='mr-2' />
                 Upload
               </Nav.Link>
 
               {!user && <Nav.Link onClick={otpLogin}>Login</Nav.Link>}
 
-              <Form onSubmit={searchSubmit} className="me-auto my-2">
+              <Form onSubmit={searchSubmit} className='me-auto my-2'>
                 <InputGroup>
                   <FormControl
                     onChange={(e) => setSearchBarInput(e.target.value)}
-                    type="search"
-                    size="sm"
-                    placeholder="tech, aim, speed"
+                    type='search'
+                    size='sm'
+                    placeholder='tech, aim, speed'
                   />
-                  <Button type="submit" size="sm" variant="primary">
+                  <Button type='submit' size='sm' variant='primary'>
                     Search
                   </Button>
                 </InputGroup>

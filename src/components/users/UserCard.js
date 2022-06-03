@@ -23,9 +23,9 @@ const UserCard = ({ user }) => {
     return (
       <LinkContainer to={`/users/${user.id}/favourites`}>
         <Button
-          size="sm"
+          size='sm'
           variant={disabled ? 'outline-secondary' : 'outline-danger'}
-          className="mx-1"
+          className='mx-1'
           {...{ disabled: disabled }}
         >
           Favourites: {user.favourites ? user.favourites.length : 0}
@@ -41,9 +41,9 @@ const UserCard = ({ user }) => {
     return (
       <LinkContainer to={`/users/${user.id}/uploads`}>
         <Button
-          size="sm"
+          size='sm'
           variant={disabled ? 'outline-secondary' : 'outline-primary'}
-          className="mx-1"
+          className='mx-1'
           {...{ disabled: disabled }}
         >
           Uploads: {user.uploads ? user.uploads.length : 0}
@@ -53,28 +53,28 @@ const UserCard = ({ user }) => {
   }
 
   return (
-    <div className="mx-3">
-      <Card $lightbg variant="Primary">
+    <div className='mx-3'>
+      <Card $lightbg variant='Primary'>
         <img
-          className="card-img-top user-cover"
+          className='card-img-top user-cover'
           src={user.osuweb.cover.url}
           onError={(ev) => useFallbackImg(ev, usercoverfallback)}
         />
-        <div className="d-flex justify-content-center">
-          <img src={user.osuweb.avatar_url} className="user-avatar"></img>
+        <div className='d-flex justify-content-center'>
+          <img src={user.osuweb.avatar_url} className='user-avatar'></img>
         </div>
-        <CardBody $lightbg className="text-center">
-          <div className="d-flex justify-content-center">
+        <CardBody $lightbg className='text-center'>
+          <div className='d-flex justify-content-center'>
             <Username href={`https://osu.ppy.sh/users/${user.id}`}>{user.osuweb.username}</Username>
-            <div className="d-flex flex-column ml-3 pt-1">
-              <h5 className="m-0 p-0 text-left"> #{user.osuweb.statistics.global_rank} </h5>
-              <div className="d-flex" style={{ paddingLeft: '2px', marginTop: '-1px' }}>
-                <small className="text-muted mr-2">#{user.osuweb.statistics.country_rank}</small>
+            <div className='d-flex flex-column ml-3 pt-1'>
+              <h5 className='m-0 p-0 text-left'> #{user.osuweb.statistics.global_rank} </h5>
+              <div className='d-flex' style={{ paddingLeft: '2px', marginTop: '-1px' }}>
+                <small className='text-muted mr-2'>#{user.osuweb.statistics.country_rank}</small>
                 <Flag style={{ width: '18px' }} />
               </div>
             </div>
           </div>
-          <div className="d-flex justify-content-center mt-2">
+          <div className='d-flex justify-content-center mt-2'>
             {userFavouritesButton(user)}
             {userUploadsButton(user)}
           </div>

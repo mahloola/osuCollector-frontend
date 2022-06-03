@@ -8,7 +8,7 @@ const BarGraph = ({ chartEvents, data, enableInteractivity = false, height }) =>
   return (
     <Chart
       height={height}
-      chartType="ColumnChart"
+      chartType='ColumnChart'
       loader={<div style={{ width: '357px', height: height }} />}
       data={data}
       options={{

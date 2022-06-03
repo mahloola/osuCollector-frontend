@@ -5,7 +5,7 @@ import { useWindowSize } from 'react-use'
 function Success() {
   const { width, height } = useWindowSize()
   return (
-    <Container className="pt-4">
+    <Container className='pt-4'>
       <div>
         <div
           style={{
@@ -15,12 +15,12 @@ function Success() {
             height: height * 0.8,
           }}
         >
-          <Container className="text-center">
+          <Container className='text-center'>
             <Row>
               <h1>Success!</h1>
             </Row>
             <Row>
-              <a href="/client#download">Click here to go to the download page</a>
+              <a href='/client#download'>Click here to go to the download page</a>
             </Row>
           </Container>
         </div>

@@ -34,7 +34,7 @@ function EditTournament() {
   }
   return (
     <TournamentForm
-      title="Edit Tournament"
+      title='Edit Tournament'
       onSubmit={editTournament}
       submitLoading={submitLoading}
       saveDraft={false}

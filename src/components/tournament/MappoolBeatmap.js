@@ -52,39 +52,32 @@ function MappoolBeatmap({ beatmap, mod, modIndex, playing, onPlayClick, onAudioE
   return (
     <div className={className}>
       <Card $lightbg onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-        <div className="d-flex align-items-center">
+        <div className='d-flex align-items-center'>
           {/* content */}
-          <S.BeatmapCover
-            className="card-img-top"
-            src={beatmapset?.covers.card || ''}
-            onClick={onPlayClick}
-          >
-            <div className="d-flex justify-content-center align-items-center">
+          <S.BeatmapCover className='card-img-top' src={beatmapset?.covers.card || ''} onClick={onPlayClick}>
+            <div className='d-flex justify-content-center align-items-center'>
               {playing ? (
-                <StopFill style={{ color: 'white' }} className="svg-shadow" size={66} />
+                <StopFill style={{ color: 'white' }} className='svg-shadow' size={66} />
               ) : (
-                <PlayFill style={{ color: 'white' }} className="svg-shadow" size={66} />
+                <PlayFill style={{ color: 'white' }} className='svg-shadow' size={66} />
               )}
             </div>
           </S.BeatmapCover>
-          <S.ModBadge mod={mod} className="mx-3">
-            <div
-              className="d-flex align-items-center justify-content-center"
-              style={{ height: 48 }}
-            >
-              <div className="text-center" style={{ marginTop: 1 }}>
+          <S.ModBadge mod={mod} className='mx-3'>
+            <div className='d-flex align-items-center justify-content-center' style={{ height: 48 }}>
+              <div className='text-center' style={{ marginTop: 1 }}>
                 {mod + modIndex}
               </div>
             </div>
           </S.ModBadge>
-          <div className="flex-fill" style={{ minWidth: 0 }}>
+          <div className='flex-fill' style={{ minWidth: 0 }}>
             {typeof beatmap === 'object' ? (
               <>
                 <S.Truncate hovered={hovered}>
                   <b>{beatmapString}</b>
                 </S.Truncate>
-                <div className="d-flex mt-1" style={{ fontSize: 14 }}>
-                  <div className="mr-3 text-muted">
+                <div className='d-flex mt-1' style={{ fontSize: 14 }}>
+                  <div className='mr-3 text-muted'>
                     {dt ? (
                       <b>{secondsToHHMMSS(beatmap.hit_length / (dt ? 1.5 : 1))}</b>
                     ) : (
@@ -92,106 +85,77 @@ function MappoolBeatmap({ beatmap, mod, modIndex, playing, onPlayClick, onAudioE
                     )}
                   </div>
                   <Breakpoints.XLUp>
-                    <div className="mr-3">
-                      <S.BackgroundSpan
-                        color={starToColor(beatmap.difficulty_rating) + starColorAlpha}
-                      >
-                        {dt || hr ? (
-                          <b>&gt;{beatmap.difficulty_rating} ★</b>
-                        ) : (
-                          beatmap.difficulty_rating + ' ★'
-                        )}
+                    <div className='mr-3'>
+                      <S.BackgroundSpan color={starToColor(beatmap.difficulty_rating) + starColorAlpha}>
+                        {dt || hr ? <b>&gt;{beatmap.difficulty_rating} ★</b> : beatmap.difficulty_rating + ' ★'}
                       </S.BackgroundSpan>
                     </div>
-                    <div className="mr-4">
-                      {dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}
-                    </div>
-                    <div className="mr-4">
+                    <div className='mr-4'>{dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}</div>
+                    <div className='mr-4'>
                       <S.BackgroundSpan color={'#4fc0ff2a'}>
                         {hr ? <b>CS {beatmap.cs}</b> : 'CS ' + beatmap.cs}
                       </S.BackgroundSpan>
                     </div>
-                    <div className="mr-4">
+                    <div className='mr-4'>
                       <S.BackgroundSpan color={'#ff4e6f2a'}>
                         {dt || hr ? <b>AR {beatmap.ar}</b> : 'AR ' + beatmap.ar}
                       </S.BackgroundSpan>
                     </div>
-                    <div className="mr-4">
+                    <div className='mr-4'>
                       <S.BackgroundSpan color={'#6eff792a'}>
                         {dt || hr ? <b>OD {beatmap.accuracy}</b> : 'AR ' + beatmap.accuracy}
                       </S.BackgroundSpan>{' '}
                     </div>
                   </Breakpoints.XLUp>
                   <Breakpoints.LG>
-                    <div className="mr-2">
-                      <S.BackgroundSpan
-                        color={starToColor(beatmap.difficulty_rating) + starColorAlpha}
-                      >
-                        {dt || hr ? (
-                          <b>&gt;{beatmap.difficulty_rating} ★</b>
-                        ) : (
-                          beatmap.difficulty_rating + ' ★'
-                        )}
+                    <div className='mr-2'>
+                      <S.BackgroundSpan color={starToColor(beatmap.difficulty_rating) + starColorAlpha}>
+                        {dt || hr ? <b>&gt;{beatmap.difficulty_rating} ★</b> : beatmap.difficulty_rating + ' ★'}
                       </S.BackgroundSpan>
                     </div>
-                    <div className="mr-2">
-                      {dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}
-                    </div>
-                    <div className="mr-2">
+                    <div className='mr-2'>{dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}</div>
+                    <div className='mr-2'>
                       <S.BackgroundSpan color={'#4fc0ff2a'}>
                         {hr ? <b>CS {beatmap.cs}</b> : 'CS ' + beatmap.cs}
                       </S.BackgroundSpan>
                     </div>
-                    <div className="mr-2">
+                    <div className='mr-2'>
                       <S.BackgroundSpan color={'#ff4e6f2a'}>
                         {dt || hr ? <b>AR {beatmap.ar}</b> : 'AR ' + beatmap.ar}
                       </S.BackgroundSpan>
                     </div>
-                    <div className="mr-2">
+                    <div className='mr-2'>
                       <S.BackgroundSpan color={'#6eff792a'}>
                         {dt || hr ? <b>OD {beatmap.accuracy}</b> : 'AR ' + beatmap.accuracy}
                       </S.BackgroundSpan>{' '}
                     </div>
                   </Breakpoints.LG>
                   <Breakpoints.MD>
-                    <div className="mr-2">
-                      <S.BackgroundSpan
-                        color={starToColor(beatmap.difficulty_rating) + starColorAlpha}
-                      >
-                        {dt || hr ? (
-                          <b>&gt;{beatmap.difficulty_rating} ★</b>
-                        ) : (
-                          beatmap.difficulty_rating + ' ★'
-                        )}
+                    <div className='mr-2'>
+                      <S.BackgroundSpan color={starToColor(beatmap.difficulty_rating) + starColorAlpha}>
+                        {dt || hr ? <b>&gt;{beatmap.difficulty_rating} ★</b> : beatmap.difficulty_rating + ' ★'}
                       </S.BackgroundSpan>
                     </div>
-                    <div className="mr-2">
-                      {dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}
-                    </div>
+                    <div className='mr-2'>{dt ? <b>{beatmap.bpm} bpm</b> : beatmap.bpm + ' bpm'}</div>
                   </Breakpoints.MD>
                 </div>
               </>
             ) : (
-              <span className="text-muted">Beatmap being processed...</span>
+              <span className='text-muted'>Beatmap being processed...</span>
             )}
           </div>
           {hovered && (
-            <div className="d-flex pr-2">
+            <div className='d-flex pr-2'>
               <Button
                 href={beatmap.url || `https://osu.ppy.sh/b/${beatmap}`}
-                target="blank"
-                variant="outline-secondary"
-                className="ms-auto px-2 mr-1"
-                size="sm"
+                target='blank'
+                variant='outline-secondary'
+                className='ms-auto px-2 mr-1'
+                size='sm'
               >
                 <small> Website </small>
               </Button>
-              <Button
-                variant="outline-primary"
-                className="mx-1 px-2"
-                size="sm"
-                href={`osu://b/${beatmap.id}`}
-              >
+              <Button variant='outline-primary' className='mx-1 px-2' size='sm' href={`osu://b/${beatmap.id}`}>
                 <small> Direct </small>
               </Button>
             </div>

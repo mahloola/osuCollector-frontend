@@ -32,19 +32,19 @@ function Popular({ user, setUser }) {
   const loadMore = () => setCurrentPage(currentPage + 1)
 
   return (
-    <Container className="pt-4">
-      <Card className="shadow-lg">
+    <Container className='pt-4'>
+      <Card className='shadow-lg'>
         <Card.Body>
-          <div className="d-flex justify-content-left align-items-center p-2 pb-0">
-            <h2 className="mt-2 ml-2 mr-5">
-              <i className="fas fa-fire mr-3" style={{ color: 'orange' }} />
+          <div className='d-flex justify-content-left align-items-center p-2 pb-0'>
+            <h2 className='mt-2 ml-2 mr-5'>
+              <i className='fas fa-fire mr-3' style={{ color: 'orange' }} />
               Popular Collections
             </h2>
             <div>
               {dateRanges.map((opt, i) => (
                 <Button
                   key={i}
-                  className="mx-1"
+                  className='mx-1'
                   disabled={range === opt.range}
                   onClick={() => {
                     history.push(`/popular?range=${opt.range}`)
@@ -59,19 +59,14 @@ function Popular({ user, setUser }) {
             </div>
           </div>
           {popularCollectionsError ? (
-            <Alert variant="danger">
-              <p>
-                Sorry, there was an error retrieving collections. Please try refreshing the page.
-                Error details:
-              </p>
+            <Alert variant='danger'>
+              <p>Sorry, there was an error retrieving collections. Please try refreshing the page. Error details:</p>
               <p>{popularCollectionsError.toString()}</p>
             </Alert>
           ) : (
             <CollectionList
               collections={
-                popularIsValidating && popularCollections.length === 0
-                  ? new Array(18).fill(null)
-                  : popularCollections
+                popularIsValidating && popularCollections.length === 0 ? new Array(18).fill(null) : popularCollections
               }
               setCollections={setPopularCollections}
               hasMore={hasMore}

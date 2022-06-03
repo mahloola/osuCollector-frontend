@@ -9,7 +9,7 @@ const ApproachRateTableHTEZ = [
   [7, -0.33],
   [8, 0.33],
   [9, 1],
-  [10, 1.67]
+  [10, 1.67],
 ]
 const ApproachRateTableHT = [
   [0, -5],

@@ -6,11 +6,7 @@ import _ReactPlaceholder from 'react-placeholder/lib'
 import { useContext } from 'react'
 
 const backgroundColor = (props) =>
-  props.$lightbg2
-    ? props.theme.primary25
-    : props.$lightbg
-    ? props.theme.primary15
-    : props.theme.primary8
+  props.$lightbg2 ? props.theme.primary25 : props.$lightbg ? props.theme.primary15 : props.theme.primary8
 
 const backgroundAndBorderColor = (props) =>
   props.theme.darkMode &&
