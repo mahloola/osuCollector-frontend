@@ -15,7 +15,7 @@ const getRequestWithQueryParameters = async (route, params = undefined, cancelCa
   return res.data
 }
 
-function useInfinite(url, query, mappingFunction = (x) => x) {
+function useInfinite(url, query, mappingFunction = (x) => x, fetchCondition = true) {
   const {
     data: pages,
     error,
@@ -24,6 +24,7 @@ function useInfinite(url, query, mappingFunction = (x) => x) {
     setSize: setCurrentPage,
   } = useSWRInfinite(
     (pageIndex, previousPageData) => {
+      if (!fetchCondition) return null
       let _query = { ...query }
       if (previousPageData?.nextPageCursor) {
         _query.cursor = previousPageData.nextPageCursor
@@ -64,11 +65,12 @@ export async function getRecentCollections(cursor = undefined, perPage = undefin
     cancelCallback
   )
 }
-export function useRecentCollections({ perPage = 9 }) {
+export function useRecentCollections({ perPage = 9, fetchCondition }) {
   const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
     '/api/collections/recent',
     { perPage },
-    (data) => data.collections
+    (data) => data.collections,
+    fetchCondition
   )
   return {
     recentCollections: entities,
@@ -768,6 +770,22 @@ export async function getRecentTournaments(cursor = undefined, perPage = undefin
     cancelCallback
   )
 }
+export function useRecentTournaments({ perPage = 9, fetchCondition }) {
+  const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
+    '/api/tournaments/recent',
+    { perPage },
+    (data) => data.tournaments,
+    fetchCondition
+  )
+  return {
+    recentTournaments: entities,
+    recentTournamentsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  }
+}
 
 export async function searchTournaments(
   queryString,
@@ -788,6 +806,33 @@ export async function searchTournaments(
     },
     cancelCallback
   )
+}
+export function useSearchTournaments({
+  search,
+  perPage = 9,
+  sortBy = undefined,
+  orderBy = undefined,
+  fetchCondition = true,
+}) {
+  const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
+    '/api/tournaments/search',
+    {
+      search,
+      perPage,
+      sortBy,
+      orderBy,
+    },
+    (data) => data.tournaments,
+    fetchCondition
+  )
+  return {
+    searchTournaments: entities,
+    searchTournamentsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  }
 }
 
 export async function getTournament(id, cancelCallback = undefined) {

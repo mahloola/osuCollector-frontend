@@ -10,7 +10,10 @@ export default function TournamentCard({ tournament }) {
   const theme = useContext(ThemeContext)
   const [hovered, setHovered] = useState(false)
 
-  const relativeDate = moment.unix(tournament.dateUploaded._seconds).fromNow()
+  const dateUploaded = tournament.dateUploaded._seconds
+    ? moment.unix(tournament.dateUploaded._seconds)
+    : moment(tournament.dateUploaded)
+  const relativeDate = dateUploaded.fromNow()
 
   return (
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>

@@ -6,7 +6,7 @@ export default function TournamentList({ tournaments, hasMore, loadMore }) {
   return (
     <Container className='p-2'>
       <InfiniteScroll
-        dataLength={tournaments.length}
+        dataLength={tournaments?.length || 0}
         next={loadMore}
         hasMore={hasMore}
         loader={
@@ -21,7 +21,7 @@ export default function TournamentList({ tournaments, hasMore, loadMore }) {
         }
         className='row'
       >
-        {tournaments.map((tournament, i) => (
+        {tournaments?.map((tournament, i) => (
           <Col lg={6} xl={6} className='p-0 my-3' key={i}>
             <ReactPlaceholder
               ready={tournament !== null}
