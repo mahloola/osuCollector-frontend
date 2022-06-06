@@ -770,7 +770,7 @@ export async function getRecentTournaments(cursor = undefined, perPage = undefin
     cancelCallback
   )
 }
-export function useRecentTournaments({ perPage = 9, fetchCondition }) {
+export function useRecentTournaments({ perPage = 10, fetchCondition }) {
   const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
     '/api/tournaments/recent',
     { perPage },
@@ -809,7 +809,7 @@ export async function searchTournaments(
 }
 export function useSearchTournaments({
   search,
-  perPage = 9,
+  perPage = 10,
   sortBy = undefined,
   orderBy = undefined,
   fetchCondition = true,
