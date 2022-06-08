@@ -202,13 +202,19 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
     if (!checkUserPermissions()) {
       return
     }
-    const error = await ipcRenderer.invoke('start-download', collection)
-    if (error) {
-      setMessageModalText(error)
+    try {
+      const resultMessage = await ipcRenderer.invoke('start-download', collection)
+      if (resultMessage) {
+        setMessageModalText(resultMessage)
+        setShowMessageModal(true)
+      } else {
+        setShowDownloadTroubleshootText(true)
+        setDownloadsModalIsOpen(true)
+      }
+    } catch (error) {
+      console.error(error)
+      setMessageModalText(error.message)
       setShowMessageModal(true)
-    } else {
-      setShowDownloadTroubleshootText(true)
-      setDownloadsModalIsOpen(true)
     }
   }
 
