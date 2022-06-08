@@ -1,3 +1,4 @@
 [submodule "electron"]
 	path = electron
 	url = https://github.com/FunOrange/osu-collector-desktop-electron-submodule.git
+	branch = linux
