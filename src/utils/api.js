@@ -65,7 +65,7 @@ export async function getRecentCollections(cursor = undefined, perPage = undefin
     cancelCallback
   )
 }
-export function useRecentCollections({ perPage = 9, fetchCondition }) {
+export function useRecentCollections({ perPage = 9, fetchCondition = true }) {
   const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
     '/api/collections/recent',
     { perPage },
@@ -332,14 +332,22 @@ export async function getOwnUser() {
   return data.loggedIn ? data.user : null
 }
 
-// Returns an array of CollectionData objects: https://osucollector.com/docs.html#responses-getUserFavourites-200-schema
 export async function getUserFavourites(userId, cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/users/${userId}/favourites`, {}, cancelCallback)
 }
 
-// Returns an array of CollectionData objects
 export async function getUserUploads(userId, cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/users/${userId}/uploads`, {}, cancelCallback)
+}
+export function useUserUploads(userId) {
+  const { data, error, mutate } = useSWRImmutable(userId ? `/api/users/${userId}/uploads` : null, axiosFetcher)
+  if (error) console.error(error)
+  return {
+    collections: data?.collections,
+    tournaments: data?.tournaments,
+    tournamentError: error,
+    mutateUploads: mutate,
+  }
 }
 
 export async function getMetadata(cancelCallback = undefined) {

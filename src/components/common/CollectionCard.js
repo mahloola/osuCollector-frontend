@@ -81,13 +81,13 @@ function CollectionCard({ user, collection, favouriteButtonClicked }) {
                 <h5 className='mb-0'>
                   <i
                     className={`fas fa-heart mr-2 ${
-                      !user
+                      !user || !favouriteButtonClicked
                         ? 'grey-heart-disabled'
                         : collection.favouritedByUser
                         ? 'red-heart-color'
                         : 'grey-heart-color'
                     }`}
-                    onClick={user && heartClicked}
+                    onClick={user && favouriteButtonClicked && heartClicked}
                   />
                   <small> {collection.favourites} </small>
                 </h5>

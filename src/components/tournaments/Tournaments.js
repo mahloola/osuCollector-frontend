@@ -100,6 +100,7 @@ function Tournaments() {
               tournaments={usingSearch ? searchTournaments : recentTournaments}
               hasMore={usingSearch ? searchHasMore : recentHasMore}
               loadMore={loadMore}
+              noEndMessage={false}
             />
           )}
         </Card.Body>

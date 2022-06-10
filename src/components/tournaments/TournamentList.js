@@ -2,7 +2,7 @@ import { Col, Container, ReactPlaceholder, Spinner } from '../bootstrap-osu-coll
 import InfiniteScroll from 'react-infinite-scroll-component'
 import TournamentCard from './TournamentCard'
 
-export default function TournamentList({ tournaments, hasMore, loadMore }) {
+export default function TournamentList({ tournaments, hasMore, loadMore, noEndMessage = false }) {
   return (
     <Container className='p-2'>
       <InfiniteScroll
@@ -15,9 +15,11 @@ export default function TournamentList({ tournaments, hasMore, loadMore }) {
           </div>
         }
         endMessage={
-          <p className='text-muted' style={{ textAlign: 'center' }}>
-            <b>Nothing more to show.</b>
-          </p>
+          !noEndMessage && (
+            <p className='text-muted' style={{ textAlign: 'center' }}>
+              <b>Nothing more to show.</b>
+            </p>
+          )
         }
         className='row'
       >
