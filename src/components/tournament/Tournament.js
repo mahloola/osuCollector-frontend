@@ -2,11 +2,11 @@
 /* eslint-disable no-constant-condition */
 import UserChip from 'components/common/UserChip'
 import { useEffect, useState } from 'react'
-import { Globe, PencilSquare, TrashFill } from 'react-bootstrap-icons'
+import { Download, Globe, PencilSquare, TrashFill } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { Breakpoints, useFallbackImg, userOwnsTournament } from 'utils/misc'
+import { Breakpoints, getHostname, useFallbackImg, userOwnsTournament } from 'utils/misc'
 import * as api from '../../utils/api'
 import {
   Alert,
@@ -34,7 +34,7 @@ function Tournament({ user }) {
 
   // modals
   const [messageModalText, setMessageModalText] = useState('')
-  // message modal
+  const [showDownloadLinkConfirmation, setShowDownloadLinkConfirmation] = useState(false)
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
@@ -166,12 +166,25 @@ function Tournament({ user }) {
                     <ReactPlaceholder ready={!loading} showLoadingAnimation className='mt-4 pr-5'>
                       {tournament && (
                         <>
-                          <div className='d-flex align-items-center mb-4'>
+                          <div className='d-flex align-items-center mb-2'>
                             <Globe />
                             <span className='mx-2'> Info: </span>
                             <a href={tournament?.link}>
                               <small>{tournament?.link}</small>
                             </a>
+                          </div>
+                          <div className='d-flex align-items-center mb-4'>
+                            <Download />
+                            <span className='mx-2'> Mappool download: </span>
+                            {tournament?.downloadUrl ? (
+                              <a href='#' onClick={() => setShowDownloadLinkConfirmation(true)}>
+                                <small>{tournament?.downloadUrl}</small>
+                              </a>
+                            ) : (
+                              <small className='text-muted' style={{ marginBottom: '1px' }}>
+                                no download URL provided
+                              </small>
+                            )}
                           </div>
                           <p className='pr-4' style={{ whiteSpace: 'pre-line' }}>
                             {tournament?.description}
@@ -366,6 +379,24 @@ function Tournament({ user }) {
         <Modal.Body className='px-4 py-5'>{messageModalText}</Modal.Body>
         <Modal.Footer>
           <Button onClick={() => setMessageModalText('')}>Okay</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={!!showDownloadLinkConfirmation}
+        onHide={() => setShowDownloadLinkConfirmation(false)}
+        centered={true}
+      >
+        <Modal.Body className='px-4 py-5 d-flex flex-column align-items-center'>
+          <div>You are navigating away from osucollector.com to:</div>
+          <h3>{getHostname(tournament?.downloadUrl)}</h3>
+          <div>Only proceed if you trust this link.</div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='secondary' onClick={() => setShowDownloadLinkConfirmation(false)}>
+            Cancel
+          </Button>
+          <Button onClick={() => window.open(tournament?.downloadUrl)}>yeah sure whatever</Button>
         </Modal.Footer>
       </Modal>
     </>
