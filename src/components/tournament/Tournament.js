@@ -2,7 +2,7 @@
 /* eslint-disable no-constant-condition */
 import UserChip from 'components/common/UserChip'
 import { useEffect, useState } from 'react'
-import { Download, Globe, PencilSquare, TrashFill } from 'react-bootstrap-icons'
+import { Download, Globe, Heart, PencilSquare, TrashFill } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -21,10 +21,11 @@ import {
   Spinner,
   Tab,
 } from '../bootstrap-osu-collector'
+import FavouriteButton from '../common/FavouriteButton'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import MappoolRound from './MappoolRound'
 
-function Tournament({ user }) {
+function Tournament({ user, setUser }) {
   const history = useHistory()
   // @ts-ignore
   let { id } = useParams()
@@ -93,6 +94,25 @@ function Tournament({ user }) {
       window.open(`osucollector://tournaments/${tournament.id}`)
     } else {
       history.push('/client')
+    }
+  }
+
+  const favouriteClicked = () => {
+    if (!user) return
+    if (user.favouriteTournaments?.includes(id)) {
+      // remove from favourites
+      setUser((prev) => ({
+        ...prev,
+        favouriteTournaments: user.favouriteTournaments?.filter((tournamentId) => tournamentId !== id) ?? [],
+      }))
+      api.favouriteTournament(id, false)
+    } else {
+      // add to favourites
+      setUser((prev) => ({
+        ...prev,
+        favouriteTournaments: [...(prev.favouriteTournaments ?? []), id],
+      }))
+      api.favouriteTournament(id, true)
     }
   }
 
@@ -192,6 +212,12 @@ function Tournament({ user }) {
                         </>
                       )}
                     </ReactPlaceholder>
+                    <FavouriteButton
+                      className='mr-1'
+                      favourites={0}
+                      favourited={user?.favouriteTournaments?.includes(id)}
+                      onClick={favouriteClicked}
+                    />
                     <div className='d-flex flex-row my-4' style={{ gap: '5px' }}>
                       <Button className='mr-1' onClick={actionButtonClicked}>
                         Download all maps

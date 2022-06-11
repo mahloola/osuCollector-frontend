@@ -162,7 +162,7 @@ function App() {
                   <CreateTournament />
                 </Route>
                 <Route exact path='/tournaments/:id'>
-                  <Tournament user={user} />
+                  <Tournament user={user} setUser={setUser} />
                 </Route>
                 <Route path='/tournaments/:id/edit'>
                   <EditTournament />

@@ -885,3 +885,16 @@ export async function updateNpCollectionId(collectionId) {
     console.error(`${route} responded with ${error.response.status}: ${error.response.data}`)
   }
 }
+
+export async function favouriteTournament(tournamentId, favourited) {
+  const route = '/api/users/me/favouriteTournament'
+  try {
+    const res = await axios.patch(config.get('API_HOST') + route, {
+      tournamentId: Number(tournamentId),
+      favourited,
+    })
+    return res.data
+  } catch (error) {
+    console.error(`${route} responded with ${error.response.status}: ${error.response.data}`)
+  }
+}
