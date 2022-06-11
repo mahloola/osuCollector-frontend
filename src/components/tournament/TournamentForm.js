@@ -2,7 +2,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { Alert, Container, Spinner } from 'react-bootstrap'
 import styled, { css, ThemeContext } from 'styled-components'
-import { parseMappool } from 'utils/misc'
+import { parseMappool, isValidHttpUrl } from 'utils/misc'
 import { Button, Card, Form, FloatingLabel, FormControl, InputGroup } from '../bootstrap-osu-collector'
 import MappoolEditor from '../tournaments/MappoolEditor'
 import OrganizerIcon from '../tournaments/create/OrganizerIcon'
@@ -426,6 +426,7 @@ function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament 
   const [tournamentNameError, setTournamentNameError] = useState('')
   const [tournamentURLError, setTournamentURLError] = useState('')
   const [bannerURLError, setBannerURLError] = useState('')
+  const [downloadUrlError, setDownloadURLError] = useState('')
   const [organizerError, setOrganizerError] = useState('')
   const [mappoolError, setMappoolError] = useState('')
   const [submitButtonClicked, setSubmitButtonClicked] = useState(false)
@@ -499,7 +500,8 @@ function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament 
     const tournamentName = event.currentTarget[0].value.trim()
     const tournamentURL = event.currentTarget[1].value.trim()
     const bannerURL = event.currentTarget[2].value.trim()
-    const description = event.currentTarget[5].value.trim()
+    const downloadURL = event.currentTarget[3].value.trim()
+    const description = event.currentTarget[6].value.trim()
 
     let error = false
     setTournamentNameError('')
@@ -515,11 +517,18 @@ function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament 
     if (!tournamentURL) {
       setTournamentURLError('Required')
       error = true
+    } else if (!/^https:\/\/(\w+\.)?ppy.sh\//.test(tournamentURL)) {
+      setTournamentURLError('Only osu.ppy.sh forum links are accepted')
     }
 
-    if (bannerURL !== '' && !/^https:\/\/(\w+\.)?ppy.sh\//.test(bannerURL)) {
+    if (downloadURL && !isValidHttpUrl(downloadURL)) {
+      setDownloadURLError('Invalid URL')
+      error = true
+    }
+
+    if (bannerURL !== '' && !/^https:\/\/i\.ppy.sh\//.test(bannerURL)) {
       setBannerURLError(
-        'For security reasons, only URLs originating from https://i.ppy.sh are accepted. Please make sure the image comes from an osu! forum post.'
+        'For security reasons, only URLs originating from https://i.ppy.sh are accepted. Please use the "Copy image address" method described below.'
       )
       error = true
     }
@@ -587,9 +596,17 @@ function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament 
             <FormControl isInvalid={bannerURLError} />
             <Form.Control.Feedback type='invalid'>{bannerURLError}</Form.Control.Feedback>
             <Form.Text muted>
-              You can get the banner URL by going to the tournament page, right clicking the banner image, and clicking
-              &quot;Copy image address&quot;
+              You can get the banner URL by going to the tournament forum page, right clicking the banner image, and
+              clicking &quot;Copy image address&quot;
             </Form.Text>
+          </Form.Group>
+
+          <Form.Group className='mb-3'>
+            <Form.Label>
+              Mappool Download URL <small className='ml-2 text-muted'>Optional</small>
+            </Form.Label>
+            <FormControl isInvalid={downloadUrlError} />
+            <Form.Control.Feedback type='invalid'>{downloadUrlError}</Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className='mb-3'>
