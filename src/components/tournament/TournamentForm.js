@@ -551,6 +551,7 @@ function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament 
       description: description,
       organizers: organizers,
       banner: bannerURL,
+      downloadUrl: downloadURL,
       rounds: rounds,
     }
     console.log('createTournamentDto', createTournamentDto)
