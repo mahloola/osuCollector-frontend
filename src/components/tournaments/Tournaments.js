@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom'
  * @property {string} search
  */
 
-function Tournaments() {
+function Tournaments({ user, setUser }) {
   const query = useQuery()
   const usingSearch = !!query.get('search')
   const history = useHistory()
@@ -101,6 +101,8 @@ function Tournaments() {
               hasMore={usingSearch ? searchHasMore : recentHasMore}
               loadMore={loadMore}
               noEndMessage={false}
+              user={user}
+              setUser={setUser}
             />
           )}
         </Card.Body>

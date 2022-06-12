@@ -99,20 +99,20 @@ function Tournament({ user, setUser }) {
 
   const favouriteClicked = () => {
     if (!user) return
-    if (user.favouriteTournaments?.includes(id)) {
+    if (user.favouriteTournaments?.includes(Number(id))) {
       // remove from favourites
       setUser((prev) => ({
         ...prev,
-        favouriteTournaments: user.favouriteTournaments?.filter((tournamentId) => tournamentId !== id) ?? [],
+        favouriteTournaments: user.favouriteTournaments?.filter((tournamentId) => tournamentId !== Number(id)) ?? [],
       }))
-      api.favouriteTournament(id, false)
+      api.favouriteTournament(Number(id), false)
     } else {
       // add to favourites
       setUser((prev) => ({
         ...prev,
-        favouriteTournaments: [...(prev.favouriteTournaments ?? []), id],
+        favouriteTournaments: [...(prev.favouriteTournaments ?? []), Number(id)],
       }))
-      api.favouriteTournament(id, true)
+      api.favouriteTournament(Number(id), true)
     }
   }
 
@@ -215,7 +215,7 @@ function Tournament({ user, setUser }) {
                     <FavouriteButton
                       className='mr-1'
                       favourites={0}
-                      favourited={user?.favouriteTournaments?.includes(id)}
+                      favourited={user?.favouriteTournaments?.includes(Number(id))}
                       onClick={favouriteClicked}
                     />
                     <div className='d-flex flex-row my-4' style={{ gap: '5px' }}>

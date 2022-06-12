@@ -156,7 +156,7 @@ function App() {
                   <DesktopClient user={user} setUser={setUser} />
                 </Route>
                 <Route exact path='/tournaments'>
-                  <Tournaments />
+                  <Tournaments user={user} setUser={setUser} />
                 </Route>
                 <Route exact path='/tournaments/create'>
                   <CreateTournament />
