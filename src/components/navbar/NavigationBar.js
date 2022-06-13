@@ -75,7 +75,7 @@ function NavigationBar({
   }
 
   const getRemoteCollections = async () => {
-    const collections = await api.getUserUploads(user.id)
+    const { collections } = await api.getUserUploads(user.id)
     setRemoteCollections(collections)
   }
 

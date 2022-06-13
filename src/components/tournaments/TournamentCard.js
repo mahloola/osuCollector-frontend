@@ -5,12 +5,35 @@ import moment from 'moment'
 import { useFallbackImg } from 'utils/misc'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import { ThemeContext } from 'styled-components'
+import * as api from '../../utils/api'
 
-export default function TournamentCard({ tournament }) {
+export default function TournamentCard({ user, setUser, tournament }) {
   const theme = useContext(ThemeContext)
   const [hovered, setHovered] = useState(false)
 
-  const relativeDate = moment.unix(tournament.dateUploaded._seconds).fromNow()
+  const dateUploaded = tournament.dateUploaded._seconds
+    ? moment.unix(tournament.dateUploaded._seconds)
+    : moment(tournament.dateUploaded)
+  const relativeDate = dateUploaded.fromNow()
+
+  const favouriteClicked = () => {
+    if (!user) return
+    if (user.favouriteTournaments?.includes(tournament.id)) {
+      // remove from favourites
+      setUser((prev) => ({
+        ...prev,
+        favouriteTournaments: user.favouriteTournaments?.filter((tournamentId) => tournamentId !== tournament.id) ?? [],
+      }))
+      api.favouriteTournament(tournament.id, false)
+    } else {
+      // add to favourites
+      setUser((prev) => ({
+        ...prev,
+        favouriteTournaments: [...(prev.favouriteTournaments ?? []), tournament.id],
+      }))
+      api.favouriteTournament(tournament.id, true)
+    }
+  }
 
   return (
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
@@ -27,7 +50,21 @@ export default function TournamentCard({ tournament }) {
         </LinkContainer>
         <ListGroup className='list-group-flush'>
           <ListGroupItem $lightbg>
-            <h4 className={`${theme.darkMode && 'img-overlay-text'} mt-1 mb-1`}> {tournament.name} </h4>
+            <div className='d-flex justify-content-between align-items-center'>
+              <h4 className={`${theme.darkMode && 'img-overlay-text'} mt-1 mb-1`}> {tournament.name} </h4>
+              <h5 className='mb-0'>
+                <i
+                  className={`fas fa-heart ${
+                    !user
+                      ? 'grey-heart-disabled'
+                      : user.favouriteTournaments?.includes(tournament?.id)
+                      ? 'red-heart-color'
+                      : 'grey-heart-color'
+                  }`}
+                  onClick={favouriteClicked}
+                />
+              </h5>
+            </div>
             <div className='d-flex justify-content-between align-items-center'>
               <div className='d-flex justify-content-start align-items-center my-1'>
                 <Image

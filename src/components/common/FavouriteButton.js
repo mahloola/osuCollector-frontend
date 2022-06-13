@@ -2,29 +2,39 @@
 import { Button } from '../bootstrap-osu-collector'
 import { Heart, HeartFill } from 'react-bootstrap-icons'
 import './FavouriteButton.css'
-import { useContext } from 'react'
-import { ThemeContext } from 'styled-components'
+import styled, { css } from 'styled-components'
 
 function FavouriteButton({ className, favourites, favourited, onClick }) {
-  const theme = useContext(ThemeContext)
-
-  const notFavouritedStyle = {
-    color: 'white',
-    background: theme.darkMode ? '#555' : '#AAB8C2',
-  }
-  const favouritedStyle = {
-    color: 'white',
-    background: '#FF66AB',
-  }
-  const currentStyle = favourited ? favouritedStyle : notFavouritedStyle
-
   return (
-    <Button variant='default' className={'favourite-button ' + className} style={currentStyle} onClick={onClick}>
+    <S.Button variant='default' className={'favourite-button ' + className} onClick={onClick} favourited={favourited}>
       {favourited ? <HeartFill className='mr-2' /> : <Heart className='mr-2' />}
-      Favorite
+      {favourited ? 'Favorited' : 'Favorite'}
       {favourites ? ` (${favourites})` : ''}
-    </Button>
+    </S.Button>
   )
+}
+
+const S = {
+  Button: styled(Button)`
+    ${({ favourited }) =>
+      favourited
+        ? css`
+            color: white;
+            background: #ff66ab;
+            &:hover {
+              color: white;
+              background: #dd88ae;
+            }
+          `
+        : css`
+            color: white;
+            background: ${({ theme }) => (theme.darkMode ? '#555' : '#AAB8C2')};
+            &:hover {
+              color: white;
+              background: ${({ theme }) => (theme.darkMode ? '#8f5670' : '#e0b8c9')};
+            }
+          `};
+  `,
 }
 
 export default FavouriteButton

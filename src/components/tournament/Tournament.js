@@ -2,11 +2,11 @@
 /* eslint-disable no-constant-condition */
 import UserChip from 'components/common/UserChip'
 import { useEffect, useState } from 'react'
-import { Globe, PencilSquare, TrashFill } from 'react-bootstrap-icons'
+import { Download, Globe, Heart, PencilSquare, TrashFill } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { Breakpoints, useFallbackImg, userOwnsTournament, openInBrowser } from 'utils/misc'
+import { Breakpoints, getHostname, useFallbackImg, userOwnsTournament, openInBrowser } from 'utils/misc'
 import * as api from '../../utils/api'
 import {
   Alert,
@@ -21,6 +21,7 @@ import {
   Spinner,
   Tab,
 } from '../bootstrap-osu-collector'
+import FavouriteButton from '../common/FavouriteButton'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import MappoolRound from './MappoolRound'
 import ImportMappoolModal from './ImportMappoolModal'
@@ -28,7 +29,7 @@ import RemoveMappoolModal from './RemoveMappoolModal'
 
 const { ipcRenderer } = window.require('electron')
 
-function Tournament({ user, setDownloadsModalIsOpen, localCollections, setLocalCollections }) {
+function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, setLocalCollections }) {
   // @ts-ignore
   let { id } = useParams()
   const { tournament } = api.useTournament(id)
@@ -80,6 +81,7 @@ function Tournament({ user, setDownloadsModalIsOpen, localCollections, setLocalC
   }
 
   // message modal
+  const [showDownloadLinkConfirmation, setShowDownloadLinkConfirmation] = useState(false)
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
@@ -130,6 +132,34 @@ function Tournament({ user, setDownloadsModalIsOpen, localCollections, setLocalC
         </div>
       </Container>
     )
+  }
+
+  const actionButtonClicked = () => {
+    if (user?.paidFeaturesAccess) {
+      setMessageModalText('Tournament launched in osu!Collector desktop client!')
+      window.open(`osucollector://tournaments/${tournament.id}`)
+    } else {
+      history.push('/client')
+    }
+  }
+
+  const favouriteClicked = () => {
+    if (!user) return
+    if (user.favouriteTournaments?.includes(Number(id))) {
+      // remove from favourites
+      setUser((prev) => ({
+        ...prev,
+        favouriteTournaments: user.favouriteTournaments?.filter((tournamentId) => tournamentId !== Number(id)) ?? [],
+      }))
+      api.favouriteTournament(Number(id), false)
+    } else {
+      // add to favourites
+      setUser((prev) => ({
+        ...prev,
+        favouriteTournaments: [...(prev.favouriteTournaments ?? []), Number(id)],
+      }))
+      api.favouriteTournament(Number(id), true)
+    }
   }
 
   const loading = tournament === undefined
@@ -202,7 +232,7 @@ function Tournament({ user, setDownloadsModalIsOpen, localCollections, setLocalC
                     <ReactPlaceholder ready={!loading} showLoadingAnimation className='mt-4 pr-5'>
                       {tournament && (
                         <>
-                          <div className='d-flex align-items-center mb-4'>
+                          <div className='d-flex align-items-center mb-2'>
                             <Globe />
                             <span className='mx-2'> Info: </span>
                             <a
@@ -212,12 +242,31 @@ function Tournament({ user, setDownloadsModalIsOpen, localCollections, setLocalC
                               <small>{tournament?.link}</small>
                             </a>
                           </div>
+                          <div className='d-flex align-items-center mb-4'>
+                            <Download />
+                            <span className='mx-2'> Mappool download: </span>
+                            {tournament?.downloadUrl ? (
+                              <a href='#' onClick={() => setShowDownloadLinkConfirmation(true)}>
+                                <small>{tournament?.downloadUrl}</small>
+                              </a>
+                            ) : (
+                              <small className='text-muted' style={{ marginBottom: '1px' }}>
+                                no download URL provided
+                              </small>
+                            )}
+                          </div>
                           <p className='pr-4' style={{ whiteSpace: 'pre-line' }}>
                             {tournament?.description}
                           </p>
                         </>
                       )}
                     </ReactPlaceholder>
+                    <FavouriteButton
+                      className='mr-1'
+                      favourites={0}
+                      favourited={user?.favouriteTournaments?.includes(Number(id))}
+                      onClick={favouriteClicked}
+                    />
                     <div className='d-flex flex-row my-4' style={{ gap: '5px' }}>
                       <Button onClick={downloadButtonClicked}>Download all maps</Button>
                       <Button onClick={() => setImportModalIsOpen((prev) => !prev)}>Import collections</Button>
@@ -424,6 +473,24 @@ function Tournament({ user, setDownloadsModalIsOpen, localCollections, setLocalC
           <Button onClick={() => setMessageModalText('')} variant='secondary'>
             Okay
           </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={!!showDownloadLinkConfirmation}
+        onHide={() => setShowDownloadLinkConfirmation(false)}
+        centered={true}
+      >
+        <Modal.Body className='px-4 py-5 d-flex flex-column align-items-center'>
+          <div>You are navigating away from osucollector.com to:</div>
+          <h3>{getHostname(tournament?.downloadUrl)}</h3>
+          <div>Only proceed if you trust this link.</div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='secondary' onClick={() => setShowDownloadLinkConfirmation(false)}>
+            Cancel
+          </Button>
+          <Button onClick={() => window.open(tournament?.downloadUrl)}>yeah sure whatever</Button>
         </Modal.Footer>
       </Modal>
     </>

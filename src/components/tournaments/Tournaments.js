@@ -3,72 +3,62 @@ import { useEffect, useRef, useState } from 'react'
 import { Plus, Search } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
 import styled, { css } from 'styled-components'
-import * as api from 'utils/api'
+import { useRecentTournaments, useSearchTournaments } from 'utils/api'
 import TournamentList from './TournamentList'
+import { useQuery } from '../../utils/hooks'
+import { useHistory } from 'react-router-dom'
 
-function Tournaments() {
-  const [tournamentPage, setTournamentPage] = useState(null)
-  const [tournaments, setTournaments] = useState(new Array(18).fill(null))
-  const [error, setError] = useState(null)
+/**
+ * @typedef {Object} TournamentsQueryParams
+ * @property {string} search
+ */
+
+function Tournaments({ user, setUser }) {
+  const query = useQuery()
+  const usingSearch = !!query.get('search')
+  const history = useHistory()
+  const {
+    recentTournaments,
+    recentTournamentsError,
+    isValidating: recentIsValidating,
+    currentPage: currentRecentPage,
+    setCurrentPage: setCurrentRecentPage,
+    hasMore: recentHasMore,
+  } = useRecentTournaments({ fetchCondition: !usingSearch })
+  const {
+    searchTournaments,
+    searchTournamentsError,
+    isValidating: searchIsValidating,
+    currentPage: currentSearchPage,
+    setCurrentPage: setCurrentSearchPage,
+    hasMore: searchHasMore,
+  } = useSearchTournaments({ search: query.get('search'), fetchCondition: usingSearch })
+
   const loadMore = () => {
-    alert('loadMore')
+    if (usingSearch) {
+      setCurrentSearchPage(currentSearchPage + 1)
+    } else {
+      setCurrentRecentPage(currentRecentPage + 1)
+    }
   }
 
   const [searchBarInput, setSearchBarInput] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
-  const typingTimeoutRef = useRef(null)
-  const searchSubmit = (event) => {
-    event.preventDefault()
-    alert(searchBarInput)
-    return false
-  }
-
   useEffect(() => {
-    let cancel
-    api
-      .getRecentTournaments((c) => (cancel = c))
-      .then((_tournamentPage) => {
-        setTournamentPage(_tournamentPage)
-        setTournaments(_tournamentPage.tournaments)
-      })
-      .catch(setError)
-    return cancel
-  }, [])
-
+    setSearchBarInput(query.get('search'))
+  }, [query.get('search')])
+  const typingTimeoutRef = useRef(null)
   const handleSearchOnChange = (e) => {
     setSearchBarInput(e.target.value)
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current)
     }
-    typingTimeoutRef.current = setTimeout(() => setSearchQuery(e.target.value), 300)
+    typingTimeoutRef.current = setTimeout(() => {
+      const params = new URLSearchParams({ search: e.target.value.trim() })
+      history.replace({ pathname: location.pathname, search: e.target.value ? params.toString() : undefined })
+    }, 300)
   }
 
-  useEffect(() => {
-    if (!searchQuery) return
-    console.log('searchQuery', searchQuery)
-    let cancel
-    api
-      .searchTournaments(
-        searchQuery,
-        tournamentPage?.nextPageCursor || 1,
-        18,
-        '_text_match',
-        'desc',
-        (c) => (cancel = c)
-      )
-      .then((_tournamentPage) => {
-        setTournamentPage(_tournamentPage)
-        setTournaments(_tournamentPage.tournaments)
-        setError(null)
-      })
-      .catch((err) => {
-        if (err.toString() !== 'Cancel') {
-          setError(err)
-        }
-      })
-    return cancel
-  }, [searchQuery])
-
+  const error = recentTournamentsError || searchTournamentsError
   return (
     <Container className='pt-4'>
       <Card className='shadow-lg'>
@@ -87,9 +77,14 @@ function Tournaments() {
               </S.CreateButton>
             </LinkContainer>
           </div>
-          <Form onSubmit={searchSubmit} className='ml-3 me-auto'>
+          <Form onSubmit={() => {}} className='ml-3 me-auto'>
             <InputGroup>
-              <S.FormControl onChange={handleSearchOnChange} type='search' placeholder='Search for tournaments...' />
+              <S.FormControl
+                value={searchBarInput}
+                onChange={handleSearchOnChange}
+                type='search'
+                placeholder='Search for tournaments...'
+              />
               <Button type='submit' variant='primary'>
                 <Search />
               </Button>
@@ -101,7 +96,14 @@ function Tournaments() {
               <p>{error.toString()}</p>
             </Alert>
           ) : (
-            <TournamentList tournaments={tournaments} hasMore={tournamentPage?.hasMore} loadMore={loadMore} />
+            <TournamentList
+              tournaments={usingSearch ? searchTournaments : recentTournaments}
+              hasMore={usingSearch ? searchHasMore : recentHasMore}
+              loadMore={loadMore}
+              noEndMessage={false}
+              user={user}
+              setUser={setUser}
+            />
           )}
         </Card.Body>
       </Card>
