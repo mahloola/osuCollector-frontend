@@ -363,3 +363,21 @@ export const getMappoolCollections = (tournament, groupBy) => {
 }
 
 export const sleep = async (ms) => await new Promise((r) => setTimeout(r, ms))
+
+export const capitalizeFirstLetter = (str) => str[0].toUpperCase() + str.substring(1)
+
+export const getHostname = (url) => {
+  const a = document.createElement('a')
+  a.href = url
+  return a.hostname
+}
+
+export const isValidHttpUrl = (string) => {
+  let url
+  try {
+    url = new URL(string)
+  } catch (_) {
+    return false
+  }
+  return url.protocol === 'http:' || url.protocol === 'https:'
+}

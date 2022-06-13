@@ -15,7 +15,7 @@ const getRequestWithQueryParameters = async (route, params = undefined, cancelCa
   return res.data
 }
 
-function useInfinite(url, query, mappingFunction = (x) => x) {
+function useInfinite(url, query, mappingFunction = (x) => x, fetchCondition = true) {
   const {
     data: pages,
     error,
@@ -24,6 +24,7 @@ function useInfinite(url, query, mappingFunction = (x) => x) {
     setSize: setCurrentPage,
   } = useSWRInfinite(
     (pageIndex, previousPageData) => {
+      if (!fetchCondition) return null
       let _query = { ...query }
       if (previousPageData?.nextPageCursor) {
         _query.cursor = previousPageData.nextPageCursor
@@ -64,11 +65,12 @@ export async function getRecentCollections(cursor = undefined, perPage = undefin
     cancelCallback
   )
 }
-export function useRecentCollections({ perPage = 9 }) {
+export function useRecentCollections({ perPage = 9, fetchCondition = true }) {
   const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
     '/api/collections/recent',
     { perPage },
-    (data) => data.collections
+    (data) => data.collections,
+    fetchCondition
   )
   return {
     recentCollections: entities,
@@ -330,14 +332,22 @@ export async function getOwnUser() {
   return data.loggedIn ? data.user : null
 }
 
-// Returns an array of CollectionData objects: https://osucollector.com/docs.html#responses-getUserFavourites-200-schema
 export async function getUserFavourites(userId, cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/users/${userId}/favourites`, {}, cancelCallback)
 }
 
-// Returns an array of CollectionData objects
 export async function getUserUploads(userId, cancelCallback = undefined) {
   return getRequestWithQueryParameters(`/api/users/${userId}/uploads`, {}, cancelCallback)
+}
+export function useUserUploads(userId) {
+  const { data, error, mutate } = useSWRImmutable(userId ? `/api/users/${userId}/uploads` : null, axiosFetcher)
+  if (error) console.error(error)
+  return {
+    collections: data?.collections,
+    tournaments: data?.tournaments,
+    tournamentError: error,
+    mutateUploads: mutate,
+  }
 }
 
 export async function getMetadata(cancelCallback = undefined) {
@@ -768,6 +778,22 @@ export async function getRecentTournaments(cursor = undefined, perPage = undefin
     cancelCallback
   )
 }
+export function useRecentTournaments({ perPage = 10, fetchCondition }) {
+  const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
+    '/api/tournaments/recent',
+    { perPage },
+    (data) => data.tournaments,
+    fetchCondition
+  )
+  return {
+    recentTournaments: entities,
+    recentTournamentsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  }
+}
 
 export async function searchTournaments(
   queryString,
@@ -788,6 +814,33 @@ export async function searchTournaments(
     },
     cancelCallback
   )
+}
+export function useSearchTournaments({
+  search,
+  perPage = 10,
+  sortBy = undefined,
+  orderBy = undefined,
+  fetchCondition = true,
+}) {
+  const { entities, error, isValidating, currentPage, setCurrentPage, hasMore } = useInfinite(
+    '/api/tournaments/search',
+    {
+      search,
+      perPage,
+      sortBy,
+      orderBy,
+    },
+    (data) => data.tournaments,
+    fetchCondition
+  )
+  return {
+    searchTournaments: entities,
+    searchTournamentsError: error,
+    isValidating,
+    currentPage,
+    setCurrentPage,
+    hasMore,
+  }
 }
 
 export async function getTournament(id, cancelCallback = undefined) {
@@ -827,6 +880,19 @@ export async function updateNpCollectionId(collectionId) {
   const route = '/api/users/me/npCollectionId'
   try {
     const res = await axios.patch(config.get('API_HOST') + route, { collectionId })
+    return res.data
+  } catch (error) {
+    console.error(`${route} responded with ${error.response.status}: ${error.response.data}`)
+  }
+}
+
+export async function favouriteTournament(tournamentId, favourited) {
+  const route = '/api/users/me/favouriteTournament'
+  try {
+    const res = await axios.patch(config.get('API_HOST') + route, {
+      tournamentId: Number(tournamentId),
+      favourited,
+    })
     return res.data
   } catch (error) {
     console.error(`${route} responded with ${error.response.status}: ${error.response.data}`)

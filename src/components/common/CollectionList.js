@@ -4,24 +4,28 @@ import CollectionCard from './CollectionCard'
 import { changeCollectionFavouritedStatus } from 'utils/misc'
 import * as api from '../../utils/api'
 
-const CollectionList = ({ collections, setCollections, hasMore, loadMore, user, setUser }) => {
+const CollectionList = ({ collections, setCollections = null, hasMore, loadMore, user, setUser }) => {
   if (!collections) {
     console.log('WTF')
     console.log(collections)
   }
 
-  const favouriteButtonClicked = (collectionId, favourited) => {
-    setUser({
-      ...user,
-      favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter((id) => id !== collectionId),
-    })
-    setCollections(changeCollectionFavouritedStatus(collections, collectionId, favourited))
-    if (favourited) {
-      api.favouriteCollection(collectionId)
-    } else {
-      api.unfavouriteCollection(collectionId)
-    }
-  }
+  const favouriteButtonClicked = setCollections
+    ? (collectionId, favourited) => {
+        setUser({
+          ...user,
+          favourites: favourited
+            ? [...user.favourites, collectionId]
+            : user.favourites.filter((id) => id !== collectionId),
+        })
+        setCollections(changeCollectionFavouritedStatus(collections, collectionId, favourited))
+        if (favourited) {
+          api.favouriteCollection(collectionId)
+        } else {
+          api.unfavouriteCollection(collectionId)
+        }
+      }
+    : null
 
   return (
     <Container className='p-2'>
