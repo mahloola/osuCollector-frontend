@@ -77,7 +77,7 @@ function Tournaments({ user, setUser }) {
               </S.CreateButton>
             </LinkContainer>
           </div>
-          <Form onSubmit={() => {}} className='ml-3 me-auto'>
+          <div className='ml-3 me-auto'>
             <InputGroup>
               <S.FormControl
                 value={searchBarInput}
@@ -85,11 +85,11 @@ function Tournaments({ user, setUser }) {
                 type='search'
                 placeholder='Search for tournaments...'
               />
-              <Button type='submit' variant='primary'>
+              <Button variant='primary'>
                 <Search />
               </Button>
             </InputGroup>
-          </Form>
+          </div>
           {error ? (
             <Alert variant='danger'>
               <p>Sorry, there was an error retrieving tournaments. Please try refreshing the page. Error details:</p>
