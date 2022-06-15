@@ -898,3 +898,12 @@ export async function favouriteTournament(tournamentId, favourited) {
     console.error(`${route} responded with ${error.response.status}: ${error.response.data}`)
   }
 }
+
+export async function changeUser({ username, userId }) {
+  const route = '/api/users/changeUser'
+  const res = await axios.post(config.get('API_HOST') + route, { username, userId })
+  if (res.status !== 200) {
+    throw new Error(`${route} responded with ${res.status}: ${res.data}`)
+  }
+  return res.data
+}
