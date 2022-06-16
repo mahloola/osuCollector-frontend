@@ -21,6 +21,7 @@ import {
   Spinner,
   Tab,
 } from '../bootstrap-osu-collector'
+import DownloadPreviewModal from '../collection/DownloadPreviewModal'
 import FavouriteButton from '../common/FavouriteButton'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import MappoolRound from './MappoolRound'
@@ -35,6 +36,7 @@ function Tournament({ user, setUser }) {
 
   // modals
   const [messageModalText, setMessageModalText] = useState('')
+  const [showDownloadPreviewModal, setShowDownloadPreviewModal] = useState(false)
   const [showDownloadLinkConfirmation, setShowDownloadLinkConfirmation] = useState(false)
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -93,7 +95,7 @@ function Tournament({ user, setUser }) {
       setMessageModalText('Tournament launched in osu!Collector desktop client!')
       window.open(`osucollector://tournaments/${tournament.id}`)
     } else {
-      history.push('/client')
+      setShowDownloadPreviewModal(true)
     }
   }
 
@@ -425,6 +427,22 @@ function Tournament({ user, setUser }) {
           <Button onClick={() => window.open(tournament?.downloadUrl)}>yeah sure whatever</Button>
         </Modal.Footer>
       </Modal>
+
+      {tournament && showDownloadPreviewModal && (
+        <DownloadPreviewModal
+          collection={{
+            id: 'T' + tournament.id,
+            uploader: '',
+            name: tournament.name,
+            beatmapsets: tournament.rounds
+              .map((round) => round.mods.map((mod) => mod.maps))
+              ?.flat(2)
+              .filter((beatmap) => typeof beatmap === 'object'),
+          }}
+          show={showDownloadPreviewModal}
+          hide={() => setShowDownloadPreviewModal(false)}
+        />
+      )}
     </>
   )
 }

@@ -33,7 +33,7 @@ function DownloadPreviewModal({ collection, show, hide }) {
   const [collectionDownloads, setCollectionDownloads] = useState([new CollectionDownload(collection)])
   const intervalRef = useRef(null)
   useEffect(() => {
-    intervalRef.current = setInterval(simulateDownload, 100)
+    intervalRef.current = setInterval(simulateDownload, 200)
     return () => clearInterval(intervalRef.current)
   })
   const simulateDownload = () => {
@@ -59,7 +59,7 @@ function DownloadPreviewModal({ collection, show, hide }) {
       }
       if (currentBeatmapset) {
         currentBeatmapset.bytesReceived = Math.min(
-          currentBeatmapset.bytesReceived + 5 * 1e5,
+          currentBeatmapset.bytesReceived + 1.6 * 1e6,
           currentBeatmapset.bytesTotal
         )
         if (currentBeatmapset.bytesReceived >= currentBeatmapset.bytesTotal) {
