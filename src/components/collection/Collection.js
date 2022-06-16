@@ -33,6 +33,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import Comments from './Comments'
 import DropdownButton from '../common/DropdownButton'
 import moment from 'moment'
+import DownloadPreviewModal from './DownloadPreviewModal'
 
 const groupBeatmapsets = (beatmaps) => {
   if (beatmaps?.length === 0) {
@@ -156,6 +157,7 @@ function Collection({ user, setUser }) {
   // message modal
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [collectionSuccessfullyDeleted, setCollectionSuccessfullyDeleted] = useState(false)
+  const [showDownloadPreviewModal, setShowDownloadPreviewModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
 
@@ -484,7 +486,7 @@ function Collection({ user, setUser }) {
                           setModalMessage('Collection launched in osu!Collector desktop client!')
                           window.open(`osucollector://collections/${collection.id}`)
                         } else {
-                          history.push('/client')
+                          setShowDownloadPreviewModal(true)
                         }
                       }}
                     >
@@ -712,6 +714,14 @@ function Collection({ user, setUser }) {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {collection && showDownloadPreviewModal && (
+        <DownloadPreviewModal
+          collection={collection}
+          show={showDownloadPreviewModal}
+          hide={() => setShowDownloadPreviewModal(false)}
+        />
+      )}
     </Container>
   )
 }

@@ -376,3 +376,5 @@ export const isValidHttpUrl = (string) => {
   }
   return url.protocol === 'http:' || url.protocol === 'https:'
 }
+
+export const getRandomFromArray = (items) => items[Math.floor(Math.random() * items.length)]
