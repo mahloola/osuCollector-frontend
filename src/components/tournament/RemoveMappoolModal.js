@@ -81,7 +81,7 @@ function RemoveMappoolModal({
       <ModalBody className='px-5 py-4'>
         <Form>
           <div>
-            <Title className='text-muted'>Import mappool collections</Title>
+            <Title className='text-muted'>Remove mappool collections</Title>
 
             <ImportAndPreviewContainer>
               <MethodContainer>
@@ -126,7 +126,7 @@ function RemoveMappoolModal({
                 <h4>
                   Preview
                   <span className='text-muted ml-3'>
-                    {`${previewCollections?.length} collection${
+                    {`${previewCollections?.length} imported collection${
                       previewCollections?.length === 1 ? '' : 's'
                     } to be removed`}
                   </span>
