@@ -12,11 +12,13 @@ import {
   ProgressBar,
 } from '../bootstrap-osu-collector'
 import { useContext, useEffect, useRef, useState } from 'react'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import Truncate from 'react-truncate'
 import { Accordion } from 'react-bootstrap'
 import { useCollectionBeatmaps } from '../../utils/api'
 import { getRandomFromArray } from '../../utils/misc'
+import { LinkContainer } from 'react-router-bootstrap'
+import previewBeatmaps from './downloadPreviewBeatmaps.json'
 
 const DownloadStates = Object.freeze({
   NotStarted: 'Starting download...',
@@ -27,14 +29,6 @@ const DownloadStates = Object.freeze({
 })
 
 function DownloadPreviewModal({ collection, show, hide }) {
-  const { collectionBeatmaps } = useCollectionBeatmaps(collection?.id, {
-    perPage: 50,
-    sortBy: 'beatmapset.artist',
-    orderBy: 'asc',
-    filterMin: undefined,
-    filterMax: undefined,
-  })
-
   // simulate downloads
   const [collectionDownloads, setCollectionDownloads] = useState([new CollectionDownload(collection)])
   const intervalRef = useRef(null)
@@ -45,8 +39,6 @@ function DownloadPreviewModal({ collection, show, hide }) {
   const simulateDownload = () => {
     // progress currently downloading beatmapset
     setCollectionDownloads((prev) => {
-      if (!collectionBeatmaps) return
-
       const _collectionDownloads = [...prev]
       const collectionDownload = collectionDownloads[0]
       let currentBeatmapset = collectionDownload.beatmapsets.find(
@@ -58,7 +50,7 @@ function DownloadPreviewModal({ collection, show, hide }) {
         )
         if (currentBeatmapset) {
           currentBeatmapset.downloadStatus = DownloadStates.Downloading
-          const randomBeatmap = getRandomFromArray(collectionBeatmaps)
+          const randomBeatmap = getRandomFromArray(previewBeatmaps)
           currentBeatmapset.url = `https://osz-dl.nyc3.cdn.digitaloceanspaces.com/${encodeURIComponent(
             `${randomBeatmap.beatmapset.id} ${randomBeatmap.beatmapset.artist} - ${randomBeatmap.beatmapset.title}`
           )}`
@@ -90,7 +82,20 @@ function DownloadPreviewModal({ collection, show, hide }) {
       <ModalHeader closeButton>
         <Modal.Title>Downloads (preview)</Modal.Title>
       </ModalHeader>
-      <ModalBody style={{ height: '85vh' }}>
+      <PreviewOverlay>
+        <div className='horizontalStrip'>
+          <h3>You are previewing an osu!Collector Desktop feature!</h3>
+          <div className='d-flex gap-3'>
+            <Button variant='secondary' onClick={hide}>
+              Cancel
+            </Button>
+            <LinkContainer to='/client'>
+              <Button>Download osu!Collector Desktop</Button>
+            </LinkContainer>
+          </div>
+        </div>
+      </PreviewOverlay>
+      <ModalBody style={{ height: '80vh', overflow: 'hidden' }}>
         <div>osu! should automatically open all .osz files once they are finished downloading.</div>
         <div>If it doesn&apos;t, you may need to press F5 at the song select screen.</div>
         {collections.length > 0 ? (
@@ -227,5 +232,37 @@ class CollectionDownload {
     return this.beatmapsets.filter((beatmapset) => beatmapset.downloadStatus === DownloadStates.NotStarted)
   }
 }
+
+const PreviewOverlay = styled.div`
+  position: absolute;
+  top: 69px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: calc(100% - 69px);
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.2);
+  .horizontalStrip {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 160px;
+    color: white;
+    /* background: linear-gradient(
+      0deg,
+      rgba(2, 0, 36, 0) 0%,
+      rgba(0, 0, 0, 0.8015581232492998) 20%,
+      rgba(0, 0, 0, 0.8) 80%,
+      rgba(0, 0, 0, 0) 100%
+    ); */
+    background-color: rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0px 0px 15px 5px #000;
+    box-shadow: 0px 0px 15px 5px #000;
+  }
+`
 
 export default DownloadPreviewModal
