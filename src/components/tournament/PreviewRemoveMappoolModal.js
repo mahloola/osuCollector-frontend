@@ -4,33 +4,33 @@ import { getMappoolCollections } from 'utils/misc'
 import { Button, Card, Form, Modal, ModalBody } from '../bootstrap-osu-collector'
 import { LinkContainer } from 'react-router-bootstrap'
 
-function ImportMappoolPreviewModal({ show, hide, tournament }) {
-  /**
-   * @type {[('tournament' | 'round' | 'mod' | 'beatmap'), Function]}
-   */
-  const [groupBySelection, setGroupBySelection] = useState('round')
-  const previewCollections = getMappoolCollections(tournament, groupBySelection)
-  const [instantlyShowPreviewMessage, setInstantlyShowPreviewMessage] = useState(false)
-  const [previewMessageIsVisible, setPreviewMessageIsVisible] = useState(false)
+function PreviewRemoveMappoolModal({ tournament, show, hide }) {
+  const collectionsGroupedBy = getMappoolCollections(tournament)
+  const previewCollections = collectionsGroupedBy
+    ? Object.keys(collectionsGroupedBy)
+        .map((key) => collectionsGroupedBy[key])
+        .flat(1)
+    : null
 
+  const [renderOverlay, setRenderOverlay] = useState(false)
+  const [previewOverlayIsOpaque, setPreviewOverlayIsOpaque] = useState(false)
   const togglePreviewMessage = () => {
-    if (instantlyShowPreviewMessage) {
+    if (renderOverlay) {
       // hide
-      setPreviewMessageIsVisible(false)
-      setTimeout(() => setInstantlyShowPreviewMessage(false), 150)
+      setPreviewOverlayIsOpaque(false)
+      setTimeout(() => setRenderOverlay(false), 150)
     } else {
       // show
-      setInstantlyShowPreviewMessage(true)
-      setPreviewMessageIsVisible(false)
-      setTimeout(() => setPreviewMessageIsVisible(true), 0)
-      // setTimeout(() => setPreviewMessageIsVisible(true), 150)
+      setRenderOverlay(true)
+      setPreviewOverlayIsOpaque(false)
+      setTimeout(() => setPreviewOverlayIsOpaque(true), 0)
     }
   }
 
   return (
     <Modal show={show} onHide={hide} size='xl' centered>
-      {instantlyShowPreviewMessage && (
-        <PreviewOverlay isVisible={previewMessageIsVisible}>
+      {renderOverlay && (
+        <PreviewOverlay isVisible={previewOverlayIsOpaque}>
           <div className='horizontalStrip'>
             <h3>You are previewing an osu!Collector Desktop feature!</h3>
             <div className='d-flex gap-3'>
@@ -47,38 +47,23 @@ function ImportMappoolPreviewModal({ show, hide, tournament }) {
       <ModalBody className='px-5 py-4'>
         <Form>
           <div>
-            <Title className='text-muted'>Import mappool collections (preview)</Title>
+            <Title className='text-muted'>Remove mappool collections (preview)</Title>
 
             <ImportAndPreviewContainer>
               <MethodContainer>
-                <h4>Import Method</h4>
-                <Form className='ml-2 mt-3 mb-4'>
-                  {[
-                    { label: 'One single collection', value: 'tournament' },
-                    { label: 'Group by round', value: 'round' },
-                    { label: 'Group by mod', value: 'mod' },
-                    { label: 'One collection per beatmap', value: 'beatmap' },
-                  ].map(({ label, value }, i) => (
-                    <Form.Check
-                      key={i}
-                      checked={groupBySelection === value}
-                      onChange={() => setGroupBySelection(value)}
-                      type='radio'
-                      label={label}
-                    />
-                  ))}
-                </Form>
-                <Button variant='primary' onClick={togglePreviewMessage}>
-                  Import to osu!
-                </Button>
+                <div>
+                  <Button disabled={!previewCollections?.length} onClick={togglePreviewMessage} variant='primary'>
+                    Remove collections
+                  </Button>
+                </div>
               </MethodContainer>
               <PreviewContainer>
                 <h4>
                   Preview
                   <span className='text-muted ml-3'>
-                    {`${previewCollections?.length} collection${
+                    {`${previewCollections?.length} imported collection${
                       previewCollections?.length === 1 ? '' : 's'
-                    } to be imported`}
+                    } to be removed`}
                   </span>
                 </h4>
                 <CollectionWrapper>
@@ -122,7 +107,7 @@ const ImportAndPreviewContainer = styled.div`
 
 const MethodContainer = styled.div`
   @media screen and (min-width: 1200px) {
-    flex-basis: 33%;
+    flex-basis: 20%;
   }
 `
 const PreviewContainer = styled.div`
@@ -173,4 +158,4 @@ const PreviewOverlay = styled.div`
   }
 `
 
-export default ImportMappoolPreviewModal
+export default PreviewRemoveMappoolModal
