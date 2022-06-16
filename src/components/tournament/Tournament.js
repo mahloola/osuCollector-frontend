@@ -24,6 +24,7 @@ import {
 import DownloadPreviewModal from '../collection/DownloadPreviewModal'
 import FavouriteButton from '../common/FavouriteButton'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
+import ImportMappoolPreviewModal from './ImportMappoolPreviewModal'
 import MappoolRound from './MappoolRound'
 
 function Tournament({ user, setUser }) {
@@ -37,6 +38,7 @@ function Tournament({ user, setUser }) {
   // modals
   const [messageModalText, setMessageModalText] = useState('')
   const [showDownloadPreviewModal, setShowDownloadPreviewModal] = useState(false)
+  const [showImportMappoolPreviewModal, setShowImportMappoolPreviewModal] = useState(false)
   const [showDownloadLinkConfirmation, setShowDownloadLinkConfirmation] = useState(false)
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -88,15 +90,6 @@ function Tournament({ user, setUser }) {
         </div>
       </Container>
     )
-  }
-
-  const actionButtonClicked = () => {
-    if (user?.paidFeaturesAccess) {
-      setMessageModalText('Tournament launched in osu!Collector desktop client!')
-      window.open(`osucollector://tournaments/${tournament.id}`)
-    } else {
-      setShowDownloadPreviewModal(true)
-    }
   }
 
   const favouriteClicked = () => {
@@ -221,11 +214,42 @@ function Tournament({ user, setUser }) {
                       onClick={favouriteClicked}
                     />
                     <div className='d-flex flex-row my-4' style={{ gap: '5px' }}>
-                      <Button className='mr-1' onClick={actionButtonClicked}>
+                      <Button
+                        className='mr-1'
+                        onClick={() => {
+                          if (user?.paidFeaturesAccess) {
+                            setMessageModalText('Tournament launched in osu!Collector desktop client!')
+                            window.open(`osucollector://tournaments/${tournament.id}`)
+                          } else {
+                            setShowDownloadPreviewModal(true)
+                          }
+                        }}
+                      >
                         Download all maps
                       </Button>
-                      <Button onClick={actionButtonClicked}>Add mappool to osu!</Button>
-                      <Button onClick={actionButtonClicked} variant='secondary'>
+                      <Button
+                        onClick={() => {
+                          if (user?.paidFeaturesAccess) {
+                            setMessageModalText('Tournament launched in osu!Collector desktop client!')
+                            window.open(`osucollector://tournaments/${tournament.id}`)
+                          } else {
+                            setShowImportMappoolPreviewModal(true)
+                          }
+                        }}
+                      >
+                        Add mappool to osu!
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          if (user?.paidFeaturesAccess) {
+                            setMessageModalText('Tournament launched in osu!Collector desktop client!')
+                            window.open(`osucollector://tournaments/${tournament.id}`)
+                          } else {
+                            history.push('/client')
+                          }
+                        }}
+                        variant='secondary'
+                      >
                         Remove imported collections
                       </Button>
                     </div>
@@ -441,6 +465,13 @@ function Tournament({ user, setUser }) {
           }}
           show={showDownloadPreviewModal}
           hide={() => setShowDownloadPreviewModal(false)}
+        />
+      )}
+      {tournament && showImportMappoolPreviewModal && (
+        <ImportMappoolPreviewModal
+          tournament={tournament}
+          show={showImportMappoolPreviewModal}
+          hide={() => setShowImportMappoolPreviewModal(false)}
         />
       )}
     </>

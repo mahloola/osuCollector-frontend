@@ -90,7 +90,7 @@ function DownloadPreviewModal({ collection, show, hide }) {
               Cancel
             </Button>
             <LinkContainer to='/client'>
-              <Button>Download osu!Collector Desktop</Button>
+              <Button>Get osu!Collector Desktop</Button>
             </LinkContainer>
           </div>
         </div>
