@@ -34,6 +34,7 @@ import Comments from './Comments'
 import DropdownButton from '../common/DropdownButton'
 import moment from 'moment'
 import DownloadPreviewModal from './DownloadPreviewModal'
+import UpdateCollectionModal from './UpdateCollectionModal'
 
 const groupBeatmapsets = (beatmaps) => {
   if (beatmaps?.length === 0) {
@@ -158,6 +159,7 @@ function Collection({ user, setUser }) {
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [collectionSuccessfullyDeleted, setCollectionSuccessfullyDeleted] = useState(false)
   const [showDownloadPreviewModal, setShowDownloadPreviewModal] = useState(false)
+  const [showUpdateCollectionModal, setShowUpdateCollectionModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
 
@@ -478,6 +480,20 @@ function Collection({ user, setUser }) {
                     submit={submitDescription}
                   />
                   {/* buttons */}
+                  {collection?.uploader?.id === user?.id && !renamingCollection && (
+                    <div className='d-flex flex-row mb-3'>
+                      <Button
+                        className='mr-1 w-100 p-2'
+                        variant='warning'
+                        onClick={() => setShowUpdateCollectionModal(true)}
+                      >
+                        <h5 className='mb-0 pb-0'>
+                          <b>Update collection</b>
+                        </h5>
+                        Last updated {moment(collection.dateLastModified._seconds * 1000).fromNow()}
+                      </Button>
+                    </div>
+                  )}
                   <div className='d-flex flex-row mb-4'>
                     <Button
                       className='mr-1'
@@ -720,6 +736,14 @@ function Collection({ user, setUser }) {
           collection={collection}
           show={showDownloadPreviewModal}
           hide={() => setShowDownloadPreviewModal(false)}
+        />
+      )}
+
+      {collection && showUpdateCollectionModal && (
+        <UpdateCollectionModal
+          collection={collection}
+          show={showUpdateCollectionModal}
+          hide={() => setShowUpdateCollectionModal(false)}
         />
       )}
     </Container>
