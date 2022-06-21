@@ -378,3 +378,18 @@ export const isValidHttpUrl = (string) => {
 }
 
 export const getRandomFromArray = (items) => items[Math.floor(Math.random() * items.length)]
+
+export const arrayEquals = (a, b) => {
+  if (a === b) return true
+  if (a == null || b == null) return false
+  if (a.length !== b.length) return false
+  if (!Array.isArray(a) || !Array.isArray(b)) return false
+
+  const _a = [...a].sort((x, y) => y.localeCompare(x))
+  const _b = [...b].sort((x, y) => y.localeCompare(x))
+
+  for (var i = 0; i < _a.length; ++i) {
+    if (_a[i] !== _b[i]) return false
+  }
+  return true
+}

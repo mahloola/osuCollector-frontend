@@ -1,8 +1,12 @@
 .dragon-drop {
   cursor: pointer;
-  border: dashed 2px lightgray;
+  border: dashed 2px rgba(138, 138, 138, 0.7);
+  border-radius: 8px;
   padding: 20px;
   text-align: center;
+}
+.dragon-drop:hover {
+  background-color: rgba(138, 138, 138, 0.07);
 }
 
 .upload-buttons {

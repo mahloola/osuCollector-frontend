@@ -480,7 +480,7 @@ function Collection({ user, setUser }) {
                     submit={submitDescription}
                   />
                   {/* buttons */}
-                  {collection?.uploader?.id === user?.id && !renamingCollection && (
+                  {collection?.uploader?.id === user?.id && (
                     <div className='d-flex flex-row mb-3'>
                       <Button
                         className='mr-1 w-100 p-2'
@@ -739,9 +739,10 @@ function Collection({ user, setUser }) {
         />
       )}
 
-      {collection && showUpdateCollectionModal && (
+      {collection && (
         <UpdateCollectionModal
           collection={collection}
+          mutateCollection={mutateCollection}
           show={showUpdateCollectionModal}
           hide={() => setShowUpdateCollectionModal(false)}
         />
