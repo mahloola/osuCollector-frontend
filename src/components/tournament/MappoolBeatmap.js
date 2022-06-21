@@ -167,128 +167,127 @@ function MappoolBeatmap({ beatmap, mod, modIndex, playing, onPlayClick, onAudioE
   )
 }
 
-const S = {}
-
-S.BeatmapCover = styled.div`
-  background-color: #474958;
-  background-image: url(${(props) => props.src});
-  width: 180px;
-  height: 66px;
-  background-size: cover;
-  cursor: pointer;
-  & > div > svg {
-    display: none;
-  }
-  &:hover {
+const S = {
+  BeatmapCover: styled.div`
+    background-color: #474958;
+    background-image: url(${(props) => props.src});
+    width: 180px;
+    height: 66px;
+    background-size: cover;
+    cursor: pointer;
     & > div > svg {
-      display: block;
+      display: none;
     }
-  }
-`
+    &:hover {
+      & > div > svg {
+        display: block;
+      }
+    }
+  `,
 
-S.ModBadge = styled(Card)`
-  min-width: 60px;
-  color: #fff;
-  ${({ mod }) => {
-    if (mod.toLowerCase() === 'nm') return 'background-color: #2191CD;'
-    if (mod.toLowerCase() === 'hd') return 'background-color: #BDA542;'
-    if (mod.toLowerCase() === 'hr') return 'background-color: #CD334F;'
-    if (mod.toLowerCase() === 'dt') return 'background-color: #B44DC0;'
-    if (mod.toLowerCase() === 'ez') return 'background-color: #4dc04f;'
-    if (mod.toLowerCase() === 'fl')
-      return 'background: radial-gradient(circle, rgba(85,85,85,1) 0%, rgba(0,0,0,1) 70%);'
-    if (mod.toLowerCase() === 'fm') return 'background-color: #888;'
-    if (mod.toLowerCase() === 'tb') return 'background-color: #111;'
-    return 'background-color: #111;'
-  }}
-`
+  ModBadge: styled(Card)`
+    min-width: 60px;
+    color: #fff;
+    ${({ mod }) => {
+      if (mod.toLowerCase() === 'nm') return 'background-color: #2191CD;'
+      if (mod.toLowerCase() === 'hd') return 'background-color: #BDA542;'
+      if (mod.toLowerCase() === 'hr') return 'background-color: #CD334F;'
+      if (mod.toLowerCase() === 'dt') return 'background-color: #B44DC0;'
+      if (mod.toLowerCase() === 'ez') return 'background-color: #4dc04f;'
+      if (mod.toLowerCase() === 'fl')
+        return 'background: radial-gradient(circle, rgba(85,85,85,1) 0%, rgba(0,0,0,1) 70%);'
+      if (mod.toLowerCase() === 'fm') return 'background-color: #888;'
+      if (mod.toLowerCase() === 'tb') return 'background-color: #111;'
+      return 'background-color: #111;'
+    }}
+  `,
 
-S.Truncate = styled.div`
-  /* background-color: #6eff79; */
-  @media screen and (min-width: 576px) {
-    /* background-color: #4fc0ff; */
-  }
-  @media screen and (min-width: 768px) {
-    /* background-color: #f8da5e; */
-  }
-  @media screen and (min-width: 992px) {
-    max-width: ${({ hovered }) => (hovered ? '448px' : '588px')};
-    /* background-color: #ff7f68; */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  @media screen and (min-width: 1200px) {
-    max-width: ${({ hovered }) => (hovered ? '485px' : '625px')};
-    /* background-color: #ff4e6f; */
-  }
-  @media screen and (min-width: 1400px) {
-    max-width: ${({ hovered }) => (hovered ? '667px' : '807px')};
-    /* background-color: #a653b0; */
-  }
-`
+  Truncate: styled.div`
+    /* background-color: #6eff79; */
+    @media screen and (min-width: 576px) {
+      /* background-color: #4fc0ff; */
+    }
+    @media screen and (min-width: 768px) {
+      /* background-color: #f8da5e; */
+    }
+    @media screen and (min-width: 992px) {
+      max-width: ${({ hovered }) => (hovered ? '448px' : '588px')};
+      /* background-color: #ff7f68; */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media screen and (min-width: 1200px) {
+      max-width: ${({ hovered }) => (hovered ? '485px' : '625px')};
+      /* background-color: #ff4e6f; */
+    }
+    @media screen and (min-width: 1400px) {
+      max-width: ${({ hovered }) => (hovered ? '667px' : '807px')};
+      /* background-color: #a653b0; */
+    }
+  `,
 
-S.BackgroundSpan = styled.span`
-  background: ${({ color }) => color};
-  border-radius: 999px;
-  padding: 0px 8px 0px 8px;
-  display: inline-block;
-  text-align: center;
-  margin-right: 6px;
-`
+  BackgroundSpan: styled.span`
+    background: ${({ color }) => color};
+    border-radius: 999px;
+    padding: 0px 8px 0px 8px;
+    display: inline-block;
+    text-align: center;
+    margin-right: 6px;
+  `,
 
-// S.Length = styled.div`
-//   ${(props) =>
-//     props.dt &&
-//     css`
-//       color: #cd334f;
-//       font-weight: 600;
-//     `};
-// `
+  // Length: styled.div`
+  //   ${(props) =>
+  //     props.dt &&
+  //     css`
+  //       color: #cd334f;
+  //       font-weight: 600;
+  //     `};
+  // `
 
-// S.Star = styled.div`
-//   ${(props) =>
-//     (props.dt || props.hr) &&
-//     css`
-//       color: #cd334f;
-//       font-weight: 600;
-//     `};
-// `
+  // Star: styled.div`
+  //   ${(props) =>
+  //     (props.dt || props.hr) &&
+  //     css`
+  //       color: #cd334f;
+  //       font-weight: 600;
+  //     `};
+  // `
 
-// S.Bpm = styled.div`
-//   ${(props) =>
-//     props.dt &&
-//     css`
-//       color: #cd334f;
-//       font-weight: 600;
-//     `};
-// `
+  // Bpm: styled.div`
+  //   ${(props) =>
+  //     props.dt &&
+  //     css`
+  //       color: #cd334f;
+  //       font-weight: 600;
+  //     `};
+  // `
 
-// S.CS = styled.div`
-//   ${(props) =>
-//     (props.dt || props.hr) &&
-//     css`
-//       color: #cd334f;
-//       font-weight: 600;
-//     `};
-// `
+  // CS: styled.div`
+  //   ${(props) =>
+  //     (props.dt || props.hr) &&
+  //     css`
+  //       color: #cd334f;
+  //       font-weight: 600;
+  //     `};
+  // `
 
-// S.AR = styled.div`
-//   ${(props) =>
-//     (props.dt || props.hr) &&
-//     css`
-//       color: #cd334f;
-//       font-weight: 600;
-//     `};
-// `
+  // AR: styled.div`
+  //   ${(props) =>
+  //     (props.dt || props.hr) &&
+  //     css`
+  //       color: #cd334f;
+  //       font-weight: 600;
+  //     `};
+  // `
 
-// S.OD = styled.div`
-//   ${(props) =>
-//     (props.dt || props.hr) &&
-//     css`
-//       color: #cd334f;
-//       font-weight: 600;
-//     `};
-// `
-
+  // OD: styled.div`
+  //   ${(props) =>
+  //     (props.dt || props.hr) &&
+  //     css`
+  //       color: #cd334f;
+  //       font-weight: 600;
+  //     `};
+  // `
+}
 export default MappoolBeatmap

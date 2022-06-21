@@ -23,6 +23,7 @@ import Tournaments from './components/tournaments/Tournaments'
 import Tournament from './components/tournament/Tournament'
 import CreateTournament from './components/tournament/CreateTournament'
 import EditTournament from './components/tournament/EditTournament'
+import SubscriptionStatus from './components/subscription/SubscriptionStatus'
 
 // website imports
 import NotFound from './components/notfound/NotFound'
@@ -187,6 +188,9 @@ function App() {
                 </Route>
                 <Route path='/collections/:id'>
                   <Collection user={user} setUser={setUser} />
+                </Route>
+                <Route path='/subscription/status'>
+                  <SubscriptionStatus user={user} setUser={setUser} />
                 </Route>
                 <Route>
                   <NotFound />

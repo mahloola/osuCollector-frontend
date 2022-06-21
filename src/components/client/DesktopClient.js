@@ -13,31 +13,6 @@ import { PayPalButtons } from '@paypal/react-paypal-js'
 import { Alert } from 'react-bootstrap'
 import SubscriptionDetailsModal from './SubscriptionDetailsModal'
 
-const downloadInstaller = async (platform = 'win32') => {
-  try {
-    const installerURL = await api.getInstallerURL(platform)
-    open(installerURL)
-  } catch (err) {
-    alert('Error ' + err.response.status + ': ' + err.response.data)
-  }
-}
-
-const paidSubscriptionActive = (user, paypalSubscription, stripeSubscription) => {
-  if (user?.private?.subscriptionExpiryDate) {
-    const subscriptionExpiryDate = new Date(user.private.subscriptionExpiryDate._seconds * 1000)
-    if (subscriptionExpiryDate > new Date()) {
-      return true
-    }
-  }
-  if (paypalSubscription?.status.toLowerCase() === 'active') {
-    return true
-  }
-  if (stripeSubscription?.status.toLowerCase() === 'active') {
-    return true
-  }
-  return false
-}
-
 const offsetX = 3
 const offsetY = 3
 const ShadowImg = styled.img`
@@ -508,6 +483,31 @@ function DesktopClient({ user, setUser }) {
       </Container>
     </div>
   )
+}
+
+const downloadInstaller = async (platform = 'win32') => {
+  try {
+    const installerURL = await api.getInstallerURL(platform)
+    open(installerURL)
+  } catch (err) {
+    alert('Error ' + err.response.status + ': ' + err.response.data)
+  }
+}
+
+const paidSubscriptionActive = (user, paypalSubscription, stripeSubscription) => {
+  if (user?.private?.subscriptionExpiryDate) {
+    const subscriptionExpiryDate = new Date(user.private.subscriptionExpiryDate._seconds * 1000)
+    if (subscriptionExpiryDate > new Date()) {
+      return true
+    }
+  }
+  if (paypalSubscription?.status.toLowerCase() === 'active') {
+    return true
+  }
+  if (stripeSubscription?.status.toLowerCase() === 'active') {
+    return true
+  }
+  return false
 }
 
 export default DesktopClient

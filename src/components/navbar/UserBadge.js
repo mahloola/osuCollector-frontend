@@ -31,6 +31,9 @@ const UserBadge = ({ className, user }) => {
           <LinkContainer to={`/users/${user.id}/favourites`}>
             <Dropdown.Item onClick={() => setShow(false)}>Favourites</Dropdown.Item>
           </LinkContainer>
+          <LinkContainer to={`/subscription/status`}>
+            <Dropdown.Item onClick={() => setShow(false)}>Subscription</Dropdown.Item>
+          </LinkContainer>
           {user?.id === 2051389 && (
             <Dropdown.Item
               onClick={() => {
