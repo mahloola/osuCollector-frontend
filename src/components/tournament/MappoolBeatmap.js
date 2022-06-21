@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Card } from 'components/bootstrap-osu-collector'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { css, ThemeContext } from 'styled-components'
 import { secondsToHHMMSS, starToColor } from 'utils/misc'
 import { PlayFill, StopFill } from 'react-bootstrap-icons'
 import { Breakpoints } from 'utils/misc'
@@ -194,9 +194,12 @@ S.ModBadge = styled(Card)`
     if (mod.toLowerCase() === 'hd') return 'background-color: #BDA542;'
     if (mod.toLowerCase() === 'hr') return 'background-color: #CD334F;'
     if (mod.toLowerCase() === 'dt') return 'background-color: #B44DC0;'
+    if (mod.toLowerCase() === 'ez') return 'background-color: #4dc04f;'
+    if (mod.toLowerCase() === 'fl')
+      return 'background: radial-gradient(circle, rgba(85,85,85,1) 0%, rgba(0,0,0,1) 70%);'
     if (mod.toLowerCase() === 'fm') return 'background-color: #888;'
     if (mod.toLowerCase() === 'tb') return 'background-color: #111;'
-    return ''
+    return 'background-color: #111;'
   }}
 `
 
