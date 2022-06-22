@@ -12,6 +12,7 @@ function CreateTournament() {
       const newTournament = await api.createTournament(createTournamentDto)
       setSubmitLoading(false)
       localStorage.removeItem('Create Tournament Draft')
+      // window.location.href = `/tournaments/${newTournament.id}`
       history.push(`/tournaments/${newTournament.id}`)
     } catch (err) {
       setSubmitLoading(false)

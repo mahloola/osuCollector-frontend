@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react'
 import Badge from 'react-bootstrap/Badge'
-import { LinkContainer } from 'react-router-bootstrap'
 import * as api from '../../utils/api'
 import { useHistory } from 'react-router-dom'
 import { Button, Card, CardBody, Col, Container, Row, Spinner } from '../bootstrap-osu-collector'
-import styled from 'styled-components'
-import { HeartFill, Twitch } from 'react-bootstrap-icons'
-import { PayPalButtons } from '@paypal/react-paypal-js'
-import { Alert } from 'react-bootstrap'
 import SubscriptionDetailsModal from '../client/SubscriptionDetailsModal'
 
 function SubscriptionStatus({ user, setUser }) {
