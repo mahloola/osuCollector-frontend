@@ -176,6 +176,7 @@ function Collection({ user, setUser }) {
     setShowDeleteConfirmationModal(false)
     if (result) {
       setCollectionSuccessfullyDeleted(true)
+      setTimeout(() => (window.location.href = `/recent`), 1000)
     } else {
       alert('Delete failed. Check console for more info.')
     }
