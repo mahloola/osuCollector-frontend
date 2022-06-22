@@ -1,5 +1,9 @@
 {
-    "editor.formatOnSave": true,
-    "files.autoSave": "afterDelay",
-    "editor.tabSize": 2
+  "editor.formatOnSave": true,
+  "files.autoSave": "afterDelay",
+  "editor.tabSize": 2,
+  "editor.tabCompletion": "on",
+  "javascript.referencesCodeLens.enabled": true,
+  "javascript.referencesCodeLens.showOnAllFunctions": true,
+  "typescript.referencesCodeLens.enabled": true
 }

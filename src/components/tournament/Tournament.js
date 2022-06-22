@@ -134,15 +134,6 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
     )
   }
 
-  const actionButtonClicked = () => {
-    if (user?.paidFeaturesAccess) {
-      setMessageModalText('Tournament launched in osu!Collector desktop client!')
-      window.open(`osucollector://tournaments/${tournament.id}`)
-    } else {
-      history.push('/client')
-    }
-  }
-
   const favouriteClicked = () => {
     if (!user) return
     if (user.favouriteTournaments?.includes(Number(id))) {
