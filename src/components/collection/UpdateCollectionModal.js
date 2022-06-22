@@ -9,22 +9,32 @@ import { parseCollectionDb } from '../../utils/collectionsDb'
 import styled from 'styled-components'
 import { arrayEquals } from '../../utils/misc'
 
+const { ipcRenderer } = window.require('electron')
+
 function UpdateCollectionModal({ collection: remoteCollection, mutateCollection, show, hide }) {
   const [uploading, setUploading] = useState(false)
   const [localCollections, setLocalCollections] = useState(null)
-  const onDrop = useCallback((acceptedFiles) => {
-    let file = acceptedFiles[0]
-    let reader = new FileReader()
-    reader.onload = () => {
-      setLocalCollections(parseCollectionDb(reader.result))
+
+  // read collection.db to show preview of mappool collections to be removed
+  const loadCollectionDb = async () => {
+    const { error, data } = await ipcRenderer.invoke('parse-collection-db')
+    if (error) {
+      alert(error + '\n\nPlease check that your osu! install folder is configured properly in settings.')
+      return
     }
-    reader.readAsArrayBuffer(file)
-  }, [])
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+    setLocalCollections(
+      data.collection.map((collection) => ({
+        name: collection.name,
+        beatmapChecksums: collection.beatmapsMd5,
+      }))
+    )
+  }
 
   useEffect(() => {
-    setUploading(false)
-    setLocalCollections(null)
+    if (show) {
+      setUploading(false)
+      loadCollectionDb()
+    }
   }, [show])
 
   const submit = async () => {
@@ -63,7 +73,7 @@ function UpdateCollectionModal({ collection: remoteCollection, mutateCollection,
         <div className='d-flex gap-5'>
           <div className='w-100'>
             <h5>In local collection.db:</h5>
-            {localCollections ? (
+            {localCollections && (
               <Card $lightbg className='p-3'>
                 {localCollection ? (
                   <>
@@ -77,11 +87,6 @@ function UpdateCollectionModal({ collection: remoteCollection, mutateCollection,
                   <>You do not have a collection named &apos;{remoteCollection?.name}&apos;</>
                 )}
               </Card>
-            ) : (
-              <div className='dragon-drop' {...getRootProps()}>
-                <input {...getInputProps()} />
-                {isDragActive ? <span>Drop the file here ...</span> : <span>Open collection.db...</span>}
-              </div>
             )}
           </div>
           <div className='w-100'>
