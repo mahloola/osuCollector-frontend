@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Badge,
   Button,
@@ -10,8 +10,10 @@ import {
   ListGroup,
   ListGroupItem,
   Row,
+  Overlay,
+  Tooltip,
 } from '../bootstrap-osu-collector'
-import { PlayFill, StopFill } from 'react-bootstrap-icons'
+import { Clipboard, PlayFill, StopFill } from 'react-bootstrap-icons'
 import { bpmToColor, secondsToHHMMSS, useFallbackImg } from '../../utils/misc'
 import './MapsetCard.css'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
@@ -22,6 +24,7 @@ import taikoPng from '../common/mode-taiko.png'
 import maniaPng from '../common/mode-mania.png'
 import catchPng from '../common/mode-catch.png'
 import { useMediaQuery } from 'react-responsive'
+import styled from 'styled-components'
 
 const compactThreshold = 991
 const Compact = ({ children }) => (useMediaQuery({ maxWidth: compactThreshold }) ? children : null)
@@ -61,6 +64,9 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
       audioRef.current.currentTime = 0
     }
   }, [playing])
+
+  const clipboardRef = useRef(null)
+  const [showCopiedToClipboard, setShowCopiedToClipboard] = useState(false)
 
   return (
     <div className={className}>
@@ -244,23 +250,40 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                             />
                           )}
                           <b className='mr-2'>{beatmap.version}</b>
-                          <Button
-                            href={beatmap.url}
-                            target='blank'
-                            variant='outline-secondary'
-                            className='ms-auto px-2 py-0 mr-1'
-                            size='sm'
-                          >
-                            <small> Website </small>
-                          </Button>
-                          <Button
-                            variant='outline-primary'
-                            className='mx-1 px-2 py-0'
-                            size='sm'
-                            href={`osu://b/${beatmap.id}`}
-                          >
-                            <small> Direct </small>
-                          </Button>
+                          <div className='d-flex align-items-center gap-2 ms-auto'>
+                            <Button
+                              href={beatmap.url}
+                              target='blank'
+                              variant='outline-secondary'
+                              className='ms-auto px-2 py-0'
+                              size='sm'
+                            >
+                              <small> Website </small>
+                            </Button>
+                            <Button
+                              variant='outline-primary'
+                              className='px-2 py-0'
+                              size='sm'
+                              href={`osu://b/${beatmap.id}`}
+                            >
+                              <small> Direct </small>
+                            </Button>
+                            <S.Clipboard
+                              ref={clipboardRef}
+                              onClick={() => {
+                                navigator.clipboard.writeText(beatmap.id)
+                                setShowCopiedToClipboard(true)
+                                setTimeout(() => setShowCopiedToClipboard(false), 1000)
+                              }}
+                            />
+                            <Overlay target={clipboardRef.current} show={showCopiedToClipboard} placement='top'>
+                              {(props) => (
+                                <Tooltip id='overlay-example' {...props}>
+                                  copied beatmap ID!
+                                </Tooltip>
+                              )}
+                            </Overlay>
+                          </div>
                         </div>
                       </ListGroupItem>
                     ))}
@@ -273,6 +296,12 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
       </Full>
     </div>
   )
+}
+
+const S = {
+  Clipboard: styled(Clipboard)`
+    cursor: pointer;
+  `,
 }
 
 export default MapsetCard
