@@ -23,7 +23,7 @@ import './MapsetCard.css'
 import MapsetCard from './MapsetCard'
 import SortButton from '../common/SortButton'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { addFavouritedByUserAttribute, bpmToColor, starToColor } from '../../utils/misc'
+import { bpmToColor, starToColor } from '../../utils/misc'
 import EditableTextbox from '../common/EditableTextbox'
 import { TrashFill, ExclamationTriangleFill, Pencil, QuestionCircleFill } from 'react-bootstrap-icons'
 import styled, { ThemeContext } from 'styled-components'
@@ -111,15 +111,18 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
     filterMin: undefined,
     filterMax: undefined,
   })
-  const { collection: _collection, mutateCollection } = api.useCollection(id)
-  const collection = addFavouritedByUserAttribute(_collection, user, { makeCopy: true })
+  const { collection, mutateCollection } = api.useCollection(id)
   const { collectionBeatmaps, isValidating, currentPage, setCurrentPage, hasMore } = api.useCollectionBeatmaps(
     id,
     queryOpts
   )
 
-  const [favourited, setFavourited] = useState(false)
-  const [favourites, setFavourites] = useState(0)
+  const [favouritedBy, setFavouritedBy] = useState([])
+  useEffect(() => {
+    if (!collection?.favouritedBy) return
+    setFavouritedBy(collection.favouritedBy)
+  }, [collection])
+
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
 
   const [npEnabled, setNpEnabled] = useState(false)
@@ -262,29 +265,27 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
     }
   }
 
-  const favouriteButtonClicked = () => {
+  const favouriteButtonClicked = async () => {
     if (!collection) return
     if (!user) {
       alert('You must be logged in to favourite collections')
       return
     }
 
-    const favourited = !collection.favouritedByUser
-    collection.favouritedByUser = favourited
-    setFavourited(favourited)
-    if (favourited) {
-      api.favouriteCollection(collection.id)
-      setFavourites(favourites + 1)
-    } else {
-      api.unfavouriteCollection(collection.id)
-      setFavourites(favourites - 1)
-    }
+    const newFavourited = !favouritedBy?.includes(user?.id)
+    setFavouritedBy((prev) => (newFavourited ? [...prev, user.id] : prev.filter((id) => id !== user.id)))
     setUser({
       ...user,
-      favourites: favourited
+      favourites: newFavourited
         ? [...user.favourites, collection.id]
         : user.favourites.filter((id) => id !== collection.id),
     })
+    if (newFavourited) {
+      await api.favouriteCollection(collection.id)
+    } else {
+      await api.unfavouriteCollection(collection.id)
+    }
+    mutateCollection()
   }
 
   const setSortBy = (sortBy) => {
@@ -618,8 +619,8 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                     />
                     <FavouriteButton
                       className='mx-1'
-                      favourites={favourites}
-                      favourited={favourited}
+                      favourites={favouritedBy?.length}
+                      favourited={favouritedBy?.includes(user?.id)}
                       onClick={favouriteButtonClicked}
                     />
                   </div>

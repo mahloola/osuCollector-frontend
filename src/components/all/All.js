@@ -10,7 +10,6 @@ import osuPng from '../common/mode-osu.png'
 import taikoPng from '../common/mode-taiko.png'
 import maniaPng from '../common/mode-mania.png'
 import catchPng from '../common/mode-catch.png'
-import { addFavouritedByUserAttribute } from '../../utils/misc'
 
 function All({ searchText, setSearchText, user, setUser }) {
   const [collectionPage, setCollectionPage] = useState(null)
@@ -46,7 +45,6 @@ function All({ searchText, setSearchText, user, setUser }) {
     )
       .then((_collectionPage) => {
         setCollectionPage(_collectionPage)
-        addFavouritedByUserAttribute(_collectionPage.collections, user)
         setCollections(_collectionPage.collections)
         const qs = []
         if (searchText !== null && searchText !== '') {
@@ -93,7 +91,6 @@ function All({ searchText, setSearchText, user, setUser }) {
         queryOpts.orderBy
       )
       setCollectionPage(_collectionPage)
-      addFavouritedByUserAttribute(_collectionPage.collections, user)
       setCollections([...collections, ..._collectionPage.collections])
     } catch (err) {
       console.error(err)
