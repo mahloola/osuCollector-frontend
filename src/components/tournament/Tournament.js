@@ -92,7 +92,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
     setShowDeleteConfirmationModal(false)
     if (result) {
       setTournamentSuccessfullyDeleted(true)
-      // setTimeout(() => (window.location.href = `/tournaments`), 1000)
+      setTimeout(() => (window.location.href = `/tournaments`), 1000)
     } else {
       alert('Delete failed. Check console for more info.')
     }
