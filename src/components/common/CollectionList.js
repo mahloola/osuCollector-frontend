@@ -10,23 +10,6 @@ const CollectionList = ({ collections, setCollections = null, hasMore, loadMore,
     console.log(collections)
   }
 
-  const favouriteButtonClicked = setCollections
-    ? (collectionId, favourited) => {
-        setUser({
-          ...user,
-          favourites: favourited
-            ? [...user.favourites, collectionId]
-            : user.favourites.filter((id) => id !== collectionId),
-        })
-        setCollections(changeCollectionFavouritedStatus(collections, collectionId, favourited))
-        if (favourited) {
-          api.favouriteCollection(collectionId)
-        } else {
-          api.unfavouriteCollection(collectionId)
-        }
-      }
-    : null
-
   return (
     <Container className='p-2'>
       <InfiniteScroll
@@ -54,9 +37,7 @@ const CollectionList = ({ collections, setCollections = null, hasMore, loadMore,
               className='mx-auto'
               style={{ width: '90%', height: '268px' }}
             >
-              {collection && (
-                <CollectionCard user={user} collection={collection} favouriteButtonClicked={favouriteButtonClicked} />
-              )}
+              {collection && <CollectionCard user={user} setUser={setUser} collection={collection} />}
             </ReactPlaceholder>
           </Col>
         ))}

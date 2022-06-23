@@ -77,38 +77,6 @@ export function useFallbackImg(ev, fallbackImg) {
   ev.target.src = fallbackImg
 }
 
-export function addFavouritedByUserAttribute(collections, user, { makeCopy } = { makeCopy: false }) {
-  if (!collections) return
-  if (!user) {
-    if (!makeCopy) return
-    return Array.isArray(collections) ? [...collections] : { ...collections }
-  }
-  if (Array.isArray(collections)) {
-    if (makeCopy) {
-      return collections.map((collection) => ({
-        ...collection,
-        favouritedByUser: Boolean(user.favourites && user.favourites.includes(collection.id)),
-      }))
-    } else {
-      for (const collection of collections) {
-        collection.favouritedByUser = Boolean(user.favourites && user.favourites.includes(collection.id))
-      }
-    }
-  } else {
-    // case: single collection
-    const collection = collections
-    if (makeCopy) {
-      return {
-        ...collection,
-        favouritedByUser: Boolean(user.favourites && user.favourites.includes(collection.id)),
-      }
-    } else {
-      const collection = collections
-      collection.favouritedByUser = Boolean(user.favourites && user.favourites.includes(collection.id))
-    }
-  }
-}
-
 export function changeCollectionFavouritedStatus(collections, collectionId, favourited) {
   const changedCollection = collections.find((collection) => collection.id === collectionId)
   if (changedCollection) {

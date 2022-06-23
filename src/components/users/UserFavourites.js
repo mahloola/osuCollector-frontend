@@ -3,7 +3,6 @@ import { Card, Container, Image, ReactPlaceholder } from '../bootstrap-osu-colle
 import { getUserFavourites } from '../../utils/api'
 import CollectionList from '../common/CollectionList'
 import * as api from '../../utils/api'
-import { addFavouritedByUserAttribute } from 'utils/misc'
 
 function UserFavourites({ user, setUser }) {
   const [pageUser, setPageUser] = useState(null)
@@ -32,7 +31,6 @@ function UserFavourites({ user, setUser }) {
     if (!pageUser) return
     let cancel
     getUserFavourites(pageUser.id, (c) => (cancel = c)).then((collections) => {
-      addFavouritedByUserAttribute(collections, user)
       setCollections(collections)
     })
     return cancel

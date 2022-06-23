@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components'
 
 function FavouriteButton({ className, favourites, favourited, onClick }) {
   return (
-    <S.Button variant='default' className={'favourite-button ' + className} onClick={onClick} favourited={favourited}>
+    <S.Button variant='default' className={'favourite-button ' + className} onClick={onClick} $favourited={favourited}>
       {favourited ? <HeartFill className='mr-2' /> : <Heart className='mr-2' />}
       {favourited ? 'Favorited' : 'Favorite'}
       {favourites ? ` (${favourites})` : ''}
@@ -16,8 +16,8 @@ function FavouriteButton({ className, favourites, favourited, onClick }) {
 
 const S = {
   Button: styled(Button)`
-    ${({ favourited }) =>
-      favourited
+    ${({ $favourited }) =>
+      $favourited
         ? css`
             color: white;
             background: #ff66ab;
