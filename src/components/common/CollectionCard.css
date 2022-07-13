@@ -25,6 +25,7 @@ a.nostyle:visited {
 
 .red-heart-color {
   color: red;
+  cursor: pointer;
 }
 
 .red-heart-color:hover {
@@ -37,6 +38,7 @@ a.nostyle:visited {
 
 .grey-heart-color {
   color: grey;
+  cursor: pointer;
 }
 
 .grey-heart-color:hover {

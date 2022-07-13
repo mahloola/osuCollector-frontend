@@ -160,7 +160,7 @@ function App() {
               component={(props) => <UserUploads user={user} setUser={setUser} {...props} />}
             />
             <Route exact path='/tournaments'>
-              <Tournaments />
+              <Tournaments user={user} setUser={setUser} />
             </Route>
             <Route exact path='/tournaments/create'>
               <CreateTournament />
@@ -168,6 +168,7 @@ function App() {
             <Route exact path='/tournaments/:id'>
               <Tournament
                 user={user}
+                setUser={setUser}
                 setDownloadsModalIsOpen={setDownloadsModalIsOpen}
                 localCollections={localCollections}
                 setLocalCollections={setLocalCollections}
