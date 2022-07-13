@@ -5,7 +5,8 @@
     "module": "commonjs",
     "target": "es2020",
     "jsx": "react-jsx",
-    "strictFunctionTypes": true
+    "strictFunctionTypes": true,
+    "resolveJsonModule": true
   },
   "exclude": [
     "node_modules",

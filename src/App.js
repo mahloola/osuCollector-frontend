@@ -23,6 +23,7 @@ import Tournaments from './components/tournaments/Tournaments'
 import Tournament from './components/tournament/Tournament'
 import CreateTournament from './components/tournament/CreateTournament'
 import EditTournament from './components/tournament/EditTournament'
+import SubscriptionStatus from './components/subscription/SubscriptionStatus'
 
 extend([mixPlugin])
 
@@ -187,6 +188,9 @@ function App() {
                 setDownloadsModalIsOpen={setDownloadsModalIsOpen}
                 setShowDownloadTroubleshootText={setShowDownloadTroubleshootText}
               />
+            </Route>
+            <Route path='/subscription/status'>
+              <SubscriptionStatus user={user} setUser={setUser} />
             </Route>
             <Route>
               <Redirect to='/' />

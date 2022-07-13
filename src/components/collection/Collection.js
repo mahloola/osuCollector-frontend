@@ -23,7 +23,7 @@ import './MapsetCard.css'
 import MapsetCard from './MapsetCard'
 import SortButton from '../common/SortButton'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { addFavouritedByUserAttribute, bpmToColor, starToColor } from '../../utils/misc'
+import { bpmToColor, starToColor } from '../../utils/misc'
 import EditableTextbox from '../common/EditableTextbox'
 import { TrashFill, ExclamationTriangleFill, Pencil, QuestionCircleFill } from 'react-bootstrap-icons'
 import styled, { ThemeContext } from 'styled-components'
@@ -33,6 +33,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import Comments from './Comments'
 import DropdownButton from '../common/DropdownButton'
 import moment from 'moment'
+import UpdateCollectionModal from './UpdateCollectionModal'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -110,15 +111,18 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
     filterMin: undefined,
     filterMax: undefined,
   })
-  const { collection: _collection, mutateCollection } = api.useCollection(id)
-  const collection = addFavouritedByUserAttribute(_collection, user, { makeCopy: true })
+  const { collection, mutateCollection } = api.useCollection(id)
   const { collectionBeatmaps, isValidating, currentPage, setCurrentPage, hasMore } = api.useCollectionBeatmaps(
     id,
     queryOpts
   )
 
-  const [favourited, setFavourited] = useState(false)
-  const [favourites, setFavourites] = useState(0)
+  const [favouritedBy, setFavouritedBy] = useState([])
+  useEffect(() => {
+    if (!collection?.favouritedBy) return
+    setFavouritedBy(collection.favouritedBy)
+  }, [collection])
+
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
 
   const [npEnabled, setNpEnabled] = useState(false)
@@ -163,6 +167,7 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
   const [genericImportWarning, setGenericImportWarning] = useState(false)
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState(false)
   const [collectionSuccessfullyDeleted, setCollectionSuccessfullyDeleted] = useState(false)
+  const [showUpdateCollectionModal, setShowUpdateCollectionModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
 
@@ -193,6 +198,7 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
     setShowDeleteConfirmationModal(false)
     if (result) {
       setCollectionSuccessfullyDeleted(true)
+      setTimeout(() => (window.location.href = `/recent`), 1000)
     } else {
       alert('Delete failed. Check console for more info.')
     }
@@ -259,29 +265,27 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
     }
   }
 
-  const favouriteButtonClicked = () => {
+  const favouriteButtonClicked = async () => {
     if (!collection) return
     if (!user) {
       alert('You must be logged in to favourite collections')
       return
     }
 
-    const favourited = !collection.favouritedByUser
-    collection.favouritedByUser = favourited
-    setFavourited(favourited)
-    if (favourited) {
-      api.favouriteCollection(collection.id)
-      setFavourites(favourites + 1)
-    } else {
-      api.unfavouriteCollection(collection.id)
-      setFavourites(favourites - 1)
-    }
+    const newFavourited = !favouritedBy?.includes(user?.id)
+    setFavouritedBy((prev) => (newFavourited ? [...prev, user.id] : prev.filter((id) => id !== user.id)))
     setUser({
       ...user,
-      favourites: favourited
+      favourites: newFavourited
         ? [...user.favourites, collection.id]
         : user.favourites.filter((id) => id !== collection.id),
     })
+    if (newFavourited) {
+      await api.favouriteCollection(collection.id)
+    } else {
+      await api.unfavouriteCollection(collection.id)
+    }
+    mutateCollection()
   }
 
   const setSortBy = (sortBy) => {
@@ -558,6 +562,20 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                     submit={submitDescription}
                   />
                   {/* buttons */}
+                  {collection?.uploader?.id === user?.id && (
+                    <div className='d-flex flex-row mb-3'>
+                      <Button
+                        className='mr-1 w-100 p-2'
+                        variant='warning'
+                        onClick={() => setShowUpdateCollectionModal(true)}
+                      >
+                        <h5 className='mb-0 pb-0'>
+                          <b>Update collection</b>
+                        </h5>
+                        Last updated {moment(collection.dateLastModified._seconds * 1000).fromNow()}
+                      </Button>
+                    </div>
+                  )}
                   <div className='d-flex flex-row mb-4'>
                     <Button className='mr-1' onClick={downloadButtonClicked}>
                       Download maps
@@ -601,8 +619,8 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                     />
                     <FavouriteButton
                       className='mx-1'
-                      favourites={favourites}
-                      favourited={favourited}
+                      favourites={favouritedBy?.length}
+                      favourited={favouritedBy?.includes(user?.id)}
                       onClick={favouriteButtonClicked}
                     />
                   </div>
@@ -825,6 +843,15 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {collection && (
+        <UpdateCollectionModal
+          collection={collection}
+          mutateCollection={mutateCollection}
+          show={showUpdateCollectionModal}
+          hide={() => setShowUpdateCollectionModal(false)}
+        />
+      )}
     </Container>
   )
 }

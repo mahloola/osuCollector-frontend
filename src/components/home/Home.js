@@ -13,7 +13,7 @@ import 'react-placeholder/lib/reactPlaceholder.css'
 import CollectionCard from '../common/CollectionCard'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Alert } from 'react-bootstrap'
-import { addFavouritedByUserAttribute, changeCollectionFavouritedStatus } from 'utils/misc'
+import { changeCollectionFavouritedStatus } from 'utils/misc'
 import { Discord } from 'react-bootstrap-icons'
 import { openInBrowser } from '../../utils/misc'
 

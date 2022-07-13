@@ -34,9 +34,9 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
     setUploading(true)
     try {
       const collections = await api.uploadCollections([selectedCollection])
-      alert(`Collection uploaded!`)
       if (collections.length >= 1) {
-        history.push(`/collections/${collections[0].id}`) // TODO: mutate useRecentCollections
+        // history.push(`/collections/${collections[0].id}`) // TODO: mutate useRecentCollections
+        window.location.href = `/collections/${collections[0].id}`
       }
     } catch (err) {
       alert(

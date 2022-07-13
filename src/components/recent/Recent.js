@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Card, Alert, Container } from '../bootstrap-osu-collector'
 import { useRecentCollections } from '../../utils/api'
 import CollectionList from '../common/CollectionList'
-import { addFavouritedByUserAttribute } from 'utils/misc'
 
 function Recent({ user, setUser }) {
   const {

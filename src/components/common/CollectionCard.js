@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Card, Image, ListGroup, ListGroupItem } from '../bootstrap-osu-collector'
 import moment from 'moment'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -8,13 +8,14 @@ import BarGraph from './BarGraph'
 import styled, { ThemeContext } from 'styled-components'
 import ModeCounters from './ModeCounters'
 import './CollectionCard.css'
+import * as api from '../../utils/api'
 
 const GraphContainer = styled(Card.Body)`
   cursor: pointer;
   background-color: ${(props) => (props.theme.darkMode ? '#121212' : '#eee')};
 `
 
-function CollectionCard({ user, collection, favouriteButtonClicked }) {
+function CollectionCard({ user, setUser, collection }) {
   if (!collection) return <div></div>
   // @ts-ignore
   const theme = useContext(ThemeContext)
@@ -22,7 +23,22 @@ function CollectionCard({ user, collection, favouriteButtonClicked }) {
   const [hovered, setHovered] = useState(false)
 
   const relativeDate = moment.unix(collection.dateUploaded._seconds).fromNow()
-  const heartClicked = () => favouriteButtonClicked(collection.id, !collection.favouritedByUser)
+
+  const favourited = user?.favourites?.includes(collection?.id)
+  const heartClicked = () => {
+    const newFavourited = !favourited
+    if (newFavourited) {
+      api.favouriteCollection(collection.id)
+    } else {
+      api.unfavouriteCollection(collection.id)
+    }
+    setUser({
+      ...user,
+      favourites: newFavourited
+        ? [...user.favourites, collection.id]
+        : user.favourites.filter((id) => id !== collection.id),
+    })
+  }
 
   const difficultySpread = collection.difficultySpread
     ? collection.difficultySpread
@@ -81,15 +97,11 @@ function CollectionCard({ user, collection, favouriteButtonClicked }) {
                 <h5 className='mb-0'>
                   <i
                     className={`fas fa-heart mr-2 ${
-                      !user || !favouriteButtonClicked
-                        ? 'grey-heart-disabled'
-                        : collection.favouritedByUser
-                        ? 'red-heart-color'
-                        : 'grey-heart-color'
+                      !user ? 'grey-heart-disabled' : favourited ? 'red-heart-color' : 'grey-heart-color'
                     }`}
-                    onClick={user && favouriteButtonClicked && heartClicked}
+                    onClick={user && heartClicked}
                   />
-                  <small> {collection.favourites} </small>
+                  <small> {collection?.favourites} </small>
                 </h5>
               </div>
               <LinkContainer to={`/collections/${collection.id}`}>

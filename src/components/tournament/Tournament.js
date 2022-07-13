@@ -92,6 +92,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
     setShowDeleteConfirmationModal(false)
     if (result) {
       setTournamentSuccessfullyDeleted(true)
+      setTimeout(() => (window.location.href = `/tournaments`), 1000)
     } else {
       alert('Delete failed. Check console for more info.')
     }
@@ -132,15 +133,6 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
         </div>
       </Container>
     )
-  }
-
-  const actionButtonClicked = () => {
-    if (user?.paidFeaturesAccess) {
-      setMessageModalText('Tournament launched in osu!Collector desktop client!')
-      window.open(`osucollector://tournaments/${tournament.id}`)
-    } else {
-      history.push('/client')
-    }
   }
 
   const favouriteClicked = () => {
