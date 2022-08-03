@@ -4,8 +4,13 @@ import { useHistory } from 'react-router-dom'
 import * as api from '../../utils/api'
 import './uploadModal.css'
 import moment from 'moment'
+import { useCallback } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { parseCollectionDb } from '../../utils/collectionsDb'
+import { useSWRConfig } from 'swr'
 
 function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollections, localCollections }) {
+  const { cache } = useSWRConfig()
   const [selectedCollection, setSelectedCollection] = useState(null)
   const [uploading, setUploading] = useState(false)
   const history = useHistory()
@@ -35,8 +40,9 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
     try {
       const collections = await api.uploadCollections([selectedCollection])
       if (collections.length >= 1) {
-        // history.push(`/collections/${collections[0].id}`) // TODO: mutate useRecentCollections
-        window.location.href = `/collections/${collections[0].id}`
+        // window.location.href = `/collections/${collections[0].id}`
+        cache.clear()
+        history.push(`/collections/${collections[0].id}`)
       }
     } catch (err) {
       alert(
