@@ -2,8 +2,10 @@ import { useHistory } from 'react-router-dom'
 import TournamentForm from './TournamentForm'
 import * as api from '../../utils/api'
 import { useState } from 'react'
+import { useSWRConfig } from 'swr'
 
 function CreateTournament() {
+  const { cache } = useSWRConfig()
   const history = useHistory()
   const [submitLoading, setSubmitLoading] = useState(false)
   const createTournament = async (createTournamentDto) => {
@@ -12,7 +14,9 @@ function CreateTournament() {
       const newTournament = await api.createTournament(createTournamentDto)
       setSubmitLoading(false)
       localStorage.removeItem('Create Tournament Draft')
-      window.location.href = `/tournaments/${newTournament.id}`
+      // window.location.href = `/tournaments/${newTournament.id}`
+      cache.clear()
+      history.push(`/tournaments/${newTournament.id}`)
     } catch (err) {
       setSubmitLoading(false)
       alert(err.message)

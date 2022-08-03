@@ -7,8 +7,10 @@ import moment from 'moment'
 import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { parseCollectionDb } from '../../utils/collectionsDb'
+import { useSWRConfig } from 'swr'
 
 function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollections }) {
+  const { cache } = useSWRConfig()
   const [selectedCollection, setSelectedCollection] = useState(null)
   const [uploading, setUploading] = useState(false)
   const history = useHistory()
@@ -53,7 +55,9 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
       const collections = await api.uploadCollections([selectedCollection])
       if (collections.length >= 1) {
         // this is easier than mutating useRecentCollections
-        window.location.href = `/collections/${collections[0].id}`
+        // window.location.href = `/collections/${collections[0].id}`
+        cache.clear()
+        history.push(`/collections/${collections[0].id}`)
       }
     } catch (err) {
       alert(
