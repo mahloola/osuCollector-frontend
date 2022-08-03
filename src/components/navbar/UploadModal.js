@@ -18,6 +18,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
   const onCheck = ({ target }) => {
     const { value, checked } = target
     setSelectedCollection(checked ? localCollections[value] : null)
+    console.log('selectedCollection', checked ? localCollections[value] : null)
   }
 
   const isUploaded = (collection) => remoteCollections.map((c) => c.name).includes(collection?.name)
@@ -40,9 +41,14 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
     try {
       const collections = await api.uploadCollections([selectedCollection])
       if (collections.length >= 1) {
+        const newLocation = `/collections/${collections[0].id}`
         // window.location.href = `/collections/${collections[0].id}`
         cache.clear()
-        history.push(`/collections/${collections[0].id}`)
+        if (window.location.href.includes(newLocation)) {
+          window.location.reload()
+        } else {
+          history.push(`/collections/${collections[0].id}`)
+        }
       }
     } catch (err) {
       alert(
