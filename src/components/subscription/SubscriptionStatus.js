@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import Badge from 'react-bootstrap/Badge'
 import * as api from '../../utils/api'
 import { useHistory } from 'react-router-dom'
-import { Button, Card, CardBody, Col, Container, Row, Spinner } from '../bootstrap-osu-collector'
+import { Alert, Button, Card, CardBody, Col, Container, Row, Spinner } from '../bootstrap-osu-collector'
 import SubscriptionDetailsModal from '../client/SubscriptionDetailsModal'
-import SubscribeModal from 'components/client/SubscribeModal'
+import { openInBrowser } from 'utils/misc'
 
 function SubscriptionStatus({ user, setUser }) {
   const history = useHistory()
@@ -91,7 +91,7 @@ function SubscriptionStatus({ user, setUser }) {
         <Alert variant='warning' className='text-center'>
           {/* @ts-ignore */}
           <span style={{ marginRight: '10px' }}>It looks like your subscription has ended! </span>
-          <Button size='sm' onClick={() => setSubscribeModalVisible(true)}>
+          <Button size='sm' onClick={() => openInBrowser(`https://osucollector.com/client#subscription-methods`)}>
             Subscribe
           </Button>
         </Alert>
@@ -196,14 +196,6 @@ function SubscriptionStatus({ user, setUser }) {
         stripeSubscription={stripeSubscription}
         onPaypalSubscriptionCancel={onPaypalSubscriptionCancel}
         onStripeSubscriptionCancel={onStripeSubscriptionCancel}
-      />
-      <SubscribeModal
-        user={user}
-        show={subscribeModalVisible}
-        onHide={() => setSubscribeModalVisible(false)}
-        paypalSubscription={paypalSubscription}
-        stripeSubscription={stripeSubscription}
-        isSubbedToFunOrange={isSubbedToFunOrange}
       />
     </Container>
   )
