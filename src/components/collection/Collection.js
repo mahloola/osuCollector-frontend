@@ -23,7 +23,7 @@ import './MapsetCard.css'
 import MapsetCard from './MapsetCard'
 import SortButton from '../common/SortButton'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { bpmToColor, starToColor } from '../../utils/misc'
+import { bpmToColor, sleep, starToColor } from '../../utils/misc'
 import EditableTextbox from '../common/EditableTextbox'
 import { TrashFill, ExclamationTriangleFill, Pencil, QuestionCircleFill } from 'react-bootstrap-icons'
 import styled, { ThemeContext } from 'styled-components'
@@ -35,6 +35,7 @@ import DropdownButton from '../common/DropdownButton'
 import moment from 'moment'
 import DownloadPreviewModal from './DownloadPreviewModal'
 import UpdateCollectionModal from './UpdateCollectionModal'
+import { useSWRConfig } from 'swr'
 
 const groupBeatmapsets = (beatmaps) => {
   if (beatmaps?.length === 0) {
@@ -98,6 +99,7 @@ function RenameForm({ collection, mutateCollection, setRenamingCollection }) {
 }
 
 function Collection({ user, setUser }) {
+  const { cache } = useSWRConfig()
   const theme = useContext(ThemeContext)
   const history = useHistory()
 
@@ -179,7 +181,10 @@ function Collection({ user, setUser }) {
     setShowDeleteConfirmationModal(false)
     if (result) {
       setCollectionSuccessfullyDeleted(true)
-      setTimeout(() => (window.location.href = `/recent`), 1000)
+      // setTimeout(() => (window.location.href = `/recent`), 1000)
+      await sleep(1000)
+      cache.clear()
+      history.push('/recent')
     } else {
       alert('Delete failed. Check console for more info.')
     }

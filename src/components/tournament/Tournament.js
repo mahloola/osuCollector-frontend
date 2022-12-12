@@ -6,7 +6,7 @@ import { Download, Globe, Heart, PencilSquare, TrashFill } from 'react-bootstrap
 import { LinkContainer } from 'react-router-bootstrap'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { Breakpoints, getHostname, useFallbackImg, userOwnsTournament } from 'utils/misc'
+import { Breakpoints, getHostname, sleep, useFallbackImg, userOwnsTournament } from 'utils/misc'
 import * as api from '../../utils/api'
 import {
   Alert,
@@ -27,8 +27,10 @@ import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import PreviewImportMappoolModal from './PreviewImportMappoolModal'
 import PreviewRemoveMappoolModal from './PreviewRemoveMappoolModal'
 import MappoolRound from './MappoolRound'
+import { useSWRConfig } from 'swr'
 
 function Tournament({ user, setUser }) {
+  const { cache } = useSWRConfig()
   const history = useHistory()
   // @ts-ignore
   let { id } = useParams()
@@ -52,7 +54,10 @@ function Tournament({ user, setUser }) {
     setShowDeleteConfirmationModal(false)
     if (result) {
       setTournamentSuccessfullyDeleted(true)
-      setTimeout(() => (window.location.href = `/tournaments`), 1000)
+      // setTimeout(() => (window.location.href = `/tournaments`), 1000)
+      await sleep(1000)
+      cache.clear()
+      history.push('/tournaments')
     } else {
       alert('Delete failed. Check console for more info.')
     }
