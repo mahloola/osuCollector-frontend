@@ -258,7 +258,9 @@ function DesktopClient({ user, setUser }) {
           </CardBody>
         </Card>
 
-        <h2 className='text-center'>Two ways to support us!</h2>
+        <h2 id='subscription-methods' className='text-center'>
+          Two ways to support us!
+        </h2>
         <p>
           Please note that supporting us with both methods at the same time{' '}
           <strong>will not extend your supporter status!</strong>&nbsp; If you want to save money we recommend doing
