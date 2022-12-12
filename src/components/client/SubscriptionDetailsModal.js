@@ -85,7 +85,7 @@ function SubscriptionDetailsModal({
     <>
       <Modal show={show} onHide={onHide} size='lg' centered>
         <ModalBody className='px-5 py-5'>
-          <h2 className='mb-3'>Your subscription</h2>
+          <h2 className='mb-3'>{user?.paidFeaturesAccess ? 'Your subscription' : 'Your past subscription'}</h2>
           {!user?.private?.paypalSubscriptionId && !user?.private?.stripeSubscriptionId && (
             <p className='text-muted'> Nothing to show </p>
           )}
@@ -273,27 +273,31 @@ const SubscriptionDetails = ({
         <Button size='sm' className='mx-1' variant='outline-secondary' onClick={() => setShowJSON(!showJSON)}>
           Show full details
         </Button>
-        <Button
-          size='sm'
-          className='mx-1'
-          variant='outline-secondary'
-          onClick={() =>
-            alert(
-              "If you'd like to change your payment method, please cancel your subscription, then create a new subscription with the new payment method after the old subscription ends."
-            )
-          }
-        >
-          Change payment method
-        </Button>
-        <Button
-          size='sm'
-          className='ml-1'
-          variant='outline-danger'
-          disabled={!canCancelSubscription}
-          onClick={() => setCancelSubscriptionConfirmationVisible(true)}
-        >
-          Cancel subscription
-        </Button>
+        {canCancelSubscription && (
+          <Button
+            size='sm'
+            className='mx-1'
+            variant='outline-secondary'
+            onClick={() =>
+              alert(
+                "If you'd like to change your payment method, please cancel your subscription, then create a new subscription with the new payment method after the old subscription ends."
+              )
+            }
+          >
+            Change payment method
+          </Button>
+        )}
+        {canCancelSubscription && (
+          <Button
+            size='sm'
+            className='ml-1'
+            variant='outline-danger'
+            disabled={!canCancelSubscription}
+            onClick={() => setCancelSubscriptionConfirmationVisible(true)}
+          >
+            Cancel subscription
+          </Button>
+        )}
       </div>
       <Tab.Container activeKey={showJSON ? 'visible' : 'hidden'} defaultActiveKey='hidden'>
         <Tab.Content>

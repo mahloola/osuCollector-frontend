@@ -4,6 +4,7 @@ import * as api from '../../utils/api'
 import { useHistory } from 'react-router-dom'
 import { Button, Card, CardBody, Col, Container, Row, Spinner } from '../bootstrap-osu-collector'
 import SubscriptionDetailsModal from '../client/SubscriptionDetailsModal'
+import SubscribeModal from 'components/client/SubscribeModal'
 
 function SubscriptionStatus({ user, setUser }) {
   const history = useHistory()
@@ -57,6 +58,7 @@ function SubscriptionStatus({ user, setUser }) {
   }, [user])
 
   const [paymentModalVisible, setPaymentModalVisible] = useState(false)
+  const [subscribeModalVisible, setSubscribeModalVisible] = useState(false)
 
   // Unlink Twitch
   const [unlinkingTwitchAccount, setUnlinkingTwitchAccount] = useState(false)
@@ -85,6 +87,15 @@ function SubscriptionStatus({ user, setUser }) {
 
   return (
     <Container className='pt-4'>
+      {!twitchSub && !paidSub && (
+        <Alert variant='warning' className='text-center'>
+          {/* @ts-ignore */}
+          <span style={{ marginRight: '10px' }}>It looks like your subscription has ended! </span>
+          <Button size='sm' onClick={() => setSubscribeModalVisible(true)}>
+            Subscribe
+          </Button>
+        </Alert>
+      )}
       <Card className='shadow-sm my-5'>
         <CardBody>
           <Card.Title>
@@ -185,6 +196,14 @@ function SubscriptionStatus({ user, setUser }) {
         stripeSubscription={stripeSubscription}
         onPaypalSubscriptionCancel={onPaypalSubscriptionCancel}
         onStripeSubscriptionCancel={onStripeSubscriptionCancel}
+      />
+      <SubscribeModal
+        user={user}
+        show={subscribeModalVisible}
+        onHide={() => setSubscribeModalVisible(false)}
+        paypalSubscription={paypalSubscription}
+        stripeSubscription={stripeSubscription}
+        isSubbedToFunOrange={isSubbedToFunOrange}
       />
     </Container>
   )

@@ -41,14 +41,10 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
     try {
       const collections = await api.uploadCollections([selectedCollection])
       if (collections.length >= 1) {
-        const newLocation = `/collections/${collections[0].id}`
+        // this is easier than mutating useRecentCollections
         // window.location.href = `/collections/${collections[0].id}`
         cache.clear()
-        if (window.location.href.includes(newLocation)) {
-          window.location.reload()
-        } else {
-          history.push(`/collections/${collections[0].id}`)
-        }
+        history.push(`/collections/${collections[0].id}`)
       }
     } catch (err) {
       alert(
