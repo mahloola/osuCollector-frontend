@@ -3,8 +3,9 @@ import { Button, Col, Form, FormControl, InputGroup, Row } from '../bootstrap-os
 import Modal from 'react-bootstrap/Modal'
 import { useEffect, useState } from 'react'
 import path from 'path'
-import { InfoCircleFill } from 'react-bootstrap-icons'
+import { InfoCircleFill, Plus } from 'react-bootstrap-icons'
 import { OverlayTrigger, Popover, PopoverTitle, PopoverContent } from 'react-bootstrap'
+import { FaTrash } from 'react-icons/fa'
 const { ipcRenderer } = window.require('electron')
 
 // eslint-disable-next-line no-unused-vars
@@ -13,6 +14,7 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
     osuInstallDirectory: '',
     usingCustomSongsDirectory: false,
     osuSongsDirectory: '',
+    osuSongsSymlinks: [],
     downloadToSongsDirectory: true,
     downloadDirectoryOverride: '',
     importedCollectionNameFormat: 'o!c - ${uploader} - ${collectionName}',
@@ -25,6 +27,7 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
       osuInstallDirectory: preferences?.osuInstallDirectory || '',
       usingCustomSongsDirectory: preferences ? preferences.usingCustomSongsDirectory : false,
       osuSongsDirectory: preferences?.osuSongsDirectory || '',
+      osuSongsSymlinks: preferences?.osuSongsSymlinks || [],
       downloadToSongsDirectory: preferences ? preferences.downloadToSongsDirectory : true,
       downloadDirectoryOverride: preferences?.downloadDirectoryOverride || '',
       importedCollectionNameFormat:
@@ -63,11 +66,12 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
   }
 
   // songs folder
-  const differentLocationChecked = (e) => {
+  const differentLocationChecked = async (e) => {
     if (e.target.checked) {
       setUnsavedPreferences({
         ...unsavedPreferences,
         usingCustomSongsDirectory: e.target.checked,
+        osuSongsSymlinks: unsavedPreferences.osuSongsSymlinks?.length ? unsavedPreferences.osuSongsSymlinks : [''],
       })
     } else {
       setUnsavedPreferences({
@@ -75,8 +79,8 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
         usingCustomSongsDirectory: e.target.checked,
         osuSongsDirectory: path
           .join(unsavedPreferences.osuInstallDirectory, 'Songs')
-          .replace(/\//g, path.sep)
-          .replace(/\\\\/g, path.sep),
+          .replace(/\//g, await ipcRenderer.invoke('path-sep'))
+          .replace(/\\\\/g, await ipcRenderer.invoke('path-sep')),
       })
     }
   }
@@ -85,6 +89,43 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
     setUnsavedPreferences({
       ...unsavedPreferences,
       osuSongsDirectory: e.target.value,
+    })
+  }
+  const symlinkChanged = (e, index) => {
+    setUnsavedPreferences(() => {
+      const current = { ...unsavedPreferences }
+      current.osuSongsSymlinks[index] = e.target.value
+      return current
+    })
+  }
+  const symlinkAdd = (e) => {
+    setUnsavedPreferences((prev) => {
+      const current = { ...prev }
+      current.osuSongsSymlinks.push('')
+      return current
+    })
+  }
+
+  const openSymlinkFolderClicked = async (i) => {
+    const folder = await ipcRenderer.invoke('open-folder-dialog', {
+      title: 'Select songs folder',
+      defaultPath: unsavedPreferences.osuSongsDirectory || '/',
+      properties: ['openDirectory'],
+    })
+    if (folder !== null) {
+      setUnsavedPreferences((prev) => {
+        const current = { ...prev }
+        current.osuSongsSymlinks[i] = folder
+        return current
+      })
+    }
+  }
+
+  const deleteSymlinkClicked = (i) => {
+    setUnsavedPreferences((prev) => {
+      const current = { ...prev }
+      current.osuSongsSymlinks.splice(i, 1)
+      return current
     })
   }
 
@@ -196,29 +237,18 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} className='my-2'>
-            <Form.Label column sm='3' className='text-right'>
-              Download to songs folder
-            </Form.Label>
-            <Col sm='9' className='d-flex align-items-center'>
-              <Form.Check
-                id='download-to-songs-folder-checkbox'
-                type='checkbox'
-                checked={unsavedPreferences.downloadToSongsDirectory}
-                onChange={downloadToSongsFolderChecked}
-              />
-            </Col>
-          </Form.Group>
-
           <div style={{ minHeight: 76 }}>
-            {unsavedPreferences.downloadToSongsDirectory ? (
-              <>
-                <Form.Group as={Row} className='my-2'>
-                  <Form.Label column sm='3' className='text-right'>
-                    Songs Folder
-                  </Form.Label>
-                  <Col sm='9'>
+            <>
+              <Form.Group as={Row} className='my-2'>
+                <Form.Label column sm='3' className='text-right'>
+                  Songs Folder{unsavedPreferences.usingCustomSongsDirectory && '(s)'}
+                </Form.Label>
+                <Col sm='9'>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <InputGroup>
+                      {unsavedPreferences.usingCustomSongsDirectory && (
+                        <InputGroup.Text id='basic-addon1'>Main Songs Folder</InputGroup.Text>
+                      )}
                       <Form.Control
                         value={unsavedPreferences.osuSongsDirectory}
                         onChange={songsFolderChanged}
@@ -230,46 +260,113 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
                         </Button>
                       )}
                     </InputGroup>
-                  </Col>
-                </Form.Group>
-                <Row className='mb-3'>
-                  <Col sm='3'></Col>
-                  <Col sm='9'>
+                    {unsavedPreferences.usingCustomSongsDirectory && (
+                      <>
+                        {unsavedPreferences.osuSongsSymlinks.map((symlink, i) => (
+                          <InputGroup key={i}>
+                            <InputGroup.Text id='basic-addon1'>symlink</InputGroup.Text>
+                            <Form.Control value={symlink} onChange={(e) => symlinkChanged(e, i)} />
+                            <Button onClick={() => openSymlinkFolderClicked(i)} variant='outline-secondary' size='sm'>
+                              Open Folder...
+                            </Button>
+                            <Button onClick={() => deleteSymlinkClicked(i)} variant='outline-danger' size='sm'>
+                              <FaTrash />
+                            </Button>
+                          </InputGroup>
+                        ))}
+                        <div>
+                          <Button variant='outline-primary' onClick={symlinkAdd}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <Plus size={22} />
+                              Add symlink
+                            </div>
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </Col>
+              </Form.Group>
+              <Row className='mb-3'>
+                <Col sm='3'></Col>
+                <Col sm='9'>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Form.Check
                       id='diff-location-checkbox'
                       type='checkbox'
-                      label='I moved my songs folder somewhere else'
+                      label='I am using symlinks'
                       checked={unsavedPreferences.usingCustomSongsDirectory}
                       onChange={differentLocationChecked}
                     />
-                  </Col>
-                </Row>
-              </>
-            ) : (
-              <Form.Group as={Row} className='my-2'>
-                <Form.Label column sm='3' className='text-right'>
-                  Download Location
-                </Form.Label>
-                <Col sm='9'>
-                  <InputGroup>
-                    <Form.Control
-                      value={unsavedPreferences.downloadDirectoryOverride}
-                      onChange={downloadFolderChanged}
-                    />
-                    <Button onClick={openDownloadsFolderClicked} variant='outline-secondary' size='sm'>
-                      Open Folder...
-                    </Button>
-                  </InputGroup>
+                    <OverlayTrigger
+                      placement='top'
+                      trigger='hover'
+                      overlay={
+                        <Popover id='popover-basic' style={{ maxWidth: '400px' }}>
+                          <PopoverContent>
+                            <div>
+                              You need to specify all symlink folders in order to prevent osu!Collector from downloading
+                              duplicate beatmaps.
+                            </div>
+                            <br />
+                            <div>Here is a typical setup:</div>
+                            <code>Main ------ C:\Users\Jun\AppData\Local\osu!\Songs</code>
+                            <br />
+                            <code>symlink --- D:\Songs</code>
+                            <br />
+                            <code>symlink --- E:\Songs</code>
+                          </PopoverContent>
+                        </Popover>
+                      }
+                    >
+                      <InfoCircleFill className='ml-2 text-primary' style={{ cursor: 'pointer' }} />
+                    </OverlayTrigger>
+                  </div>
                 </Col>
-              </Form.Group>
-            )}
+              </Row>
+            </>
+
+            <Form.Group as={Row} className='my-2'>
+              <Form.Label column sm='3' className='text-right'>
+                Download Location
+              </Form.Label>
+              <Col sm='9'>
+                <InputGroup>
+                  <Form.Control
+                    value={
+                      unsavedPreferences.downloadToSongsDirectory
+                        ? unsavedPreferences.osuSongsDirectory
+                        : unsavedPreferences.downloadDirectoryOverride
+                    }
+                    onChange={downloadFolderChanged}
+                    readOnly={unsavedPreferences.downloadToSongsDirectory}
+                  />
+                  <Button onClick={openDownloadsFolderClicked} variant='outline-secondary' size='sm'>
+                    Open Folder...
+                  </Button>
+                </InputGroup>
+              </Col>
+            </Form.Group>
+            <Row className='mb-3'>
+              <Col sm='3'></Col>
+              <Col sm='9' className='d-flex align-items-center'>
+                <Form.Check
+                  id='download-to-songs-folder-checkbox'
+                  type='checkbox'
+                  label='Download to songs folder'
+                  checked={unsavedPreferences.downloadToSongsDirectory}
+                  onChange={downloadToSongsFolderChecked}
+                />
+              </Col>
+            </Row>
+
             <Form.Group as={Row} className='my-2'>
               <Form.Label column sm='3' className='text-right'>
                 <div className='d-flex align-items-center justify-content-end'>
                   Imported Collection Name
                   <OverlayTrigger
-                    placement='bottom'
-                    trigger='click'
+                    placement='top'
+                    trigger='hover'
                     overlay={
                       <Popover id='popover-basic'>
                         <PopoverTitle as='h3'>Variables you can use</PopoverTitle>
@@ -284,7 +381,7 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
                       </Popover>
                     }
                   >
-                    <InfoCircleFill className='ml-2 text-primary' />
+                    <InfoCircleFill className='ml-2 text-primary' style={{ cursor: 'pointer' }} />
                   </OverlayTrigger>
                 </div>
               </Form.Label>
