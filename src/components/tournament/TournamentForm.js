@@ -514,11 +514,12 @@ function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament 
       error = true
     }
 
+    const allowedUrlPatterns = [/^https:\/\/(\w+\.)?ppy\.sh\//, /^https:\/\/docs\.google\.com\//]
     if (!tournamentURL) {
       setTournamentURLError('Required')
       error = true
-    } else if (!/^https:\/\/(\w+\.)?ppy.sh\//.test(tournamentURL)) {
-      setTournamentURLError('Only osu.ppy.sh forum links are accepted')
+    } else if (allowedUrlPatterns.some((pattern) => pattern.test(tournamentURL))) {
+      setTournamentURLError('Only osu.ppy.sh forum or google doc links or are accepted')
     }
 
     if (downloadURL && !isValidHttpUrl(downloadURL)) {
