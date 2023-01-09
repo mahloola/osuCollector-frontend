@@ -518,7 +518,7 @@ function TournamentForm({ title, onSubmit, submitLoading, saveDraft, tournament 
     if (!tournamentURL) {
       setTournamentURLError('Required')
       error = true
-    } else if (allowedUrlPatterns.some((pattern) => pattern.test(tournamentURL))) {
+    } else if (!allowedUrlPatterns.some((pattern) => pattern.test(tournamentURL))) {
       setTournamentURLError('Only osu.ppy.sh forum or google doc links or are accepted')
     }
 
