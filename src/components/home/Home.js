@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Card, Col, Container, ReactPlaceholder, Row } from '../bootstrap-osu-collector'
+import { Button, Card, Col, Container, ReactPlaceholder, Row } from '../bootstrap-osu-collector'
 import {
   useMetadata,
   getPopularCollections,

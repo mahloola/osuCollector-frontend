@@ -4,9 +4,9 @@ import UserChip from 'components/common/UserChip'
 import { useEffect, useState } from 'react'
 import { Download, Globe, Heart, PencilSquare, TrashFill } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { Breakpoints, getHostname, useFallbackImg, userOwnsTournament, openInBrowser } from 'utils/misc'
+import { Breakpoints, getHostname, sleep, useFallbackImg, userOwnsTournament, openInBrowser } from 'utils/misc'
 import * as api from '../../utils/api'
 import {
   Alert,
@@ -26,10 +26,13 @@ import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import MappoolRound from './MappoolRound'
 import ImportMappoolModal from './ImportMappoolModal'
 import RemoveMappoolModal from './RemoveMappoolModal'
+import { useSWRConfig } from 'swr'
 
 const { ipcRenderer } = window.require('electron')
 
 function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, setLocalCollections }) {
+  const { cache } = useSWRConfig()
+  const history = useHistory()
   // @ts-ignore
   let { id } = useParams()
   const { tournament } = api.useTournament(id)
@@ -92,7 +95,10 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
     setShowDeleteConfirmationModal(false)
     if (result) {
       setTournamentSuccessfullyDeleted(true)
-      setTimeout(() => (window.location.href = `/tournaments`), 1000)
+      // setTimeout(() => (window.location.href = `/tournaments`), 1000)
+      await sleep(1000)
+      cache.clear()
+      history.push('/tournaments')
     } else {
       alert('Delete failed. Check console for more info.')
     }
