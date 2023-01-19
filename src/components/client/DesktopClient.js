@@ -121,12 +121,6 @@ function DesktopClient({ user, setUser }) {
 
   return (
     <div className='pb-5'>
-      {/* {process.env.NODE_ENV === 'production' &&
-                <Alert variant='danger'>
-                    you shouldnt be here unless youre a dev
-                </Alert>
-            } */}
-
       <div className='bg-dark px-4 py-5 text-center'>
         <div className='mt-5'>
           <h1 className='display-5 fw-bold text-white'>Support us to gain access to these features!</h1>

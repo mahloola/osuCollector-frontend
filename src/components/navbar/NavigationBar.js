@@ -57,13 +57,13 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
   }
 
   const loginButton =
-    process.env.NODE_ENV === 'production' ? (
-      <LoginButton />
-    ) : (
+    process.env.NODE_ENV === 'development' ? (
       <Button className='ml-2' onClick={otpLogin}>
         {' '}
         Login{' '}
       </Button>
+    ) : (
+      <LoginButton />
     )
 
   return (

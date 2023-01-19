@@ -100,11 +100,6 @@ function Checkout() {
 
   return (
     <Container className='pt-4'>
-      {/* {process.env.NODE_ENV === 'production' &&
-                    <Alert variant='danger'>
-                        you shouldnt be here unless youre a dev
-                    </Alert>
-                } */}
       <Row className='justify-content-md-center'>
         <Col sm={12} md={9} lg={6}>
           <Card className='shadow-sm pt-3 px-3 mb-3 mt-4 text-center'>
