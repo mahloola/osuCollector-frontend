@@ -1,5 +1,5 @@
 import { useHistory, useParams } from 'react-router-dom'
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 import {
   Button,
   Card,
@@ -25,7 +25,7 @@ import SortButton from '../common/SortButton'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bpmToColor, sleep, starToColor } from '../../utils/misc'
 import EditableTextbox from '../common/EditableTextbox'
-import { TrashFill, ExclamationTriangleFill, Pencil, QuestionCircleFill } from 'react-bootstrap-icons'
+import { TrashFill, ExclamationTriangleFill, Link45deg, Pencil, QuestionCircleFill } from 'react-bootstrap-icons'
 import styled, { ThemeContext } from 'styled-components'
 import ModeCounters from '../common/ModeCounters'
 import BarGraph from '../common/BarGraph'
@@ -35,6 +35,7 @@ import DropdownButton from '../common/DropdownButton'
 import moment from 'moment'
 import UpdateCollectionModal from './UpdateCollectionModal'
 import { useSWRConfig } from 'swr'
+import { Overlay } from 'react-bootstrap'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -402,6 +403,9 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
       }
   const listing = collectionBeatmaps ? groupBeatmapsets(collectionBeatmaps) : new Array(50).fill({})
 
+  const clipboardRef = useRef(null)
+  const [showCopiedToClipboard, setShowCopiedToClipboard] = useState(false)
+
   if (collectionSuccessfullyDeleted) {
     return (
       <Alert variant='danger'>
@@ -462,7 +466,7 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
             </div>
           )}
           <div className='d-flex justify-content-between'>
-            <div className='d-flex align-content-center'>
+            <div className='d-flex align-content-center gap-3'>
               {renamingCollection ? (
                 <RenameForm
                   collection={collection}
@@ -470,12 +474,34 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                   setRenamingCollection={setRenamingCollection}
                 />
               ) : (
-                <h1 className='mb-0 mr-4'>{collection?.name}</h1>
+                <div className='d-flex align-items-center gap-3'>
+                  <h1 className='mb-0 mr-4'>{collection?.name}</h1>
+                </div>
               )}
               {collection?.uploader?.id === user?.id && !renamingCollection && (
-                <Button variant='outline-secondary' onClick={() => setRenamingCollection(true)} style={{ width: 48 }}>
-                  <Pencil className='svg-shadow' size={18} />
-                </Button>
+                <>
+                  <Button variant='outline-secondary' onClick={() => setRenamingCollection(true)} style={{ width: 48 }}>
+                    <Pencil className='svg-shadow' size={18} />
+                  </Button>
+                  <Button
+                    ref={clipboardRef}
+                    onClick={() => {
+                      navigator.clipboard.writeText(`https://osucollector.com/collections/${collection.id}`)
+                      setShowCopiedToClipboard(true)
+                      setTimeout(() => setShowCopiedToClipboard(false), 1000)
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ marginTop: '0px' }}>
+                        <Link45deg size={24} />
+                      </div>
+                      Share URL
+                    </div>
+                    <Overlay target={clipboardRef.current} show={showCopiedToClipboard} placement='top'>
+                      <Tooltip id='copied-url-tooltip'>copied to clipboard!</Tooltip>
+                    </Overlay>
+                  </Button>
+                </>
               )}
             </div>
             {collection?.uploader?.id === user?.id && (
