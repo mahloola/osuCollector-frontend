@@ -244,9 +244,12 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
                             <Download />
                             <span className='mx-2'> Mappool download: </span>
                             {tournament?.downloadUrl ? (
-                              <a href='#' onClick={() => setShowDownloadLinkConfirmation(true)}>
+                              <div
+                                style={{ color: 'rgb(13 110 253)', cursor: 'pointer' }}
+                                onClick={() => setShowDownloadLinkConfirmation(true)}
+                              >
                                 <small>{tournament?.downloadUrl}</small>
-                              </a>
+                              </div>
                             ) : (
                               <small className='text-muted' style={{ marginBottom: '1px' }}>
                                 no download URL provided
@@ -488,7 +491,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
           <Button variant='secondary' onClick={() => setShowDownloadLinkConfirmation(false)}>
             Cancel
           </Button>
-          <Button onClick={() => window.open(tournament?.downloadUrl)}>yeah sure whatever</Button>
+          <Button onClick={() => openInBrowser(tournament?.downloadUrl)}>yeah sure whatever</Button>
         </Modal.Footer>
       </Modal>
     </>
