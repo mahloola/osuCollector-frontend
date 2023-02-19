@@ -3,7 +3,7 @@ import { Card, Image, ListGroup, ListGroupItem } from '../bootstrap-osu-collecto
 import moment from 'moment'
 import { LinkContainer } from 'react-router-bootstrap'
 import Truncate from 'react-truncate'
-import { starToColor } from '../../utils/misc'
+import { getUrlSlug, starToColor } from '../../utils/misc'
 import BarGraph from './BarGraph'
 import styled, { ThemeContext } from 'styled-components'
 import ModeCounters from './ModeCounters'
@@ -55,10 +55,11 @@ function CollectionCard({ user, setUser, collection }) {
         10: 0,
       }
 
+  const href = `/collections/${collection.id}/${getUrlSlug(collection.name)}`
   return (
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       <Card $lightbg className={`mx-3 ${hovered ? 'shadow' : 'shadow-sm'}`}>
-        <LinkContainer to={`/collections/${collection.id}`}>
+        <LinkContainer to={href}>
           <a className='nostyle'>
             {/* Difficulty Spread Graph */}
             <GraphContainer className='px-0 pt-0 pb-1' variant='top'>
@@ -79,7 +80,7 @@ function CollectionCard({ user, setUser, collection }) {
         </LinkContainer>
         <Card.Body className='collection-card-clickable pt-3'>
           <div className='d-flex justify-content-between align-items-top'>
-            <LinkContainer to={`/collections/${collection.id}`} className='nostyle'>
+            <LinkContainer to={href} className='nostyle'>
               <a className='nostyle'>
                 <div style={{ width: '100%' }}>
                   <ModeCounters collection={collection} className='mb-3' />
@@ -89,7 +90,7 @@ function CollectionCard({ user, setUser, collection }) {
                 </div>
               </a>
             </LinkContainer>
-            <LinkContainer to={`/collections/${collection.id}`}>
+            <LinkContainer to={href}>
               <a className='flex-fill' />
             </LinkContainer>
             <div className='d-flex flex-column'>
@@ -104,12 +105,12 @@ function CollectionCard({ user, setUser, collection }) {
                   <small> {collection?.favourites} </small>
                 </h5>
               </div>
-              <LinkContainer to={`/collections/${collection.id}`}>
+              <LinkContainer to={href}>
                 <a className='h-100' />
               </LinkContainer>
             </div>
           </div>
-          <LinkContainer to={`/collections/${collection.id}`}>
+          <LinkContainer to={href}>
             <a className='nostyle'>
               <Card.Text>
                 {collection.description ? (

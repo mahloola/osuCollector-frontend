@@ -10,6 +10,7 @@ import osuPng from '../common/mode-osu.png'
 import taikoPng from '../common/mode-taiko.png'
 import maniaPng from '../common/mode-mania.png'
 import catchPng from '../common/mode-catch.png'
+import { Helmet } from 'react-helmet'
 
 function All({ searchText, setSearchText, user, setUser }) {
   const [collectionPage, setCollectionPage] = useState(null)
@@ -98,69 +99,75 @@ function All({ searchText, setSearchText, user, setUser }) {
   }
 
   return (
-    <Container className='pt-4'>
-      <div>
-        <div className='d-flex justify-content-center'>{searchText?.length > 0 && <h1> {searchText} </h1>}</div>
-        <div className='d-flex justify-content-center align-items-center pb-4'>
-          <h3 className='my-0 mr-2'>
-            {' '}
-            <Search />{' '}
-          </h3>
-          <h3 className='mb-0 mt-1'> {collectionPage?.results} results </h3>
+    <>
+      <Helmet>
+        <title>{query.get('search')} | osu!Collector</title>
+      </Helmet>
+
+      <Container className='pt-4'>
+        <div>
+          <div className='d-flex justify-content-center'>{searchText?.length > 0 && <h1> {searchText} </h1>}</div>
+          <div className='d-flex justify-content-center align-items-center pb-4'>
+            <h3 className='my-0 mr-2'>
+              {' '}
+              <Search />{' '}
+            </h3>
+            <h3 className='mb-0 mt-1'> {collectionPage?.results} results </h3>
+          </div>
+          {/* <Card className='p-4 mb-4'>
+                      <h5> Filter by tags </h5>
+                  </Card> */}
+          <Card className='shadow-lg'>
+            <Card.Header>
+              <div className='d-flex flex-wrap'>
+                <div className='p-2 mr-4'>Sort by:</div>
+                {[
+                  ['_text_match', 'Relevance'],
+                  ['favourites', 'Favourites'],
+                  ['dateUploaded', 'Date'],
+                ].map(([field, label]) => (
+                  <div key={field} className='p-1 mr-2'>
+                    <SortButton
+                      className={undefined}
+                      sortDirection={queryOpts === null || queryOpts.sortBy !== field ? null : queryOpts.orderBy}
+                      onClick={() => setSortBy(field)}
+                    >
+                      {label}
+                    </SortButton>
+                  </div>
+                ))}
+                {[
+                  ['osuCount', osuPng],
+                  ['taikoCount', taikoPng],
+                  ['maniaCount', maniaPng],
+                  ['catchCount', catchPng],
+                ].map(([field, png]) => (
+                  <div key={field} className='p-1 mr-2'>
+                    <SortButton
+                      className={undefined}
+                      sortDirection={queryOpts === null || queryOpts.sortBy !== field ? null : queryOpts.orderBy}
+                      onClick={() => setSortBy(field)}
+                    >
+                      <Image src={png} style={{ width: '16px', height: 'auto' }} className='mr-1' />
+                    </SortButton>
+                  </div>
+                ))}
+              </div>
+            </Card.Header>
+            <Card.Body>
+              <CollectionList
+                collections={collections}
+                setCollections={setCollections}
+                hasMore={collectionPage?.hasMore}
+                loadMore={loadMore}
+                user={user}
+                setUser={setUser}
+              />
+            </Card.Body>
+          </Card>
         </div>
-        {/* <Card className='p-4 mb-4'>
-                    <h5> Filter by tags </h5>
-                </Card> */}
-        <Card className='shadow-lg'>
-          <Card.Header>
-            <div className='d-flex flex-wrap'>
-              <div className='p-2 mr-4'>Sort by:</div>
-              {[
-                ['_text_match', 'Relevance'],
-                ['favourites', 'Favourites'],
-                ['dateUploaded', 'Date'],
-              ].map(([field, label]) => (
-                <div key={field} className='p-1 mr-2'>
-                  <SortButton
-                    className={undefined}
-                    sortDirection={queryOpts === null || queryOpts.sortBy !== field ? null : queryOpts.orderBy}
-                    onClick={() => setSortBy(field)}
-                  >
-                    {label}
-                  </SortButton>
-                </div>
-              ))}
-              {[
-                ['osuCount', osuPng],
-                ['taikoCount', taikoPng],
-                ['maniaCount', maniaPng],
-                ['catchCount', catchPng],
-              ].map(([field, png]) => (
-                <div key={field} className='p-1 mr-2'>
-                  <SortButton
-                    className={undefined}
-                    sortDirection={queryOpts === null || queryOpts.sortBy !== field ? null : queryOpts.orderBy}
-                    onClick={() => setSortBy(field)}
-                  >
-                    <Image src={png} style={{ width: '16px', height: 'auto' }} className='mr-1' />
-                  </SortButton>
-                </div>
-              ))}
-            </div>
-          </Card.Header>
-          <Card.Body>
-            <CollectionList
-              collections={collections}
-              setCollections={setCollections}
-              hasMore={collectionPage?.hasMore}
-              loadMore={loadMore}
-              user={user}
-              setUser={setUser}
-            />
-          </Card.Body>
-        </Card>
-      </div>
-    </Container>
+      </Container>
+    </>
   )
 }
 

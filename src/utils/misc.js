@@ -361,3 +361,11 @@ export const arrayEquals = (a, b) => {
   }
   return true
 }
+
+export function getUrlSlug(str) {
+  let result = str
+  while (result.includes(' ')) {
+    result = result.replace(' ', '-')
+  }
+  return encodeURIComponent(result)
+}

@@ -62,7 +62,7 @@ function UpdateCollectionModal({ collection: remoteCollection, mutateCollection,
         <Title className='text-muted'>Update collection: {remoteCollection?.name}</Title>
         <div className='d-flex gap-5'>
           <div className='w-100'>
-            <h5>In local collection.db:</h5>
+            <h5>On your computer:</h5>
             {localCollections ? (
               <Card $lightbg className='p-3'>
                 {localCollection ? (

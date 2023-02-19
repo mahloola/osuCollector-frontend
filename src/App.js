@@ -36,6 +36,7 @@ import Checkout from './components/payments/Checkout'
 import Success from './components/payments/Success'
 import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 import LinkIrc from './components/login/LinkIrc'
+import { Helmet } from 'react-helmet'
 
 extend([mixPlugin])
 
@@ -117,90 +118,96 @@ function App() {
   }
 
   return (
-    <PayPalScriptProvider
-      options={{
-        'client-id': 'AeUARmSkIalUe4gK08KWZjWYJqSq0AKH8iS9cQ3U8nIGiOxyUmrPTPD91vvE2xkVovu-3GlO0K7ISv2R',
-        vault: true,
-        intent: 'subscription',
-        components: 'buttons',
-      }}
-    >
-      <Elements stripe={stripePromise}>
-        <ThemeProvider theme={currentTheme}>
-          <StyledApp className='App'>
-            <NavigationBar user={user} setAuthX={setAuthX} setSearchText={setSearchText} toggleTheme={toggleTheme} />
-            <div style={{ minHeight: 'calc(100vh - 56px)' }}>
-              <ScrollToTop />
-              <Switch>
-                <Route exact path='/'>
-                  <Home user={user} setUser={setUser} />
-                </Route>
-                <Route path='/all'>
-                  <All searchText={searchText} setSearchText={setSearchText} user={user} setUser={setUser} />
-                </Route>
-                <Route path='/popular'>
-                  <Popular user={user} setUser={setUser} />
-                </Route>
-                <Route path='/recent'>
-                  <Recent user={user} setUser={setUser} />
-                </Route>
-                <Route exact path='/users'>
-                  <Users />
-                </Route>
-                <Route path='/users/:id/favourites'>
-                  <UserFavourites user={user} setUser={setUser} />
-                </Route>
-                <Route path='/users/:id/uploads'>
-                  <UserUploads user={user} setUser={setUser} />
-                </Route>
-                <Route path='/client'>
-                  <DesktopClient user={user} setUser={setUser} />
-                </Route>
-                <Route exact path='/tournaments'>
-                  <Tournaments user={user} setUser={setUser} />
-                </Route>
-                <Route exact path='/tournaments/create'>
-                  <CreateTournament />
-                </Route>
-                <Route exact path='/tournaments/:id'>
-                  <Tournament user={user} setUser={setUser} />
-                </Route>
-                <Route path='/tournaments/:id/edit'>
-                  <EditTournament />
-                </Route>
-                <Route path='/payments/checkout'>
-                  <Checkout />
-                </Route>
-                <Route path='/payments/success'>
-                  <Success />
-                </Route>
-                <Route path='/login/enterOtp'>
-                  <EnterOtp authX={authX} setUser={setUser} />
-                </Route>
-                <Route path='/login/showOtp'>
-                  <ShowOtp />
-                </Route>
-                <Route path='/login/linkIrc'>
-                  <LinkIrc user={user} />
-                </Route>
-                <Route path='/twitchSuccess'>
-                  <TwitchSuccess user={user} />
-                </Route>
-                <Route path='/collections/:id'>
-                  <Collection user={user} setUser={setUser} />
-                </Route>
-                <Route path='/subscription/status'>
-                  <SubscriptionStatus user={user} setUser={setUser} />
-                </Route>
-                <Route>
-                  <NotFound />
-                </Route>
-              </Switch>
-            </div>
-          </StyledApp>
-        </ThemeProvider>
-      </Elements>
-    </PayPalScriptProvider>
+    <>
+      <Helmet>
+        <title>osu!Collector | Find osu! beatmap collections</title>
+      </Helmet>
+
+      <PayPalScriptProvider
+        options={{
+          'client-id': 'AeUARmSkIalUe4gK08KWZjWYJqSq0AKH8iS9cQ3U8nIGiOxyUmrPTPD91vvE2xkVovu-3GlO0K7ISv2R',
+          vault: true,
+          intent: 'subscription',
+          components: 'buttons',
+        }}
+      >
+        <Elements stripe={stripePromise}>
+          <ThemeProvider theme={currentTheme}>
+            <StyledApp className='App'>
+              <NavigationBar user={user} setAuthX={setAuthX} setSearchText={setSearchText} toggleTheme={toggleTheme} />
+              <div style={{ minHeight: 'calc(100vh - 56px)' }}>
+                <ScrollToTop />
+                <Switch>
+                  <Route exact path='/'>
+                    <Home user={user} setUser={setUser} />
+                  </Route>
+                  <Route path='/all'>
+                    <All searchText={searchText} setSearchText={setSearchText} user={user} setUser={setUser} />
+                  </Route>
+                  <Route path='/popular'>
+                    <Popular user={user} setUser={setUser} />
+                  </Route>
+                  <Route path='/recent'>
+                    <Recent user={user} setUser={setUser} />
+                  </Route>
+                  <Route exact path='/users'>
+                    <Users />
+                  </Route>
+                  <Route path='/users/:id/favourites'>
+                    <UserFavourites user={user} setUser={setUser} />
+                  </Route>
+                  <Route path='/users/:id/uploads'>
+                    <UserUploads user={user} setUser={setUser} />
+                  </Route>
+                  <Route path='/client'>
+                    <DesktopClient user={user} setUser={setUser} />
+                  </Route>
+                  <Route exact path='/tournaments'>
+                    <Tournaments user={user} setUser={setUser} />
+                  </Route>
+                  <Route exact path='/tournaments/create'>
+                    <CreateTournament />
+                  </Route>
+                  <Route path='/tournaments/:id'>
+                    <Tournament user={user} setUser={setUser} />
+                  </Route>
+                  <Route path='/tournaments/:id/edit'>
+                    <EditTournament />
+                  </Route>
+                  <Route path='/payments/checkout'>
+                    <Checkout />
+                  </Route>
+                  <Route path='/payments/success'>
+                    <Success />
+                  </Route>
+                  <Route path='/login/enterOtp'>
+                    <EnterOtp authX={authX} setUser={setUser} />
+                  </Route>
+                  <Route path='/login/showOtp'>
+                    <ShowOtp />
+                  </Route>
+                  <Route path='/login/linkIrc'>
+                    <LinkIrc user={user} />
+                  </Route>
+                  <Route path='/twitchSuccess'>
+                    <TwitchSuccess user={user} />
+                  </Route>
+                  <Route path='/collections/:id'>
+                    <Collection user={user} setUser={setUser} />
+                  </Route>
+                  <Route path='/subscription/status'>
+                    <SubscriptionStatus user={user} setUser={setUser} />
+                  </Route>
+                  <Route>
+                    <NotFound />
+                  </Route>
+                </Switch>
+              </div>
+            </StyledApp>
+          </ThemeProvider>
+        </Elements>
+      </PayPalScriptProvider>
+    </>
   )
 }
 

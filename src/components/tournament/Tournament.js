@@ -4,9 +4,9 @@ import UserChip from 'components/common/UserChip'
 import { useEffect, useState } from 'react'
 import { Download, Globe, Heart, PencilSquare, TrashFill } from 'react-bootstrap-icons'
 import { LinkContainer } from 'react-router-bootstrap'
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { Breakpoints, getHostname, sleep, useFallbackImg, userOwnsTournament } from 'utils/misc'
+import { Breakpoints, getHostname, getUrlSlug, sleep, useFallbackImg, userOwnsTournament } from 'utils/misc'
 import * as api from '../../utils/api'
 import {
   Alert,
@@ -28,6 +28,7 @@ import PreviewImportMappoolModal from './PreviewImportMappoolModal'
 import PreviewRemoveMappoolModal from './PreviewRemoveMappoolModal'
 import MappoolRound from './MappoolRound'
 import { useSWRConfig } from 'swr'
+import Helmet from 'react-helmet'
 
 function Tournament({ user, setUser }) {
   const { cache } = useSWRConfig()
@@ -37,6 +38,15 @@ function Tournament({ user, setUser }) {
   const { tournament } = api.useTournament(id)
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
   const [error, setError] = useState(null)
+
+  const location = useLocation()
+  useEffect(() => {
+    if (tournament && location) {
+      if (location.pathname.match(/^\/tournaments\/(\d+)\/?$/)) {
+        history.replace({ pathname: location.pathname.replace(/\/$/, '') + `/${getUrlSlug(tournament.name)}` })
+      }
+    }
+  }, [tournament, location])
 
   // modals
   const [messageModalText, setMessageModalText] = useState('')
@@ -56,6 +66,7 @@ function Tournament({ user, setUser }) {
       setTournamentSuccessfullyDeleted(true)
       // setTimeout(() => (window.location.href = `/tournaments`), 1000)
       await sleep(1000)
+      // @ts-ignore/next-line
       cache.clear()
       history.push('/tournaments')
     } else {
@@ -127,6 +138,12 @@ function Tournament({ user, setUser }) {
   const loading = tournament === undefined
   return (
     <>
+      {tournament && (
+        <Helmet>
+          <title>{`${tournament.name} | osu!Collector Tournaments`}</title>
+        </Helmet>
+      )}
+
       <Container className='pt-4'>
         <Card className='mb-3 shadow'>
           <ReactPlaceholder ready={!loading} showLoadingAnimation type='rect' style={{ height: '330px' }}>

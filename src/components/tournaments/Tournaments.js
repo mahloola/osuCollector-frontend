@@ -7,6 +7,7 @@ import { useRecentTournaments, useSearchTournaments } from 'utils/api'
 import TournamentList from './TournamentList'
 import { useQuery } from '../../utils/hooks'
 import { useHistory } from 'react-router-dom'
+import Helmet from 'react-helmet'
 
 /**
  * @typedef {Object} TournamentsQueryParams
@@ -44,7 +45,7 @@ function Tournaments({ user, setUser }) {
 
   const [searchBarInput, setSearchBarInput] = useState('')
   useEffect(() => {
-    setSearchBarInput(query.get('search'))
+    setSearchBarInput(query.get('search') ?? '')
   }, [query.get('search')])
   const typingTimeoutRef = useRef(null)
   const handleSearchOnChange = (e) => {
@@ -60,54 +61,60 @@ function Tournaments({ user, setUser }) {
 
   const error = recentTournamentsError || searchTournamentsError
   return (
-    <Container className='pt-4'>
-      <Card className='shadow-lg'>
-        <Card.Body>
-          <Alert variant='info' className='text-center'>
-            This feature is still a work in progress, however feel free to poke around.
-          </Alert>
-          <div className='d-flex justify-content-between align-items-end mb-3'>
-            <h2 className='my-2 ml-3 mb-0 mr-4'>Tournaments</h2>
-            <LinkContainer to='tournaments/create'>
-              <S.CreateButton>
-                <h4 className='my-2 mx-3 text-muted'>
-                  <Plus size={28} />
-                  <span className='mr-2'>create a tournament</span>
-                </h4>
-              </S.CreateButton>
-            </LinkContainer>
-          </div>
-          <div className='ml-3 me-auto'>
-            <InputGroup>
-              <S.FormControl
-                value={searchBarInput}
-                onChange={handleSearchOnChange}
-                type='search'
-                placeholder='Search for tournaments...'
-              />
-              <Button variant='primary'>
-                <Search />
-              </Button>
-            </InputGroup>
-          </div>
-          {error ? (
-            <Alert variant='danger'>
-              <p>Sorry, there was an error retrieving tournaments. Please try refreshing the page. Error details:</p>
-              <p>{error.toString()}</p>
+    <>
+      <Helmet>
+        <title>osu! Tournaments | osu!Collector</title>
+      </Helmet>
+
+      <Container className='pt-4'>
+        <Card className='shadow-lg'>
+          <Card.Body>
+            <Alert variant='info' className='text-center'>
+              This feature is still a work in progress, however feel free to poke around.
             </Alert>
-          ) : (
-            <TournamentList
-              tournaments={usingSearch ? searchTournaments : recentTournaments}
-              hasMore={usingSearch ? searchHasMore : recentHasMore}
-              loadMore={loadMore}
-              noEndMessage={false}
-              user={user}
-              setUser={setUser}
-            />
-          )}
-        </Card.Body>
-      </Card>
-    </Container>
+            <div className='d-flex justify-content-between align-items-end mb-3'>
+              <h2 className='my-2 ml-3 mb-0 mr-4'>Tournaments</h2>
+              <LinkContainer to='tournaments/create'>
+                <S.CreateButton>
+                  <h4 className='my-2 mx-3 text-muted'>
+                    <Plus size={28} />
+                    <span className='mr-2'>create a tournament</span>
+                  </h4>
+                </S.CreateButton>
+              </LinkContainer>
+            </div>
+            <div className='ml-3 me-auto'>
+              <InputGroup>
+                <S.FormControl
+                  value={searchBarInput}
+                  onChange={handleSearchOnChange}
+                  type='search'
+                  placeholder='Search for tournaments...'
+                />
+                <Button variant='primary'>
+                  <Search />
+                </Button>
+              </InputGroup>
+            </div>
+            {error ? (
+              <Alert variant='danger'>
+                <p>Sorry, there was an error retrieving tournaments. Please try refreshing the page. Error details:</p>
+                <p>{error.toString()}</p>
+              </Alert>
+            ) : (
+              <TournamentList
+                tournaments={usingSearch ? searchTournaments : recentTournaments}
+                hasMore={usingSearch ? searchHasMore : recentHasMore}
+                loadMore={loadMore}
+                noEndMessage={false}
+                user={user}
+                setUser={setUser}
+              />
+            )}
+          </Card.Body>
+        </Card>
+      </Container>
+    </>
   )
 }
 

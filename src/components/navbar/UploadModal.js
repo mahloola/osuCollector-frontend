@@ -8,6 +8,7 @@ import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { parseCollectionDb } from '../../utils/collectionsDb'
 import { useSWRConfig } from 'swr'
+import { getUrlSlug } from 'utils/misc'
 
 function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollections }) {
   const { cache } = useSWRConfig()
@@ -56,8 +57,9 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
       if (collections.length >= 1) {
         // this is easier than mutating useRecentCollections
         // window.location.href = `/collections/${collections[0].id}`
+        // @ts-ignore/next-line
         cache.clear()
-        history.push(`/collections/${collections[0].id}`)
+        history.push(`/collections/${collections[0].id}/${getUrlSlug(collections[0].name)}`)
       }
     } catch (err) {
       alert(

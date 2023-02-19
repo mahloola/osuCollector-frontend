@@ -34,7 +34,7 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
 
   const searchSubmit = (event) => {
     event.preventDefault()
-    history.push(`/all?search=${encodeURIComponent(searchBarInput)}`)
+    history.push(`/all?search=${encodeURIComponent(searchBarInput)}&sortBy=_text_match&orderBy=desc`)
     setSearchText(searchBarInput)
     return false
   }

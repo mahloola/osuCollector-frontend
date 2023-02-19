@@ -15,6 +15,7 @@ function CreateTournament() {
       setSubmitLoading(false)
       localStorage.removeItem('Create Tournament Draft')
       // window.location.href = `/tournaments/${newTournament.id}`
+      // @ts-ignore/next-line
       cache.clear()
       history.push(`/tournaments/${newTournament.id}`)
     } catch (err) {

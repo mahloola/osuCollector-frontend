@@ -60,7 +60,7 @@ function Home({ user, setUser }) {
           about any issues you have or suggestions for the site.
         </Alert>
         <Col className='px-5 my-2' md={12} lg={9}>
-          <h2>Welcome to osu!Collector!</h2>
+          <h1>Welcome to osu!Collector!</h1>
           <p>
             This is a place where you can view beatmap collections uploaded by other players. It is mainly developed by{' '}
             <a href='https://twitter.com/funorange42'>FunOrange</a> and{' '}
@@ -100,7 +100,6 @@ function Home({ user, setUser }) {
           </Card>
         </Col>
       </Row>
-
       <Card className='mb-4'>
         <Card.Body>
           <div className='d-flex justify-content-between align-items-center mb-0'>
@@ -149,7 +148,6 @@ function Home({ user, setUser }) {
           </Container>
         </Card.Body>
       </Card>
-
       <Card className='my-4'>
         <Card.Body>
           <div className='d-flex justify-content-between align-items-center mb-0'>

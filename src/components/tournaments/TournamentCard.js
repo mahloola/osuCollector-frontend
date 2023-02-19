@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 import { Card, Image, ListGroup, ListGroupItem } from '../bootstrap-osu-collector'
 import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'
-import { useFallbackImg } from 'utils/misc'
+import { getUrlSlug, useFallbackImg } from 'utils/misc'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import { ThemeContext } from 'styled-components'
 import * as api from '../../utils/api'
@@ -38,7 +38,7 @@ export default function TournamentCard({ user, setUser, tournament }) {
   return (
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       <Card $lightbg className={`mx-3 ${hovered ? 'shadow' : 'shadow-sm'}`}>
-        <LinkContainer to={`/tournaments/${tournament.id}`}>
+        <LinkContainer to={`/tournaments/${tournament.id}/${getUrlSlug(tournament.name)}`}>
           <a className='nostyle'>
             <img
               className='card-img-top'
