@@ -74,7 +74,7 @@ function DownloadsModal({
               <Button
                 onClick={inProgress ? cancelDownload : clearDownload}
                 className='align-middle'
-                variant='outline-secondary'
+                variant={inProgress ? 'danger' : 'outline-secondary'}
                 size='sm'
               >
                 {inProgress ? 'Stop all' : 'Clear'}
