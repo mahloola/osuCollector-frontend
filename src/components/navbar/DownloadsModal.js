@@ -1,6 +1,7 @@
 import { Button, Card, Col, Container, Row, ModalHeader, ModalBody } from '../bootstrap-osu-collector'
 import Modal from 'react-bootstrap/Modal'
 import DownloadFileCard from './DownloadFileCard'
+import { useEffect, useState } from 'react'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -20,21 +21,28 @@ function DownloadsModal({
     Failed: 'Failed',
   })
 
+  const [showAll, setShowAll] = useState(false)
+  useEffect(() => setShowAll(false), [downloadsModalIsOpen])
+
   // https://i.imgur.com/optYWti.png
   const collections = collectionDownloads?.map((collectionDownload, index) => {
     const totalBeatmapsets = collectionDownload.beatmapsets?.length
     const finishedDownloads = collectionDownload.beatmapsets?.filter(
       (mapset) => mapset.downloadStatus === DownloadStates.Finished
     ).length
-    const visibleDownloads = collectionDownload.beatmapsets?.filter(
-      (mapset) =>
-        mapset.downloadStatus !== DownloadStates.NotStarted && mapset.downloadStatus !== DownloadStates.Cancelled
-    )
+    const displayableDownloads = collectionDownload.beatmapsets
+      ?.filter(
+        (mapset) =>
+          mapset.downloadStatus !== DownloadStates.NotStarted && mapset.downloadStatus !== DownloadStates.Cancelled
+      )
+      ?.reverse()
+    const visibleDownloads = displayableDownloads?.slice(0, showAll ? 999999 : 15)
+    const notShownCount = Math.max(0, displayableDownloads?.length - visibleDownloads?.length)
     const statusText =
       collectionDownload.downloadStatus === DownloadStates.NotStarted
         ? 'Pending...'
         : collectionDownload.downloadStatus === DownloadStates.Downloading
-        ? `Downloading: ${visibleDownloads.length} of ${totalBeatmapsets}`
+        ? `Downloading: ${displayableDownloads.length} of ${totalBeatmapsets}`
         : collectionDownload.downloadStatus === DownloadStates.Finished
         ? `Downloaded ${finishedDownloads} of ${totalBeatmapsets}`
         : collectionDownload.downloadStatus === DownloadStates.Cancelled
@@ -48,6 +56,7 @@ function DownloadsModal({
       setShowDownloadTroubleshootText(false)
       ipcRenderer.invoke('clear-download', index)
     }
+
     return (
       <Card $lightbg key={index} className='shadow-sm py-2 px-3 mx-2 my-4'>
         <Container className='mb-1'>
@@ -73,9 +82,28 @@ function DownloadsModal({
             </Col>
           </Row>
         </Container>
-        {visibleDownloads?.map((mapset) => (
-          <DownloadFileCard key={mapset.id} mapsetDownload={mapset} />
-        ))}
+        {visibleDownloads?.map((mapset) => {
+          const { bytesReceived, bytesTotal, filename, downloadStatus, url, downloadLocation, errorMessage, id } =
+            mapset ?? {}
+          return (
+            <DownloadFileCard
+              key={mapset.id}
+              bytesReceived={bytesReceived}
+              bytesTotal={bytesTotal}
+              filename={filename}
+              downloadStatus={downloadStatus}
+              url={url}
+              downloadLocation={downloadLocation}
+              errorMessage={errorMessage}
+              id={id}
+            />
+          )
+        })}
+        {notShownCount > 0 && (
+          <Button variant='secondary' className='my-1 py-2' onClick={() => setShowAll(true)}>
+            + {notShownCount} more {'(Click to show all)'}
+          </Button>
+        )}
       </Card>
     )
   })
