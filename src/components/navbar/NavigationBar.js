@@ -7,7 +7,16 @@ import { useHistory } from 'react-router-dom'
 import { ThemeContext } from 'styled-components'
 import config from '../../config/config'
 import * as api from '../../utils/api'
-import { Button, Form, FormControl, InputGroup, Nav, Navbar, ReactPlaceholder } from '../bootstrap-osu-collector'
+import {
+  Button,
+  Form,
+  FormControl,
+  InputGroup,
+  Nav,
+  Navbar,
+  ReactPlaceholder,
+  Spinner,
+} from '../bootstrap-osu-collector'
 import '../common/Glow.css'
 import './NavButton.css'
 import './NavigationBar.css'
@@ -105,6 +114,8 @@ function NavigationBar({
       preferences?.osuInstallDirectory?.trim() === '' ||
       preferences?.osuSongsDirectory?.trim() === '')
 
+  const downloadPending = collectionDownloads?.some(({ downloadStatus }) => downloadStatus === 'Downloading...')
+
   return (
     <div className='navbar-sticky'>
       <Navbar bg='dark' variant='dark' expand='xl' className='pl-3'>
@@ -167,7 +178,11 @@ function NavigationBar({
                 }}
               >
                 <div className='d-flex align-items-center'>
-                  <CloudDownload className='mr-2' />
+                  {downloadPending ? (
+                    <Spinner className='mr-2' animation='border' size='sm' role='status' aria-hidden='true' />
+                  ) : (
+                    <CloudDownload className='mr-2' />
+                  )}
                   Downloads
                 </div>
               </Button>

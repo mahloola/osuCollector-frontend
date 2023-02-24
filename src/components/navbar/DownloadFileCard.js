@@ -1,13 +1,21 @@
 /* eslint-disable no-unused-vars */
 import { Card, Col, Container, Image, ProgressBar, Row } from '../bootstrap-osu-collector'
-import { useContext, useState } from 'react'
+import { memo, useContext, useState } from 'react'
 import { ThemeContext } from 'styled-components'
-import Truncate from 'react-truncate'
-import { openInBrowser } from '../../utils/misc'
+import { openInBrowser, truncate } from '../../utils/misc'
 import { Accordion } from 'react-bootstrap'
 
 // https://i.imgur.com/kNyRH49.png
-function DownloadFileCard({ mapsetDownload }) {
+function DownloadFileCard({
+  bytesReceived,
+  bytesTotal,
+  filename,
+  downloadStatus,
+  url,
+  downloadLocation,
+  errorMessage,
+  id,
+}) {
   const [showError, setShowError] = useState(false)
 
   const theme = useContext(ThemeContext)
@@ -20,9 +28,9 @@ function DownloadFileCard({ mapsetDownload }) {
     Failed: 'Failed',
   })
 
-  const megaBytesReceived = mapsetDownload.bytesReceived / 1000000
-  const megaBytesTotal = mapsetDownload.bytesTotal / 1000000
-  const progress = 100 * (mapsetDownload.bytesReceived / mapsetDownload.bytesTotal)
+  const megaBytesReceived = bytesReceived / 1000000
+  const megaBytesTotal = bytesTotal / 1000000
+  const progress = 100 * (bytesReceived / bytesTotal)
 
   return (
     <Card $lightbg2 className='my-1'>
@@ -44,52 +52,66 @@ function DownloadFileCard({ mapsetDownload }) {
               borderLeft: '2px solid ' + (theme.darkMode ? theme.primary30 : 'lightgray'),
             }}
           >
-            <p className='mb-0'>{mapsetDownload.filename}</p>
-            {mapsetDownload.downloadStatus === DownloadStates.Downloading ? (
+            <p className='mb-0' style={{ minHeight: '24px' }}>
+              {filename}
+            </p>
+            {[DownloadStates.Downloading, DownloadStates.Finished].includes(downloadStatus) && (
               <>
                 <p className='mb-0 text-secondary' style={{ fontSize: 13 }}>
                   {megaBytesReceived.toFixed(1)} MB of {megaBytesTotal.toFixed(1)} MB ({Math.round(progress) || 0}%)
                 </p>
                 <div style={{ marginTop: -6, marginBottom: 2 }}>
-                  <Truncate lines={1} className='mb-1 text-secondary' style={{ fontSize: 10 }}>
-                    {mapsetDownload.url}
-                  </Truncate>
-                </div>
-                <ProgressBar animated now={progress} />
-              </>
-            ) : (
-              mapsetDownload.downloadStatus === DownloadStates.Failed && (
-                <p className='my-0 text-secondary' style={{ fontSize: 13 }}>
-                  {mapsetDownload.downloadStatus}
-                  {mapsetDownload.errorMessage && (
-                    <>
-                      <span>
-                        {' '}
-                        -{' '}
-                        <u style={{ cursor: 'pointer' }}>
-                          <a onClick={() => setShowError(!showError)}>See details</a>
-                        </u>
-                      </span>
-                      <Accordion activeKey={showError ? '0' : null}>
-                        <Accordion.Collapse eventKey='0'>
-                          <div style={{ whiteSpace: 'pre-line' }}>{mapsetDownload.errorMessage}</div>
-                        </Accordion.Collapse>
-                      </Accordion>
-                    </>
-                  )}
-                  <div>
+                  {downloadStatus === DownloadStates.Downloading && (
                     <a
-                      onClick={() => openInBrowser(`https://osu.ppy.sh/beatmapsets/${mapsetDownload.id}`)}
-                      variant='outline-secondary'
-                      className='mr-2'
-                      size='sm'
-                      style={{ cursor: 'pointer' }}
+                      className='mb-1'
+                      style={{ fontSize: 10, height: '24px' }}
+                      onClick={() => openInBrowser(url)}
+                      href='#'
+                      target='_blank'
                     >
-                      <small> {`https://osu.ppy.sh/beatmapsets/${mapsetDownload.id}`} </small>
+                      {truncate(url, 100)}
                     </a>
-                  </div>
-                </p>
-              )
+                  )}
+                  {downloadStatus === DownloadStates.Finished && (
+                    <span className='mb-1 text-secondary' style={{ fontSize: 10, height: '24px' }}>
+                      {downloadLocation}
+                    </span>
+                  )}
+                </div>
+                <ProgressBar now={downloadStatus === DownloadStates.Downloading ? progress : 100} />
+              </>
+            )}
+            {downloadStatus === DownloadStates.Failed && (
+              <p className='my-0 text-secondary' style={{ fontSize: 13 }}>
+                {downloadStatus}
+                {errorMessage && (
+                  <>
+                    <span>
+                      {' '}
+                      -{' '}
+                      <u style={{ cursor: 'pointer' }}>
+                        <a onClick={() => setShowError(!showError)}>See details</a>
+                      </u>
+                    </span>
+                    <Accordion activeKey={showError ? '0' : null}>
+                      <Accordion.Collapse eventKey='0'>
+                        <div style={{ whiteSpace: 'pre-line' }}>{errorMessage}</div>
+                      </Accordion.Collapse>
+                    </Accordion>
+                  </>
+                )}
+                <div>
+                  <a
+                    onClick={() => openInBrowser(`https://osu.ppy.sh/beatmapsets/${id}`)}
+                    variant='outline-secondary'
+                    className='mr-2'
+                    size='sm'
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <small> {`https://osu.ppy.sh/beatmapsets/${id}`} </small>
+                  </a>
+                </div>
+              </p>
             )}
           </Col>
         </Row>
@@ -98,4 +120,4 @@ function DownloadFileCard({ mapsetDownload }) {
   )
 }
 
-export default DownloadFileCard
+export default memo(DownloadFileCard)

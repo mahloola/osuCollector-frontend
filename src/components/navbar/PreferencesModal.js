@@ -20,6 +20,7 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
     importedCollectionNameFormat: 'o!c - ${uploader} - ${collectionName}',
     minimizeToTray: false,
     notifyOnDownloadsComplete: false,
+    useHttp: false,
   })
 
   const onPreferencesChanged = () => {
@@ -34,6 +35,7 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
         preferences?.importedCollectionNameFormat || 'o!c - ${uploader} - ${collectionName}',
       minimizeToTray: preferences?.minimizeToTray || false,
       notifyOnDownloadsComplete: preferences?.notifyOnDownloadsComplete || false,
+      useHttp: preferences?.useHttp || false,
     })
   }
   useEffect(onPreferencesChanged, [preferences])
@@ -176,6 +178,13 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
     setUnsavedPreferences({
       ...unsavedPreferences,
       notifyOnDownloadsComplete: e.target.checked,
+    })
+  }
+
+  const useHttpChanged = (e) => {
+    setUnsavedPreferences({
+      ...unsavedPreferences,
+      useHttp: e.target.checked,
     })
   }
 
@@ -420,6 +429,20 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
                 type='checkbox'
                 checked={unsavedPreferences.notifyOnDownloadsComplete}
                 onChange={notifyOnDownloadsCompleteChanged}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} className='my-2'>
+            <Form.Label column sm='3' className='text-right'>
+              Download using HTTP
+            </Form.Label>
+            <Col sm='9' className='d-flex align-items-center'>
+              <Form.Check
+                id='download-to-songs-folder-checkbox'
+                type='checkbox'
+                checked={unsavedPreferences.useHttp}
+                onChange={useHttpChanged}
               />
             </Col>
           </Form.Group>
