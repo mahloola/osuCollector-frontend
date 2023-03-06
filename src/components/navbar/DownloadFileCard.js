@@ -53,7 +53,7 @@ function DownloadFileCard({
             }}
           >
             <p className='mb-0' style={{ minHeight: '24px' }}>
-              {filename}
+              {filename || 'Loading...'}
             </p>
             {[DownloadStates.Downloading, DownloadStates.Finished].includes(downloadStatus) && (
               <>
