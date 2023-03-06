@@ -103,9 +103,7 @@ function DownloadFileCard({
                 <div>
                   <a
                     onClick={() => openInBrowser(`https://osu.ppy.sh/beatmapsets/${id}`)}
-                    variant='outline-secondary'
                     className='mr-2'
-                    size='sm'
                     style={{ cursor: 'pointer' }}
                   >
                     <small> {`https://osu.ppy.sh/beatmapsets/${id}`} </small>
