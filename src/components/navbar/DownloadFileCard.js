@@ -5,6 +5,8 @@ import { ThemeContext } from 'styled-components'
 import { openInBrowser, truncate } from '../../utils/misc'
 import { Accordion } from 'react-bootstrap'
 
+const { ipcRenderer } = window.require('electron')
+
 // https://i.imgur.com/kNyRH49.png
 function DownloadFileCard({
   bytesReceived,
@@ -15,6 +17,7 @@ function DownloadFileCard({
   downloadLocation,
   errorMessage,
   id,
+  collectionDownloadIndex,
 }) {
   const [showError, setShowError] = useState(false)
 
@@ -25,7 +28,9 @@ function DownloadFileCard({
     Downloading: 'Downloading...',
     Finished: 'Finished',
     Cancelled: 'Cancelled',
+    Aborted: 'Aborted',
     Failed: 'Failed',
+    AlreadyDownloaded: 'Already downloaded',
   })
 
   const megaBytesReceived = bytesReceived / 1000000
@@ -57,9 +62,18 @@ function DownloadFileCard({
             </p>
             {[DownloadStates.Downloading, DownloadStates.Finished].includes(downloadStatus) && (
               <>
-                <p className='mb-0 text-secondary' style={{ fontSize: 13 }}>
-                  {megaBytesReceived.toFixed(1)} MB of {megaBytesTotal.toFixed(1)} MB ({Math.round(progress) || 0}%)
-                </p>
+                <div className='mb-0 text-secondary' style={{ fontSize: 13 }}>
+                  {megaBytesReceived.toFixed(1)} MB of {megaBytesTotal.toFixed(1)} MB ({Math.round(progress) || 0}%){' '}
+                  {downloadStatus === DownloadStates.Finished && progress !== 100 && ' (Cancelled)'}
+                  {downloadStatus === DownloadStates.Downloading && (
+                    <span
+                      onClick={() => ipcRenderer.invoke('skip-current-download', collectionDownloadIndex)}
+                      style={{ marginLeft: '12px', textDecoration: 'underline', cursor: 'pointer', color: '#0d6efd' }}
+                    >
+                      Skip
+                    </span>
+                  )}
+                </div>
                 <div style={{ marginTop: -6, marginBottom: 2 }}>
                   {downloadStatus === DownloadStates.Downloading && (
                     <a
@@ -73,16 +87,26 @@ function DownloadFileCard({
                     </a>
                   )}
                   {downloadStatus === DownloadStates.Finished && (
-                    <span className='mb-1 text-secondary' style={{ fontSize: 10, height: '24px' }}>
+                    <div className='mt-2 mb-1 text-secondary' style={{ fontSize: 10 }}>
                       {downloadLocation}
-                    </span>
+                    </div>
                   )}
                 </div>
-                <ProgressBar now={downloadStatus === DownloadStates.Downloading ? progress : 100} />
+                <ProgressBar now={progress} />
               </>
             )}
+            {downloadStatus === DownloadStates.AlreadyDownloaded && (
+              <div>
+                <div className='my-0 text-secondary' style={{ fontSize: 13 }}>
+                  Already downloaded
+                </div>
+                <div className='text-secondary' style={{ fontSize: 10 }}>
+                  {downloadLocation}
+                </div>
+              </div>
+            )}
             {downloadStatus === DownloadStates.Failed && (
-              <p className='my-0 text-secondary' style={{ fontSize: 13 }}>
+              <div className='my-0 text-secondary' style={{ fontSize: 13 }}>
                 {downloadStatus}
                 {errorMessage && (
                   <>
@@ -109,7 +133,7 @@ function DownloadFileCard({
                     <small> {`https://osu.ppy.sh/beatmapsets/${id}`} </small>
                   </a>
                 </div>
-              </p>
+              </div>
             )}
           </Col>
         </Row>

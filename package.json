@@ -42,7 +42,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "cross-env BROWSER=none react-scripts start",
+    "start": "cross-env BROWSER=none cross-env GENERATE_SOURCEMAP=false react-scripts start",
     "build": "react-scripts build && rm -rf electron/src/build && mv build electron/src",
     "publish": "react-scripts build && gsutil rsync -r build gs://desktop.osucollector.com && gsutil setmeta -h \"Cache-Control: max-age=0\" gs://desktop.osucollector.com/index.html"
   },
