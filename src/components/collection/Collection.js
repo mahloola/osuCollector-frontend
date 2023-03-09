@@ -451,17 +451,16 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                   </Tooltip>
                 )}
               >
-                <a
-                  href='#'
+                <div
                   onClick={() =>
                     setModalMessage(
                       'Add beatmaps to this collection by sending /np to FunOrange.\n\nTo get started, message !setup to FunOrange in osu!'
                     )
                   }
-                  style={{ marginLeft: '10px', marginTop: '-8px', fontSize: 22 }}
+                  style={{ marginLeft: '10px', marginTop: '-8px', fontSize: 22, cursor: 'pointer', color: '#0d6efd' }}
                 >
                   <QuestionCircleFill className='mr-2' />
-                </a>
+                </div>
               </OverlayTrigger>
             </div>
           )}
@@ -479,11 +478,14 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                 </div>
               )}
               {collection?.uploader?.id === user?.id && !renamingCollection && (
-                <>
-                  <Button variant='outline-secondary' onClick={() => setRenamingCollection(true)} style={{ width: 48 }}>
-                    <Pencil className='svg-shadow' size={18} />
-                  </Button>
+                <Button variant='outline-secondary' onClick={() => setRenamingCollection(true)} style={{ width: 48 }}>
+                  <Pencil className='svg-shadow' size={18} />
+                </Button>
+              )}
+              {!renamingCollection && (
+                <div style={{ alignSelf: 'center' }}>
                   <Button
+                    variant='dark'
                     ref={clipboardRef}
                     onClick={() => {
                       navigator.clipboard.writeText(`https://osucollector.com/collections/${collection.id}`)
@@ -501,7 +503,7 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                       <Tooltip id='copied-url-tooltip'>copied to clipboard!</Tooltip>
                     </Overlay>
                   </Button>
-                </>
+                </div>
               )}
             </div>
             {collection?.uploader?.id === user?.id && (
