@@ -25,7 +25,7 @@ function DownloadsModal({
   useEffect(() => setShowAll(false), [downloadsModalIsOpen])
 
   // https://i.imgur.com/optYWti.png
-  const collections = collectionDownloads?.map((collectionDownload, index) => {
+  const collections = collectionDownloads?.map((collectionDownload, collectionDownloadIndex) => {
     const totalBeatmapsets = collectionDownload.beatmapsets?.length
     const finishedDownloads = collectionDownload.beatmapsets?.filter(
       (mapset) => mapset.downloadStatus === DownloadStates.Finished
@@ -51,14 +51,14 @@ function DownloadsModal({
     const inProgress =
       collectionDownload.downloadStatus !== DownloadStates.Finished &&
       collectionDownload.downloadStatus !== DownloadStates.Cancelled
-    const cancelDownload = () => ipcRenderer.invoke('cancel-download', index)
+    const cancelDownload = () => ipcRenderer.invoke('cancel-download', collectionDownloadIndex)
     const clearDownload = () => {
       setShowDownloadTroubleshootText(false)
-      ipcRenderer.invoke('clear-download', index)
+      ipcRenderer.invoke('clear-download', collectionDownloadIndex)
     }
 
     return (
-      <Card $lightbg key={index} className='shadow-sm py-2 px-3 mx-2 my-4'>
+      <Card $lightbg key={collectionDownloadIndex} className='shadow-sm py-2 px-3 mx-2 my-4'>
         <Container className='mb-1'>
           <Row className='align-items-center'>
             <Col className='px-0'>
@@ -96,6 +96,7 @@ function DownloadsModal({
               downloadLocation={downloadLocation}
               errorMessage={errorMessage}
               id={id}
+              collectionDownloadIndex={collectionDownloadIndex}
             />
           )
         })}

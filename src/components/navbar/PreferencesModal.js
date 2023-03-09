@@ -2,7 +2,6 @@
 import { Button, Col, Form, FormControl, InputGroup, Row } from '../bootstrap-osu-collector'
 import Modal from 'react-bootstrap/Modal'
 import { useEffect, useState } from 'react'
-import path from 'path'
 import { InfoCircleFill, Plus } from 'react-bootstrap-icons'
 import { OverlayTrigger, Popover, PopoverTitle, PopoverContent } from 'react-bootstrap'
 import { FaTrash } from 'react-icons/fa'
@@ -72,17 +71,15 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
     if (e.target.checked) {
       setUnsavedPreferences({
         ...unsavedPreferences,
-        usingCustomSongsDirectory: e.target.checked,
+        usingCustomSongsDirectory: true,
         osuSongsSymlinks: unsavedPreferences.osuSongsSymlinks?.length ? unsavedPreferences.osuSongsSymlinks : [''],
       })
     } else {
+      const osuSongsDirectory = await ipcRenderer.invoke('path-join', unsavedPreferences.osuInstallDirectory, 'Songs')
       setUnsavedPreferences({
         ...unsavedPreferences,
-        usingCustomSongsDirectory: e.target.checked,
-        osuSongsDirectory: path
-          .join(unsavedPreferences.osuInstallDirectory, 'Songs')
-          .replace(/\//g, await ipcRenderer.invoke('path-sep'))
-          .replace(/\\\\/g, await ipcRenderer.invoke('path-sep')),
+        usingCustomSongsDirectory: false,
+        osuSongsDirectory: osuSongsDirectory,
       })
     }
   }

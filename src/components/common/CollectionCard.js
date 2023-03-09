@@ -15,7 +15,7 @@ const GraphContainer = styled(Card.Body)`
   background-color: ${(props) => (props.theme.darkMode ? '#121212' : '#eee')};
 `
 
-function CollectionCard({ user, setUser, collection }) {
+function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
   if (!collection) return <div></div>
   // @ts-ignore
   const theme = useContext(ThemeContext)
@@ -25,20 +25,7 @@ function CollectionCard({ user, setUser, collection }) {
   const relativeDate = moment.unix(collection.dateUploaded._seconds).fromNow()
 
   const favourited = user?.favourites?.includes(collection?.id)
-  const heartClicked = () => {
-    const newFavourited = !favourited
-    if (newFavourited) {
-      api.favouriteCollection(collection.id)
-    } else {
-      api.unfavouriteCollection(collection.id)
-    }
-    setUser({
-      ...user,
-      favourites: newFavourited
-        ? [...user.favourites, collection.id]
-        : user.favourites.filter((id) => id !== collection.id),
-    })
-  }
+  const heartClicked = () => favouriteButtonClicked(collection.id, !favourited)
 
   const difficultySpread = collection.difficultySpread
     ? collection.difficultySpread
@@ -94,7 +81,7 @@ function CollectionCard({ user, setUser, collection }) {
             </LinkContainer>
             <div className='d-flex flex-column'>
               <div className='d-flex'>
-                <h5 className='mb-0'>
+                <h5 className='mb-0' style={{ display: 'inline-flex' }}>
                   <i
                     className={`fas fa-heart mr-2 ${
                       !user ? 'grey-heart-disabled' : favourited ? 'red-heart-color' : 'grey-heart-color'
