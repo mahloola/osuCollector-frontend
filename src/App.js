@@ -92,7 +92,7 @@ function App() {
   }, [])
 
   const theme = {
-    darkMode: false,
+    darkMode: true,
     primary: '#86AAFC',
   }
   for (const i of Array(100).keys()) {
@@ -105,11 +105,11 @@ function App() {
     darkMode: JSON.parse(localStorage.getItem('darkMode')) ?? true,
   })
   const toggleTheme = () => {
-    if (!user?.paidFeaturesAccess) {
-      // redirect to /client
-      history.push('/client')
-      return
-    }
+    // if (!user?.paidFeaturesAccess) {
+    //   // redirect to /client
+    //   history.push('/client')
+    //   return
+    // }
     setCurrentTheme((prev) => ({
       ...prev,
       darkMode: !prev.darkMode,
