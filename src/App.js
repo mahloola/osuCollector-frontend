@@ -80,14 +80,14 @@ function App() {
       setUser(user)
 
       // undo theme if user is not subscribed
-      if (!user?.paidFeaturesAccess && currentTheme.darkMode) {
-        const newTheme = {
-          ...currentTheme,
-          darkMode: false,
-        }
-        setCurrentTheme(newTheme)
-        localStorage.setItem('darkMode', 'false')
-      }
+      // if (!user?.paidFeaturesAccess && currentTheme.darkMode) {
+      //   const newTheme = {
+      //     ...currentTheme,
+      //     darkMode: false,
+      //   }
+      //   setCurrentTheme(newTheme)
+      //   localStorage.setItem('darkMode', 'false')
+      // }
     })()
   }, [])
 
