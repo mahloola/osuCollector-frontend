@@ -43,7 +43,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
   const audioRef = useRef(null)
 
   useEffect(() => {
-    const audio = new Audio(`https://catboy.best/preview/audio/${beatmapset.id}`)
+    const audio = new Audio(`https://catboy.best/preview/audio/${beatmapset.id}?set=1`)
     audio.volume = 0.2
     audio.addEventListener('ended', onAudioEnd)
     audioRef.current = audio
