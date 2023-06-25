@@ -43,9 +43,8 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
   const audioRef = useRef(null)
 
   useEffect(() => {
-    const audio = new Audio(`https://catboy.best/preview/audio/${beatmapset?.id}?set=1`)
+    const audio = new Audio(`https://b.ppy.sh/preview/${beatmapset.id}.mp3`)
     audio.volume = 0.2
-    audio.addEventListener('error', fallbackToOriginalAudio)
     audio.addEventListener('ended', onAudioEnd)
     audioRef.current = audio
 
@@ -55,13 +54,6 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
       }
     }
   }, [])
-  const fallbackToOriginalAudio = () => {
-    console.log('fallbackToOriginalAudio')
-    const audio = new Audio(`https://b.ppy.sh/preview/${beatmapset?.id}.mp3`)
-    audio.volume = 0.2
-    audio.addEventListener('ended', onAudioEnd)
-    audioRef.current = audio
-  }
 
   useEffect(() => {
     if (!audioRef.current) return
