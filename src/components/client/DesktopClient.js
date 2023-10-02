@@ -411,7 +411,7 @@ function DesktopClient({ user, setUser }) {
                             )}
                           </Button>
                         )}
-                        {user?.private?.twitchError && (
+                        {user?.private?.twitchError && Boolean(user?.private?.linkedTwitchAccount) && (
                           <small className='text-danger text-sm ml-2'> Please unlink and try again. </small>
                         )}
                       </div>
