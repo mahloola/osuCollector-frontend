@@ -55,7 +55,7 @@ function Tournaments({ user, setUser }) {
     }
     typingTimeoutRef.current = setTimeout(() => {
       const params = new URLSearchParams({ search: e.target.value.trim() })
-      history.replace({ pathname: location.pathname, search: e.target.value ? params.toString() : undefined })
+      history.replace(`/tournaments${e.target.value ? `?${params.toString()}` : ''}`)
     }, 300)
   }
 
