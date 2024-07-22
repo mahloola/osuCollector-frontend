@@ -18,6 +18,8 @@ import './App.css'
 import UserFavourites from './components/users/UserFavourites'
 import UserUploads from './components/users/UserUploads'
 import EnterOtp from './components/login/EnterOtp'
+import BasicAuth from 'components/login/BasicAuth'
+import ResetPassword from 'components/login/ResetPassword'
 import ScrollToTop from './components/common/ScrollToTop'
 import Tournaments from './components/tournaments/Tournaments'
 import Tournament from './components/tournament/Tournament'
@@ -191,6 +193,12 @@ function App() {
             </Route>
             <Route path='/subscription/status'>
               <SubscriptionStatus user={user} setUser={setUser} />
+            </Route>
+            <Route path='/login/basicAuth'>
+              <BasicAuth setUser={setUser} />
+            </Route>
+            <Route path='/resetPassword'>
+              <ResetPassword />
             </Route>
             <Route>
               <Redirect to='/' />
