@@ -37,6 +37,8 @@ import Success from './components/payments/Success'
 import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 import LinkIrc from './components/login/LinkIrc'
 import { Helmet } from 'react-helmet'
+import BasicAuth from 'components/login/BasicAuth'
+import ResetPassword from 'components/login/ResetPassword'
 
 extend([mixPlugin])
 
@@ -197,6 +199,12 @@ function App() {
                   </Route>
                   <Route path='/subscription/status'>
                     <SubscriptionStatus user={user} setUser={setUser} />
+                  </Route>
+                  <Route path='/login/basicAuth'>
+                    <BasicAuth setUser={setUser} />
+                  </Route>
+                  <Route path='/resetPassword'>
+                    <ResetPassword />
                   </Route>
                   <Route>
                     <NotFound />

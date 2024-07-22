@@ -698,3 +698,15 @@ export async function changeUser({ username, userId }) {
   }
   return res.data
 }
+
+export async function loginBasicAuth({ username, password }) {
+  const route = '/api/login-basic-auth'
+  const res = await axios.post(route, { username, password })
+  return res.data
+}
+
+export async function setPassword({ username, currentPassword, newPassword }) {
+  const route = '/api/users/setPassword'
+  const res = await axios.post(route, { username, currentPassword, newPassword })
+  return res.data
+}
