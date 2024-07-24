@@ -706,7 +706,7 @@ export async function loginBasicAuth({ username, password }) {
 }
 
 export async function setPassword({ username, currentPassword, newPassword }) {
-  const route = '/api/users/setPassword'
+  const route = '/api/users/resetPassword'
   const res = await axios.post(route, { username, currentPassword, newPassword })
   return res.data
 }

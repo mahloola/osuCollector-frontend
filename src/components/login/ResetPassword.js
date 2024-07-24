@@ -1,7 +1,8 @@
 import { Button, Card, Container, FormControl } from '../bootstrap-osu-collector'
 import * as api from '../../utils/api'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useState } from 'react'
+import { LinkContainer } from 'react-router-bootstrap'
 
 export default function ResetPassword() {
   const history = useHistory()
@@ -26,26 +27,30 @@ export default function ResetPassword() {
       <Card className='px-4 py-5 my-5 d-flex flex-column align-items-center'>
         <label className='fw-bold'>Username:</label>
         <FormControl
-          className='col-1 mb-3'
+          className='mb-3'
           type='text'
-          style={{ textAlign: 'center' }}
+          style={{ textAlign: 'center', maxWidth: '200px' }}
           onChange={(e) => setUsername(e.target.value)}
         />
         <label className='fw-bold'>Current Password:</label>
         <FormControl
-          className='col-1 mb-3'
+          className='mb-3'
           type='password'
-          style={{ textAlign: 'center' }}
+          style={{ textAlign: 'center', maxWidth: '200px' }}
           onChange={(e) => setCurrentPassword(e.target.value)}
         />
         <label className='fw-bold'>New Password:</label>
         <FormControl
-          className='col-1 mb-3'
+          className='mb-3'
           type='password'
-          style={{ textAlign: 'center' }}
+          style={{ textAlign: 'center', maxWidth: '200px' }}
           onChange={(e) => setNewPassword(e.target.value)}
         />
-        <Button onClick={submit}>Login</Button>
+        <Button onClick={submit}>Reset password</Button>
+
+        <LinkContainer to='/login/basicAuth' className='mt-3'>
+          <a>Back to login</a>
+        </LinkContainer>
       </Card>
     </Container>
   )

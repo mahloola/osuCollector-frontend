@@ -2,6 +2,7 @@ import { Button, Card, Container, FormControl } from '../bootstrap-osu-collector
 import * as api from '../../utils/api'
 import { useHistory } from 'react-router-dom'
 import { useState } from 'react'
+import { LinkContainer } from 'react-router-bootstrap'
 
 export default function BasicAuth({ setUser }) {
   const history = useHistory()
@@ -24,21 +25,25 @@ export default function BasicAuth({ setUser }) {
   return (
     <Container className='pt-4'>
       <Card className='px-4 py-5 my-5 d-flex flex-column align-items-center'>
-        <h3 className='display-5 fw-bold'>Username</h3>
+        <label className='fw-bold'>Username:</label>
         <FormControl
-          className='col-1'
+          className='mb-3'
           type='text'
-          style={{ textAlign: 'center' }}
+          style={{ textAlign: 'center', maxWidth: '200px' }}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <h3 className='display-5 fw-bold'>Password</h3>
+        <label className='fw-bold mb-2'>Password:</label>
         <FormControl
-          className='col-1'
+          className='mb-3'
           type='password'
-          style={{ textAlign: 'center' }}
+          style={{ textAlign: 'center', maxWidth: '200px' }}
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button onClick={submit}>Login</Button>
+
+        <LinkContainer to='/resetPassword' className='mt-3'>
+          <a>Reset password</a>
+        </LinkContainer>
       </Card>
     </Container>
   )
