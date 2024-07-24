@@ -5,10 +5,13 @@ import { useEffect, useState } from 'react'
 import { InfoCircleFill, Plus } from 'react-bootstrap-icons'
 import { OverlayTrigger, Popover, PopoverTitle, PopoverContent } from 'react-bootstrap'
 import { FaTrash } from 'react-icons/fa'
+import { useHistory } from 'react-router-dom'
 const { ipcRenderer } = window.require('electron')
 
 // eslint-disable-next-line no-unused-vars
 function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesModalIsOpen }) {
+  const history = useHistory()
+
   const [unsavedPreferences, setUnsavedPreferences] = useState({
     osuInstallDirectory: '',
     usingCustomSongsDirectory: false,
@@ -210,6 +213,11 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
 
   const openDevToolsClicked = () => {
     ipcRenderer.invoke('open-dev-tools')
+  }
+
+  const specialLoginClicked = () => {
+    history.push('/login/basicAuth')
+    setPreferencesModalIsOpen(false)
   }
 
   return (
@@ -451,6 +459,9 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
         </Button>
         <Button className='text-secondary' size='sm' variant='link' onClick={openDevToolsClicked}>
           Open Chrome DevTools
+        </Button>
+        <Button className='text-secondary' size='sm' variant='link' onClick={specialLoginClicked}>
+          Special login
         </Button>
         <Button onClick={() => setPreferencesModalIsOpen(false)} variant='secondary'>
           Cancel
