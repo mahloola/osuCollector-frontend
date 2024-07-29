@@ -194,7 +194,7 @@ function NavigationBar({ user, setAuthX, setSearchText, toggleTheme }) {
                 Upload
               </Nav.Link>
 
-              {!user && <Nav.Link onClick={otpLogin}>Login</Nav.Link>}
+              {!user && loginButton}
 
               <Form onSubmit={searchSubmit} className='me-auto my-2'>
                 <InputGroup>
