@@ -516,24 +516,19 @@ export default function Collection({ user, setUser }) {
                         menuItems={['Download as collection.db']}
                         menuActions={[
                           async () => {
-                            if (user?.paidFeaturesAccess) {
-                              // download collection.db
-                              let data
-                              try {
-                                data = await api.downloadCollectionDb(collection.id)
-                              } catch (err) {
-                                alert(err.message)
-                                return
-                              }
+                            // download collection.db
+                            try {
+                              const data = await api.downloadCollectionDb(collection.id)
                               const url = window.URL.createObjectURL(new Blob([data]))
                               const a = document.createElement('a')
                               a.href = url
-                              a.download = `${collection.uploader.username} - ${collection.name}.db`
+                              a.download = `${collection.uploader.username} - ${collection.name} - collection.db`
                               document.body.appendChild(a) // we need to append the element to the dom -> otherwise it will not work in firefox
                               a.click()
                               a.remove()
-                            } else {
-                              history.push('/client')
+                            } catch (err) {
+                              alert(err.message)
+                              return
                             }
                           },
                         ]}
