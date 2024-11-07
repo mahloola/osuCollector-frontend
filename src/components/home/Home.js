@@ -128,6 +128,7 @@ function Home({ user, setUser }) {
                         >
                           <CollectionCard
                             user={user}
+                            setUser={setUser}
                             collection={collection}
                             favouriteButtonClicked={(collectionId, favourited) =>
                               favouriteButtonClicked(collectionId, favourited)
@@ -174,6 +175,7 @@ function Home({ user, setUser }) {
                     >
                       <CollectionCard
                         user={user}
+                        setUser={setUser}
                         collection={collection}
                         favouriteButtonClicked={(collectionId, favourited) =>
                           favouriteButtonClicked(collectionId, favourited)

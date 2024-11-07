@@ -539,7 +539,7 @@ export default function Collection({ user, setUser }) {
                       <FavouriteButton
                         className='mx-1'
                         favourites={favouritedBy?.length}
-                        favourited={favouritedBy?.includes(user?.id)}
+                        favourited={user?.favourites?.includes(collection?.id)}
                         onClick={favouriteButtonClicked}
                       />
                     </div>

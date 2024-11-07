@@ -69,13 +69,17 @@ function UserFavourites({ user, setUser }) {
               </ReactPlaceholder>
             </div>
             <ReactPlaceholder
-              ready={collections.length !== 0 && collections[0] !== null}
+              ready={(collections.length !== 0 && collections[0] !== null) || collections?.length === 0}
               showLoadingAnimation
               type='rect'
               className='ml-2 mb-0 mt-3'
               style={{ width: '140px', height: '30px' }}
             >
-              <h4 className='ml-2 mb-0 mt-3'> {collections.length} collections </h4>
+              {collections?.length === 0 ? (
+                <div>This user has no favourites.</div>
+              ) : (
+                <h4 className='ml-2 mb-0 mt-3'> {collections.length} collections </h4>
+              )}
             </ReactPlaceholder>
           </div>
           <CollectionList

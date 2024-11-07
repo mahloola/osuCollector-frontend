@@ -35,7 +35,7 @@ function CollectionCard({ user, setUser, collection }) {
     setUser({
       ...user,
       favourites: newFavourited
-        ? [...user.favourites, collection.id]
+        ? [...(user.favourites ?? []), collection.id]
         : user.favourites.filter((id) => id !== collection.id),
     })
   }
