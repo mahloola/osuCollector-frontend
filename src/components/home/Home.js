@@ -40,7 +40,7 @@ function Home({ user, setUser }) {
     if (!user) return
     setUser((user) => ({
       ...user,
-      favourites: favourited ? [...user.favourites, collectionId] : user.favourites.filter((id) => id !== collectionId),
+      favourites: favourited ? [...(user?.favourites ?? []), collectionId] : user.favourites.filter((id) => id !== collectionId),
     }))
     setRecentCollections((recent) => changeCollectionFavouritedStatus(recent, collectionId, favourited))
     setPopularCollections((popular) => changeCollectionFavouritedStatus(popular, collectionId, favourited))
