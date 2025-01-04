@@ -170,10 +170,10 @@ function App() {
                   <Route exact path='/tournaments/create'>
                     <CreateTournament />
                   </Route>
-                  <Route path='/tournaments/:id'>
+                  <Route exact path='/tournaments/:id/:slug'>
                     <Tournament user={user} setUser={setUser} />
                   </Route>
-                  <Route path='/tournaments/:id/edit'>
+                  <Route exact path='/tournaments/:id/:slug/edit'>
                     <EditTournament />
                   </Route>
                   <Route path='/payments/checkout'>

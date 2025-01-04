@@ -170,7 +170,7 @@ function Tournament({ user, setUser }) {
                 </ReactPlaceholder>
                 {user && tournament && userOwnsTournament(user, tournament) && (
                   <div className='d-flex'>
-                    <LinkContainer to={`/tournaments/${id}/edit`}>
+                    <LinkContainer to={`/tournaments/${id}/${getUrlSlug(tournament.name)}/edit`}>
                       <div>
                         <Button
                           variant='secondary'
