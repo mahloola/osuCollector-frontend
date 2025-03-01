@@ -4,7 +4,6 @@ import { useState } from 'react'
 import * as api from '../../utils/api'
 import Tabs from 'react-bootstrap/Tabs'
 import { Spinner, Tab } from 'react-bootstrap'
-import ReactJson from 'react-json-view'
 import moment from 'moment'
 import { ExclamationTriangleFill } from 'react-bootstrap-icons'
 
@@ -76,10 +75,10 @@ function SubscriptionDetailsModal({
     new Date() > stripeEndDate
       ? 'Ended'
       : stripeSubscription?.cancel_at_period_end
-      ? 'Ends'
-      : stripeSubscription?.status.toLowerCase() === 'active'
-      ? 'Renews'
-      : 'Ends'
+        ? 'Ends'
+        : stripeSubscription?.status.toLowerCase() === 'active'
+          ? 'Renews'
+          : 'Ends'
 
   return (
     <>
@@ -217,7 +216,6 @@ const SubscriptionDetails = ({
     setCancelSubscriptionConfirmationVisible(false)
     onSubscriptionCancel()
   }
-  const [showJSON, setShowJSON] = useState(false)
 
   return (
     <div>
@@ -270,9 +268,6 @@ const SubscriptionDetails = ({
       </div>
       <hr />
       <div className='d-flex justify-content-end align-items-center'>
-        <Button size='sm' className='mx-1' variant='outline-secondary' onClick={() => setShowJSON(!showJSON)}>
-          Show full details
-        </Button>
         {canCancelSubscription && (
           <Button
             size='sm'
@@ -299,25 +294,6 @@ const SubscriptionDetails = ({
           </Button>
         )}
       </div>
-      <Tab.Container activeKey={showJSON ? 'visible' : 'hidden'} defaultActiveKey='hidden'>
-        <Tab.Content>
-          <Tab.Pane eventKey='hidden'></Tab.Pane>
-          <Tab.Pane eventKey='visible'>
-            <div className='mt-3'>
-              <ReactJson
-                src={subscriptionObject}
-                theme='ocean'
-                name={null}
-                style={{ padding: '16px', fontSize: '0.8em' }}
-                iconStyle='triangle'
-                enableClipboard={false}
-                displayObjectSize={false}
-                displayDataTypes={false}
-              />
-            </div>
-          </Tab.Pane>
-        </Tab.Content>
-      </Tab.Container>
 
       <Modal
         show={cancelSubscriptionConfirmationVisible}

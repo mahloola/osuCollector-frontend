@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react'
 import { Card, Image, ListGroup, ListGroupItem } from '../bootstrap-osu-collector'
 import moment from 'moment'
 import { LinkContainer } from 'react-router-bootstrap'
-import Truncate from 'react-truncate'
 import { starToColor } from '../../utils/misc'
 import BarGraph from './BarGraph'
 import styled, { ThemeContext } from 'styled-components'
@@ -30,17 +29,17 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
   const difficultySpread = collection.difficultySpread
     ? collection.difficultySpread
     : {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
-        8: 0,
-        9: 0,
-        10: 0,
-      }
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+      6: 0,
+      7: 0,
+      8: 0,
+      9: 0,
+      10: 0,
+    }
 
   return (
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
@@ -70,9 +69,7 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
               <a className='nostyle'>
                 <div style={{ width: '100%' }}>
                   <ModeCounters collection={collection} className='mb-3' />
-                  <Card.Title>
-                    <Truncate lines={1}>{collection.name}</Truncate>
-                  </Card.Title>
+                  <Card.Title>{collection.name}</Card.Title>
                 </div>
               </a>
             </LinkContainer>
@@ -83,9 +80,8 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
               <div className='d-flex'>
                 <h5 className='mb-0' style={{ display: 'inline-flex' }}>
                   <i
-                    className={`fas fa-heart mr-2 ${
-                      !user ? 'grey-heart-disabled' : favourited ? 'red-heart-color' : 'grey-heart-color'
-                    }`}
+                    className={`fas fa-heart mr-2 ${!user ? 'grey-heart-disabled' : favourited ? 'red-heart-color' : 'grey-heart-color'
+                      }`}
                     onClick={user && heartClicked}
                   />
                   <small> {collection?.favourites} </small>
@@ -100,7 +96,7 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
             <a className='nostyle'>
               <Card.Text>
                 {collection.description ? (
-                  <Truncate lines={1}>{collection.description}</Truncate>
+                  collection.description
                 ) : (
                   <small className='text-muted'>
                     <i>no description</i>

@@ -9,7 +9,6 @@ import {
   usePopularCollections,
 } from '../../utils/api'
 import './Home.css'
-import 'react-placeholder/lib/reactPlaceholder.css'
 import CollectionCard from '../common/CollectionCard'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Alert } from 'react-bootstrap'

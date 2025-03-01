@@ -18,7 +18,6 @@ import {
 import Alert from 'react-bootstrap/Alert'
 import * as api from '../../utils/api'
 import FavouriteButton from '../common/FavouriteButton'
-import { RectShape } from 'react-placeholder/lib/placeholders'
 import './MapsetCard.css'
 import MapsetCard from './MapsetCard'
 import SortButton from '../common/SortButton'
@@ -31,7 +30,6 @@ import ModeCounters from '../common/ModeCounters'
 import BarGraph from '../common/BarGraph'
 import { LinkContainer } from 'react-router-bootstrap'
 import Comments from './Comments'
-import DropdownButton from '../common/DropdownButton'
 import moment from 'moment'
 import UpdateCollectionModal from './UpdateCollectionModal'
 import { useSWRConfig } from 'swr'
@@ -428,42 +426,6 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
           className='mb-3 w-100'
           style={{ height: '58px' }}
         >
-          {collection?.uploader?.id === user?.id && (
-            <div className='d-flex'>
-              <Form.Check
-                checked={npEnabled}
-                onChange={handleNpEnableClick}
-                id='np-enable-switch'
-                type='switch'
-                className='mb-2'
-                label='/np enable'
-              />
-              <OverlayTrigger
-                placement='right'
-                delay={{ show: 250, hide: 400 }}
-                overlay={(props) => (
-                  <Tooltip id='button-tooltip' {...props}>
-                    <div className='px-2 py-1' style={{}}>
-                      Add maps using /np
-                      <br />
-                      Click for more info
-                    </div>
-                  </Tooltip>
-                )}
-              >
-                <div
-                  onClick={() =>
-                    setModalMessage(
-                      'Add beatmaps to this collection by sending /np to FunOrange.\n\nTo get started, message !setup to FunOrange in osu!'
-                    )
-                  }
-                  style={{ marginLeft: '10px', marginTop: '-8px', fontSize: 22, cursor: 'pointer', color: '#0d6efd' }}
-                >
-                  <QuestionCircleFill className='mr-2' />
-                </div>
-              </OverlayTrigger>
-            </div>
-          )}
           <div className='d-flex justify-content-between'>
             <div className='d-flex align-content-center gap-3'>
               {renamingCollection ? (
@@ -613,43 +575,13 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                     <Button className='mr-1' onClick={downloadButtonClicked}>
                       Download maps
                     </Button>
-                    <DropdownButton
-                      title={
-                        importing ? (
-                          <Spinner animation='grow' size='sm' role='status' aria-hidden='true' />
-                        ) : (
-                          'Add to osu!'
-                        )
-                      }
-                      titleAction={importButtonClicked}
-                      menuItems={['Download as collection.db']}
-                      menuActions={[
-                        async () => {
-                          if (user?.paidFeaturesAccess) {
-                            // download collection.db
-                            let data
-                            try {
-                              data = await api.downloadCollectionDb(collection.id)
-                            } catch (err) {
-                              alert(err.message)
-                              return
-                            }
-                            const url = window.URL.createObjectURL(new Blob([data]))
-                            const a = document.createElement('a')
-                            a.href = url
-                            a.download = `${collection.uploader.username} - ${collection.name}.db`
-                            document.body.appendChild(a) // we need to append the element to the dom -> otherwise it will not work in firefox
-                            a.click()
-                            a.remove()
-                          } else {
-                            history.push('/client')
-                          }
-                        },
-                      ]}
-                      style={{
-                        width: 202,
-                      }}
-                    />
+                    <Button onClick={importButtonClicked} style={{ width: 202 }}>
+                      {importing ? (
+                        <Spinner animation='grow' size='sm' role='status' aria-hidden='true' />
+                      ) : (
+                        'Add to osu!'
+                      )}
+                    </Button>
                     <FavouriteButton
                       className='mx-1'
                       favourites={favouritedBy?.length}
