@@ -81,8 +81,8 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
           <Card.ImgOverlay className='py-2 pl-3 pr-1'>
             <div className='d-flex justify-content-between'>
               <div style={{ width: '100%' }}>
-                <Card.Title className='my-0 img-overlay-text'>{beatmapset.title}</Card.Title>
-                <Card.Text className='img-overlay-text'>{beatmapset.artist}</Card.Text>
+                <Card.Title className='my-0 img-overlay-text line-clamp-1'>{beatmapset.title}</Card.Title>
+                <Card.Text className='img-overlay-text line-clamp-1'>{beatmapset.artist}</Card.Text>
               </div>
               <div className='align-self-center'>
                 <button className='media-play-button p-0' onClick={onPlayClick}>
@@ -170,8 +170,8 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
             <Card.ImgOverlay className='py-2 pl-3 pr-1'>
               <div className='d-flex justify-content-between'>
                 <div style={{ width: '100%' }}>
-                  <Card.Title className='my-0 img-overlay-text'>{beatmapset.title}</Card.Title>
-                  <Card.Text className='img-overlay-text'>{beatmapset.artist}</Card.Text>
+                  <Card.Title className='my-0 img-overlay-text line-clamp-1'>{beatmapset.title}</Card.Title>
+                  <Card.Text className='img-overlay-text line-clamp-1'>{beatmapset.artist}</Card.Text>
                 </div>
                 <div className='align-self-center'>
                   <button className='media-play-button p-0' onClick={onPlayClick}>
@@ -235,7 +235,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                               className='mr-2'
                             />
                           )}
-                          <b className='mr-2'>{beatmap.version}</b>
+                          <b className='mr-2 line-clamp-1'>{beatmap.version}</b>
                           <div className='d-flex align-items-center gap-2 ms-auto'>
                             <Button
                               onClick={() => openInBrowser(beatmap.url)}

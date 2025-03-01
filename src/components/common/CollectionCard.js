@@ -7,7 +7,6 @@ import BarGraph from './BarGraph'
 import styled, { ThemeContext } from 'styled-components'
 import ModeCounters from './ModeCounters'
 import './CollectionCard.css'
-import * as api from '../../utils/api'
 
 const GraphContainer = styled(Card.Body)`
   cursor: pointer;
@@ -29,17 +28,17 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
   const difficultySpread = collection.difficultySpread
     ? collection.difficultySpread
     : {
-      1: 0,
-      2: 0,
-      3: 0,
-      4: 0,
-      5: 0,
-      6: 0,
-      7: 0,
-      8: 0,
-      9: 0,
-      10: 0,
-    }
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+      }
 
   return (
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
@@ -69,7 +68,7 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
               <a className='nostyle'>
                 <div style={{ width: '100%' }}>
                   <ModeCounters collection={collection} className='mb-3' />
-                  <Card.Title>{collection.name}</Card.Title>
+                  <Card.Title className='line-clamp-1'>{collection.name}</Card.Title>
                 </div>
               </a>
             </LinkContainer>
@@ -80,8 +79,9 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
               <div className='d-flex'>
                 <h5 className='mb-0' style={{ display: 'inline-flex' }}>
                   <i
-                    className={`fas fa-heart mr-2 ${!user ? 'grey-heart-disabled' : favourited ? 'red-heart-color' : 'grey-heart-color'
-                      }`}
+                    className={`fas fa-heart mr-2 ${
+                      !user ? 'grey-heart-disabled' : favourited ? 'red-heart-color' : 'grey-heart-color'
+                    }`}
                     onClick={user && heartClicked}
                   />
                   <small> {collection?.favourites} </small>
@@ -94,7 +94,7 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
           </div>
           <LinkContainer to={`/collections/${collection.id}`}>
             <a className='nostyle'>
-              <Card.Text>
+              <Card.Text className='line-clamp-3'>
                 {collection.description ? (
                   collection.description
                 ) : (
