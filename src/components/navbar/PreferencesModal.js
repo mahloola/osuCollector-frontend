@@ -3,14 +3,14 @@ import { Button, Col, Form, FormControl, InputGroup, Row } from '../bootstrap-os
 import Modal from 'react-bootstrap/Modal'
 import { useEffect, useState } from 'react'
 import { InfoCircleFill, Plus } from 'react-bootstrap-icons'
-import { OverlayTrigger, Popover, PopoverTitle, PopoverContent } from 'react-bootstrap'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { FaTrash } from 'react-icons/fa'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 const { ipcRenderer } = window.require('electron')
 
 // eslint-disable-next-line no-unused-vars
 function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesModalIsOpen }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [unsavedPreferences, setUnsavedPreferences] = useState({
     osuInstallDirectory: '',
@@ -216,7 +216,7 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
   }
 
   const specialLoginClicked = () => {
-    history.push('/login/basicAuth')
+    navigate('/login/basicAuth')
     setPreferencesModalIsOpen(false)
   }
 
@@ -317,7 +317,7 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
                       trigger='hover'
                       overlay={
                         <Popover id='popover-basic' style={{ maxWidth: '400px' }}>
-                          <PopoverContent>
+                          <Popover.Body>
                             <div>
                               You need to specify all symlink folders in order to prevent osu!Collector from downloading
                               duplicate beatmaps.
@@ -329,7 +329,7 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
                             <code>symlink --- D:\Songs</code>
                             <br />
                             <code>symlink --- E:\Songs</code>
-                          </PopoverContent>
+                          </Popover.Body>
                         </Popover>
                       }
                     >
@@ -383,15 +383,15 @@ function PreferencesModal({ preferences, preferencesModalIsOpen, setPreferencesM
                     trigger='hover'
                     overlay={
                       <Popover id='popover-basic'>
-                        <PopoverTitle as='h3'>Variables you can use</PopoverTitle>
-                        <PopoverContent>
+                        <Popover.Header as='h3'>Variables you can use</Popover.Header>
+                        <Popover.Body>
                           <div>
                             <code>{'${uploader}'}</code> = uploader name
                           </div>
                           <div>
                             <code>{'${collectionName}'}</code> = collection name
                           </div>
-                        </PopoverContent>
+                        </Popover.Body>
                       </Popover>
                     }
                   >

@@ -1,3 +1,7 @@
+.text-muted.text-muted {
+  color: #6c757d !important;
+}
+
 .line-clamp-1 {
   display: -webkit-box;
   -webkit-line-clamp: 1;

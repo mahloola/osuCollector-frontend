@@ -1,4 +1,4 @@
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useState, useEffect, useRef } from 'react'
 import {
   Button,
@@ -28,7 +28,7 @@ import { TrashFill, ExclamationTriangleFill, Link45deg, Pencil, QuestionCircleFi
 import styled, { ThemeContext } from 'styled-components'
 import ModeCounters from '../common/ModeCounters'
 import BarGraph from '../common/BarGraph'
-import { LinkContainer } from 'react-router-bootstrap'
+import { Link } from 'react-router-dom'
 import Comments from './Comments'
 import moment from 'moment'
 import UpdateCollectionModal from './UpdateCollectionModal'
@@ -101,7 +101,7 @@ function RenameForm({ collection, mutateCollection, setRenamingCollection }) {
 function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTroubleshootText }) {
   const { cache } = useSWRConfig()
   const theme = useContext(ThemeContext)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   // @ts-ignore
   const { id } = useParams()
@@ -202,7 +202,7 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
       // setTimeout(() => (window.location.href = `/recent`), 1000)
       await sleep(1000)
       cache.clear()
-      history.push('/recent')
+      navigate('/recent')
     } else {
       alert('Delete failed. Check console for more info.')
     }
@@ -536,9 +536,9 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                       src={`https://a.ppy.sh/${collection.uploader.id}`}
                       roundedCircle
                     />
-                    <LinkContainer to={`/users/${collection.uploader.id}/uploads`}>
+                    <Link to={`/users/${collection.uploader.id}/uploads`}>
                       <a>{collection.uploader.username}</a>
-                    </LinkContainer>
+                    </Link>
                     {collection.uploader.rank > 0 && (
                       <small className='text-muted ml-1'>#{collection.uploader.rank}</small>
                     )}

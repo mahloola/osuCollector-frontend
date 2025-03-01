@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Card, Button, Container, Alert } from '../bootstrap-osu-collector'
 import { usePopularCollections } from '../../utils/api'
 import { useQuery } from '../../utils/hooks'
@@ -16,7 +16,7 @@ const dateRanges = [
 function Popular({ user, setUser }) {
   const query = useQuery()
   const [range, setRange] = useState(query.get('range') || 'alltime')
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const {
     popularCollections: _popularCollections,
@@ -47,7 +47,7 @@ function Popular({ user, setUser }) {
                   className='mx-1'
                   disabled={range === opt.range}
                   onClick={() => {
-                    history.push(`/popular?range=${opt.range}`)
+                    navigate(`/popular?range=${opt.range}`)
                     setRange(opt.range)
                     setCurrentPage(1)
                   }}

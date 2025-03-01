@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Badge, Button, Card, Form, Spinner, Modal, ModalBody } from '../bootstrap-osu-collector'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import * as api from '../../utils/api'
 import './uploadModal.css'
 import moment from 'moment'
@@ -13,7 +13,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
   const { cache } = useSWRConfig()
   const [selectedCollection, setSelectedCollection] = useState(null)
   const [uploading, setUploading] = useState(false)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const onCheck = ({ target }) => {
     const { value, checked } = target
@@ -44,7 +44,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
         // this is easier than mutating useRecentCollections
         // window.location.href = `/collections/${collections[0].id}`
         cache.clear()
-        history.push(`/collections/${collections[0].id}`)
+        navigate(`/collections/${collections[0].id}`)
       }
     } catch (err) {
       alert(
@@ -81,7 +81,7 @@ function UploadModal({ uploadModalIsOpen, setUploadModalIsOpen, remoteCollection
                             </span>
                             <Badge
                               className='mx-3'
-                              variant='info'
+                              bg='info'
                               style={{
                                 minWidth: '50px',
                                 height: '24px',

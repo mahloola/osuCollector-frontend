@@ -11,6 +11,7 @@ const backgroundAndBorderColor = (props) =>
   props.theme.darkMode &&
   css`
     background-color: ${backgroundColor};
+    border-color: rgba(0, 0, 0, 0.125);
     color: #f8f8f2;
   `
 
@@ -64,11 +65,14 @@ const FormControl = styled(ReactBootstrap.Form.Control)`
     css`
       background-color: ${({ theme }) => theme.primary20};
       border-color: ${({ theme }) => theme.primary40};
-      color: #f8f8f2;
+      &::placeholder {
+        color: #ffffff44;
+      }
+      color: #f8f8f2 !important;
       &:focus {
         background-color: ${({ theme }) => theme.primary20};
         border: 0;
-        color: #f8f8f2;
+        color: #f8f8f2 !important;
       }
     `}
 `

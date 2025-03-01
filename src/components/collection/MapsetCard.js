@@ -105,7 +105,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                 <div className='d-flex align-items-center p-0'>
                   <Badge
                     className='mr-1'
-                    variant='secondary'
+                    bg='secondary'
                     style={{
                       minWidth: '50px',
                       height: '24px',
@@ -116,7 +116,6 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                   </Badge>
                   <Badge
                     className='mr-1'
-                    variant='primary'
                     style={{
                       backgroundColor: bpmToColor(beatmap.bpm),
                       minWidth: '70px',
@@ -201,7 +200,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                         <div className='d-flex align-items-center p-0'>
                           <Badge
                             className='mr-1'
-                            variant='secondary'
+                            bg='secondary'
                             style={{
                               minWidth: '50px',
                               height: '24px',
@@ -212,7 +211,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                           </Badge>
                           <Badge
                             className='mr-1'
-                            variant='primary'
+                            bg='default'
                             style={{
                               backgroundColor: bpmToColor(beatmap.bpm),
                               minWidth: '70px',

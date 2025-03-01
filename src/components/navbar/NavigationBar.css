@@ -1,3 +1,18 @@
+.hover\:text-white:hover {
+  transition: color 0.15s ease;
+  color: #ffffff;
+}
+
+.text-white-alpha {
+  color: #ffffff8c;
+}
+.text-decoration-none {
+  text-decoration: none;
+}
+.p-2 {
+  padding: 8px;
+}
+
 .navbar-sticky {
   position: sticky;
   top: 0;

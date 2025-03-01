@@ -3,8 +3,7 @@
 import UserChip from 'components/common/UserChip'
 import { useEffect, useState } from 'react'
 import { Download, Globe, Heart, PencilSquare, TrashFill } from 'react-bootstrap-icons'
-import { LinkContainer } from 'react-router-bootstrap'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Breakpoints, getHostname, sleep, useFallbackImg, userOwnsTournament, openInBrowser } from 'utils/misc'
 import * as api from '../../utils/api'
@@ -32,7 +31,7 @@ const { ipcRenderer } = window.require('electron')
 
 function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, setLocalCollections }) {
   const { cache } = useSWRConfig()
-  const history = useHistory()
+  const navigate = useNavigate()
   // @ts-ignore
   let { id } = useParams()
   const { tournament } = api.useTournament(id)
@@ -98,7 +97,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
       // setTimeout(() => (window.location.href = `/tournaments`), 1000)
       await sleep(1000)
       cache.clear()
-      history.push('/tournaments')
+      navigate('/tournaments')
     } else {
       alert('Delete failed. Check console for more info.')
     }
@@ -189,7 +188,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
                 </ReactPlaceholder>
                 {user && tournament && userOwnsTournament(user, tournament) && (
                   <div className='d-flex'>
-                    <LinkContainer to={`/tournaments/${id}/edit`}>
+                    <Link to={`/tournaments/${id}/edit`}>
                       <div>
                         <Button
                           variant='secondary'
@@ -202,7 +201,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
                           <PencilSquare className='svg-shadow' size={18} />
                         </Button>
                       </div>
-                    </LinkContainer>
+                    </Link>
                     <Button
                       variant='danger'
                       onClick={() => setShowDeleteConfirmationModal(true)}

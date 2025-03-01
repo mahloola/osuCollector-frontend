@@ -1,33 +1,17 @@
-import { useState, useEffect } from 'react'
 import { Card, Container, Image, ReactPlaceholder } from '../bootstrap-osu-collector'
 import CollectionList from '../common/CollectionList'
 import * as api from '../../utils/api'
 import TournamentList from '../tournaments/TournamentList'
 import { capitalizeFirstLetter } from '../../utils/misc'
+import { useParams } from 'react-router-dom'
+import useSWR from 'swr'
 
-function UserUploads({ user, setUser, match }) {
-  const [pageUser, setPageUser] = useState(null)
-
-  // run this code on initial page load
-  useEffect(() => {
-    ;(async () => {
-      // get user id from path, eg. /users/123/uploads
-      const _match = match.url.match(/\/users\/(\d+)\/uploads/g)
-      if (!_match) {
-        alert(`User not found.\n${match.url}`)
-        return
-      }
-      const userId = Number(_match[0].replace('/users/', '').replace('/uploads', '').trim())
-
-      // get user from database
-      const user = await api.getUser(userId)
-      if (user) setPageUser(user)
-      else alert(`user with id ${userId} not found`)
-    })()
-  }, [])
+function UserUploads({ user, setUser }) {
+  const { id } = useParams()
+  const { data: pageUser } = useSWR(id && `/api/users/${id}`, () => api.getUser(id))
 
   // get collections when user changes
-  const { collections, tournaments, tournamentError, mutate } = api.useUserUploads(pageUser?.id)
+  const { collections, tournaments, tournamentError, mutate } = api.useUserUploads(id)
   const tournamentUploadCount = tournaments?.filter((tournament) => tournament.uploader.id === pageUser.id)?.length
   const tournamentOrganizeCount = tournaments
     ?.filter((tournament) => tournament.uploader.id !== pageUser.id)
@@ -67,6 +51,7 @@ function UserUploads({ user, setUser, match }) {
               showLoadingAnimation
               type='rect'
               style={{ width: '300px', height: '40px' }}
+              className=''
             >
               <h1 className='mb-0'> {pageUser?.osuweb?.username}</h1>
             </ReactPlaceholder>
@@ -82,7 +67,14 @@ function UserUploads({ user, setUser, match }) {
               >
                 <h4 className='ml-2 mb-0 mt-3'>{capitalizeFirstLetter(tournamentUploadText)} </h4>
               </ReactPlaceholder>
-              <TournamentList tournaments={tournaments} hasMore={false} loadMore={() => {}} noEndMessage />
+              <TournamentList
+                tournaments={tournaments}
+                hasMore={false}
+                loadMore={() => {}}
+                noEndMessage
+                user={user}
+                setUser={setUser}
+              />
             </div>
           )}
           <ReactPlaceholder

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { getMappoolCollections } from 'utils/misc'
-import { Badge, Button, Card, Form, Modal, ModalBody, Spinner } from '../bootstrap-osu-collector'
+import { Button, Card, Form, Modal, ModalBody, Spinner } from '../bootstrap-osu-collector'
 
 const { ipcRenderer } = window.require('electron')
 

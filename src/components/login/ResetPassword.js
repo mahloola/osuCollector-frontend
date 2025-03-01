@@ -1,11 +1,10 @@
 import { Button, Card, Container, FormControl } from '../bootstrap-osu-collector'
 import * as api from '../../utils/api'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { LinkContainer } from 'react-router-bootstrap'
 
 export default function ResetPassword() {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [username, setUsername] = useState('')
   const [currentPassword, setCurrentPassword] = useState('')
@@ -15,7 +14,7 @@ export default function ResetPassword() {
     try {
       await api.setPassword({ username, currentPassword, newPassword })
       alert('Password changed successfully. Please try logging in now.')
-      history.push('/login/basicAuth')
+      navigate('/login/basicAuth')
     } catch (e) {
       alert('Login failed, please try again.')
       console.error(e)
@@ -48,9 +47,9 @@ export default function ResetPassword() {
         />
         <Button onClick={submit}>Reset password</Button>
 
-        <LinkContainer to='/login/basicAuth' className='mt-3'>
+        <Link to='/login/basicAuth' className='mt-3'>
           <a>Back to login</a>
-        </LinkContainer>
+        </Link>
       </Card>
     </Container>
   )

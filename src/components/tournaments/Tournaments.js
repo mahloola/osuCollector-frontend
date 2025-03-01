@@ -1,12 +1,11 @@
 import { Alert, Button, Card, Container, Form, FormControl, InputGroup } from 'components/bootstrap-osu-collector'
 import { useEffect, useRef, useState } from 'react'
 import { Plus, Search } from 'react-bootstrap-icons'
-import { LinkContainer } from 'react-router-bootstrap'
 import styled, { css } from 'styled-components'
 import { useRecentTournaments, useSearchTournaments } from 'utils/api'
 import TournamentList from './TournamentList'
 import { useQuery } from '../../utils/hooks'
-import { useHistory } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 /**
  * @typedef {Object} TournamentsQueryParams
@@ -16,7 +15,7 @@ import { useHistory } from 'react-router-dom'
 function Tournaments({ user, setUser }) {
   const query = useQuery()
   const usingSearch = !!query.get('search')
-  const history = useHistory()
+  const navigate = useNavigate()
   const {
     recentTournaments,
     recentTournamentsError,
@@ -68,14 +67,14 @@ function Tournaments({ user, setUser }) {
           </Alert>
           <div className='d-flex justify-content-between align-items-end mb-3'>
             <h2 className='my-2 ml-3 mb-0 mr-4'>Tournaments</h2>
-            <LinkContainer to='tournaments/create'>
+            <Link to='tournaments/create'>
               <S.CreateButton>
                 <h4 className='my-2 mx-3 text-muted'>
                   <Plus size={28} />
                   <span className='mr-2'>create a tournament</span>
                 </h4>
               </S.CreateButton>
-            </LinkContainer>
+            </Link>
           </div>
           <div className='ml-3 me-auto'>
             <InputGroup>
