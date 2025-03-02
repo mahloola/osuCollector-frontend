@@ -2,13 +2,9 @@ import { Col, Container, ReactPlaceholder, Spinner } from '../bootstrap-osu-coll
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CollectionCard from './CollectionCard'
 import { changeCollectionFavouritedStatus } from 'utils/misc'
-import * as api from '../../utils/api'
 
-const CollectionList = ({ collections, setCollections = null, hasMore, loadMore, user, setUser }) => {
-  if (!collections) {
-    console.log('WTF')
-    console.log(collections)
-  }
+const CollectionList = ({ collections, hasMore, loadMore, user, setUser }) => {
+  if (!collections) return null
 
   return (
     <Container className='p-2'>

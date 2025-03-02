@@ -113,40 +113,9 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
     filterMax: undefined,
   })
   const { collection, mutateCollection } = api.useCollection(id)
-  const { collectionBeatmaps, isValidating, currentPage, setCurrentPage, hasMore } = api.useCollectionBeatmaps(
-    id,
-    queryOpts
-  )
-
-  const [favouritedBy, setFavouritedBy] = useState([])
-  useEffect(() => {
-    if (!collection?.favouritedBy) return
-    setFavouritedBy(collection.favouritedBy)
-  }, [collection])
+  const { collectionBeatmaps, currentPage, setCurrentPage, hasMore } = api.useCollectionBeatmaps(id, queryOpts)
 
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
-
-  const [npEnabled, setNpEnabled] = useState(false)
-  useEffect(() => {
-    if (!user) return
-    setNpEnabled(user.npCollectionId === id)
-  }, [user])
-
-  const handleNpEnableClick = async () => {
-    if (!user.npCollectionId || user.npCollectionId !== id) {
-      setUser((prev) => ({
-        ...user,
-        npCollectionId: id,
-      }))
-      await api.updateNpCollectionId(id)
-    } else if (user.npCollectionId === id) {
-      setUser((prev) => ({
-        ...user,
-        npCollectionId: null,
-      }))
-      await api.updateNpCollectionId(null)
-    }
-  }
 
   const onPlayClick = (index) => {
     if (currentlyPlaying === index) {
@@ -269,6 +238,8 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
     }
   }
 
+  const favourited = user?.favourites?.includes(collection?.id)
+  const [favouriting, setFavouriting] = useState(false)
   const favouriteButtonClicked = async () => {
     if (!collection) return
     if (!user) {
@@ -276,20 +247,20 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
       return
     }
 
-    const newFavourited = !favouritedBy?.includes(user?.id)
-    setFavouritedBy((prev) => (newFavourited ? [...prev, user.id] : prev.filter((id) => id !== user.id)))
-    setUser({
-      ...user,
-      favourites: newFavourited
-        ? [...(user?.favourites ?? []), collection.id]
-        : user.favourites.filter((id) => id !== collection.id),
-    })
-    if (newFavourited) {
+    setFavouriting(true)
+    if (!favourited) {
       await api.favouriteCollection(collection.id)
     } else {
       await api.unfavouriteCollection(collection.id)
     }
-    mutateCollection()
+    await mutateCollection()
+    setUser({
+      ...user,
+      favourites: !favourited
+        ? [...(user?.favourites ?? []), collection.id]
+        : user.favourites.filter((id) => id !== collection.id),
+    })
+    setFavouriting(false)
   }
 
   const setSortBy = (sortBy) => {
@@ -584,9 +555,10 @@ function Collection({ user, setUser, setDownloadsModalIsOpen, setShowDownloadTro
                     </Button>
                     <FavouriteButton
                       className='mx-1'
-                      favourites={favouritedBy?.length}
-                      favourited={favouritedBy?.includes(user?.id)}
+                      favourites={collection?.favourites}
+                      favourited={favourited}
                       onClick={favouriteButtonClicked}
+                      disabled={favouriting}
                     />
                   </div>
                 </Col>

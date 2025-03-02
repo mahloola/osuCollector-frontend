@@ -7,13 +7,14 @@ import BarGraph from './BarGraph'
 import styled, { ThemeContext } from 'styled-components'
 import ModeCounters from './ModeCounters'
 import './CollectionCard.css'
+import * as api from '../../utils/api'
 
 const GraphContainer = styled(Card.Body)`
   cursor: pointer;
   background-color: ${(props) => (props.theme.darkMode ? '#121212' : '#eee')};
 `
 
-function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
+function CollectionCard({ user, setUser, collection }) {
   if (!collection) return <div></div>
   // @ts-ignore
   const theme = useContext(ThemeContext)
@@ -23,7 +24,25 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
   const relativeDate = moment.unix(collection.dateUploaded._seconds).fromNow()
 
   const favourited = user?.favourites?.includes(collection?.id)
-  const heartClicked = () => favouriteButtonClicked(collection.id, !favourited)
+  const heartClicked = async () => {
+    if (!collection) return
+    if (!user) {
+      alert('You must be logged in to favourite collections')
+      return
+    }
+
+    setUser({
+      ...user,
+      favourites: !favourited
+        ? [...(user?.favourites ?? []), collection.id]
+        : user.favourites.filter((id) => id !== collection.id),
+    })
+    if (!favourited) {
+      await api.favouriteCollection(collection.id)
+    } else {
+      await api.unfavouriteCollection(collection.id)
+    }
+  }
 
   const difficultySpread = collection.difficultySpread
     ? collection.difficultySpread

@@ -43,13 +43,13 @@ function UserFavourites({ user, setUser }) {
               </ReactPlaceholder>
             </div>
             <ReactPlaceholder
-              ready={collections.length !== 0 && collections[0] !== null}
+              ready={collections?.length !== 0 && collections?.[0] !== null}
               showLoadingAnimation
               type='rect'
               className='ml-2 mb-0 mt-3'
               style={{ width: '140px', height: '30px' }}
             >
-              <h4 className='ml-2 mb-0 mt-3'> {collections.length} collections </h4>
+              <h4 className='ml-2 mb-0 mt-3'> {collections?.length} collections </h4>
             </ReactPlaceholder>
           </div>
           <CollectionList collections={collections} hasMore={false} loadMore={() => 0} user={user} setUser={setUser} />
