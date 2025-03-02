@@ -1,6 +1,6 @@
 import { Card, CardBody } from '../bootstrap-osu-collector'
 import { Button } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
+import { Link } from 'react-router-dom'
 import './UserCard.css'
 import Flags from 'country-flag-icons/react/3x2'
 import { openInBrowser, useFallbackImg } from '../../utils/misc'
@@ -21,7 +21,7 @@ const UserCard = ({ user }) => {
   const userFavouritesButton = (user) => {
     const disabled = !user.favourites || !user.favourites.length > 0
     return (
-      <LinkContainer to={`/users/${user.id}/favourites`}>
+      <Link to={`/users/${user.id}/favourites`}>
         <Button
           size='sm'
           variant={disabled ? 'outline-secondary' : 'outline-danger'}
@@ -30,7 +30,7 @@ const UserCard = ({ user }) => {
         >
           Favourites: {user.favourites ? user.favourites.length : 0}
         </Button>
-      </LinkContainer>
+      </Link>
     )
   }
 
@@ -39,7 +39,7 @@ const UserCard = ({ user }) => {
   const userUploadsButton = (user) => {
     const disabled = !user.uploads || !user.uploads.length > 0
     return (
-      <LinkContainer to={`/users/${user.id}/uploads`}>
+      <Link to={`/users/${user.id}/uploads`}>
         <Button
           size='sm'
           variant={disabled ? 'outline-secondary' : 'outline-primary'}
@@ -48,7 +48,7 @@ const UserCard = ({ user }) => {
         >
           Uploads: {user.uploads ? user.uploads.length : 0}
         </Button>
-      </LinkContainer>
+      </Link>
     )
   }
 

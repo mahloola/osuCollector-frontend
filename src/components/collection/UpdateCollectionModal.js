@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Badge, Button, Card, Form, Spinner, Modal, ModalBody } from '../bootstrap-osu-collector'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import * as api from '../../utils/api'
 import moment from 'moment'
 import { useCallback } from 'react'

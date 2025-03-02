@@ -1,4 +1,4 @@
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import TournamentForm from './TournamentForm'
 import * as api from '../../utils/api'
 import { useEffect, useState } from 'react'
@@ -7,7 +7,7 @@ function EditTournament() {
   // @ts-ignore
   const { id } = useParams()
   const { tournament, mutateTournament } = api.useTournament(id)
-  const history = useHistory()
+  const navigate = useNavigate()
   const [submitLoading, setSubmitLoading] = useState(false)
 
   const editTournament = async (createTournamentDto) => {
@@ -15,7 +15,7 @@ function EditTournament() {
       setSubmitLoading(true)
       const newTournament = await api.editTournament(id, createTournamentDto)
       setSubmitLoading(false)
-      history.push(`/tournaments/${newTournament.id}`)
+      navigate(`/tournaments/${newTournament.id}`)
     } catch (err) {
       setSubmitLoading(false)
       alert(err.message)

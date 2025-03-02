@@ -4,9 +4,15 @@ import { Heart, HeartFill } from 'react-bootstrap-icons'
 import './FavouriteButton.css'
 import styled, { css } from 'styled-components'
 
-function FavouriteButton({ className, favourites, favourited, onClick }) {
+function FavouriteButton({ className, favourites, favourited, onClick, disabled }) {
   return (
-    <S.Button variant='default' className={'favourite-button ' + className} onClick={onClick} $favourited={favourited}>
+    <S.Button
+      variant='default'
+      className={'favourite-button ' + className}
+      onClick={onClick}
+      $favourited={favourited}
+      disabled={disabled}
+    >
       {favourited ? <HeartFill className='mr-2' /> : <Heart className='mr-2' />}
       {favourited ? 'Favorited' : 'Favorite'}
       {favourites ? ` (${favourites})` : ''}

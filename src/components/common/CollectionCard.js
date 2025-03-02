@@ -1,8 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { Card, Image, ListGroup, ListGroupItem } from '../bootstrap-osu-collector'
 import moment from 'moment'
-import { LinkContainer } from 'react-router-bootstrap'
-import Truncate from 'react-truncate'
+import { Link } from 'react-router-dom'
 import { starToColor } from '../../utils/misc'
 import BarGraph from './BarGraph'
 import styled, { ThemeContext } from 'styled-components'
@@ -15,7 +14,7 @@ const GraphContainer = styled(Card.Body)`
   background-color: ${(props) => (props.theme.darkMode ? '#121212' : '#eee')};
 `
 
-function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
+function CollectionCard({ user, setUser, collection }) {
   if (!collection) return <div></div>
   // @ts-ignore
   const theme = useContext(ThemeContext)
@@ -25,7 +24,25 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
   const relativeDate = moment.unix(collection.dateUploaded._seconds).fromNow()
 
   const favourited = user?.favourites?.includes(collection?.id)
-  const heartClicked = () => favouriteButtonClicked(collection.id, !favourited)
+  const heartClicked = async () => {
+    if (!collection) return
+    if (!user) {
+      alert('You must be logged in to favourite collections')
+      return
+    }
+
+    setUser({
+      ...user,
+      favourites: !favourited
+        ? [...(user?.favourites ?? []), collection.id]
+        : user.favourites.filter((id) => id !== collection.id),
+    })
+    if (!favourited) {
+      await api.favouriteCollection(collection.id)
+    } else {
+      await api.unfavouriteCollection(collection.id)
+    }
+  }
 
   const difficultySpread = collection.difficultySpread
     ? collection.difficultySpread
@@ -45,40 +62,34 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
   return (
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       <Card $lightbg className={`mx-3 ${hovered ? 'shadow' : 'shadow-sm'}`}>
-        <LinkContainer to={`/collections/${collection.id}`}>
-          <a className='nostyle'>
-            {/* Difficulty Spread Graph */}
-            <GraphContainer className='px-0 pt-0 pb-1' variant='top'>
-              <BarGraph
-                data={[
-                  ['', '', { role: 'style' }],
-                  ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => [
-                    star.toString(),
-                    difficultySpread[star],
-                    starToColor(star, theme.darkMode),
-                  ]),
-                ]}
-                height={80}
-                chartEvents={undefined}
-              />
-            </GraphContainer>
-          </a>
-        </LinkContainer>
+        <Link to={`/collections/${collection.id}`} className='nostyle'>
+          {/* Difficulty Spread Graph */}
+          <GraphContainer className='px-0 pt-0 pb-1' variant='top'>
+            <BarGraph
+              data={[
+                ['', '', { role: 'style' }],
+                ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => [
+                  star.toString(),
+                  difficultySpread[star],
+                  starToColor(star, theme.darkMode),
+                ]),
+              ]}
+              height={80}
+              chartEvents={undefined}
+            />
+          </GraphContainer>
+        </Link>
         <Card.Body className='collection-card-clickable pt-3'>
           <div className='d-flex justify-content-between align-items-top'>
-            <LinkContainer to={`/collections/${collection.id}`} className='nostyle'>
-              <a className='nostyle'>
-                <div style={{ width: '100%' }}>
-                  <ModeCounters collection={collection} className='mb-3' />
-                  <Card.Title>
-                    <Truncate lines={1}>{collection.name}</Truncate>
-                  </Card.Title>
-                </div>
-              </a>
-            </LinkContainer>
-            <LinkContainer to={`/collections/${collection.id}`}>
-              <a className='flex-fill' />
-            </LinkContainer>
+            <Link to={`/collections/${collection.id}`} className='nostyle'>
+              <div style={{ width: '100%' }}>
+                <ModeCounters collection={collection} className='mb-3' />
+                <Card.Title className='line-clamp-1'>{collection.name}</Card.Title>
+              </div>
+            </Link>
+            <Link to={`/collections/${collection.id}`} className='nostyle flex-fill'>
+              <div className='flex-fill' />
+            </Link>
             <div className='d-flex flex-column'>
               <div className='d-flex'>
                 <h5 className='mb-0' style={{ display: 'inline-flex' }}>
@@ -91,24 +102,20 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
                   <small> {collection?.favourites} </small>
                 </h5>
               </div>
-              <LinkContainer to={`/collections/${collection.id}`}>
-                <a className='h-100' />
-              </LinkContainer>
+              <Link to={`/collections/${collection.id}`}>
+                <div className='h-100' />
+              </Link>
             </div>
           </div>
-          <LinkContainer to={`/collections/${collection.id}`}>
-            <a className='nostyle'>
-              <Card.Text>
-                {collection.description ? (
-                  <Truncate lines={1}>{collection.description}</Truncate>
-                ) : (
-                  <small className='text-muted'>
-                    <i>no description</i>
-                  </small>
-                )}
-              </Card.Text>
-            </a>
-          </LinkContainer>
+          <Link to={`/collections/${collection.id}`} className='nostyle line-clamp-3'>
+            {collection.description ? (
+              collection.description
+            ) : (
+              <small style={{ color: '#6c757d' }}>
+                <i>no description</i>
+              </small>
+            )}
+          </Link>
         </Card.Body>
         <ListGroup className='list-group-flush'>
           <ListGroupItem $lightbg>
@@ -119,9 +126,7 @@ function CollectionCard({ user, setUser, collection, favouriteButtonClicked }) {
                   src={`https://a.ppy.sh/${collection.uploader.id}`}
                   roundedCircle
                 />
-                <LinkContainer to={`/users/${collection.uploader.id}/uploads`}>
-                  <a> {collection.uploader.username} </a>
-                </LinkContainer>
+                <Link to={`/users/${collection.uploader.id}/uploads`}>{collection.uploader.username}</Link>
                 {collection.uploader.rank > 0 && <small className='text-muted ml-1'>#{collection.uploader.rank}</small>}
               </div>
               <small className='text-muted'>{relativeDate}</small>

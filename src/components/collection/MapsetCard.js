@@ -18,7 +18,6 @@ import { bpmToColor, openInBrowser, secondsToHHMMSS, useFallbackImg } from '../.
 import './MapsetCard.css'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
 import DifficultyBadge from '../common/DifficultyBadge'
-import Truncate from 'react-truncate'
 import osuPng from '../common/mode-osu.png'
 import taikoPng from '../common/mode-taiko.png'
 import maniaPng from '../common/mode-mania.png'
@@ -82,12 +81,8 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
           <Card.ImgOverlay className='py-2 pl-3 pr-1'>
             <div className='d-flex justify-content-between'>
               <div style={{ width: '100%' }}>
-                <Card.Title className='my-0 img-overlay-text'>
-                  <Truncate lines={1}>{beatmapset.title}</Truncate>
-                </Card.Title>
-                <Card.Text className='img-overlay-text'>
-                  <Truncate lines={1}>{beatmapset.artist}</Truncate>
-                </Card.Text>
+                <Card.Title className='my-0 img-overlay-text line-clamp-1'>{beatmapset.title}</Card.Title>
+                <Card.Text className='img-overlay-text line-clamp-1'>{beatmapset.artist}</Card.Text>
               </div>
               <div className='align-self-center'>
                 <button className='media-play-button p-0' onClick={onPlayClick}>
@@ -110,7 +105,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                 <div className='d-flex align-items-center p-0'>
                   <Badge
                     className='mr-1'
-                    variant='secondary'
+                    bg='secondary'
                     style={{
                       minWidth: '50px',
                       height: '24px',
@@ -121,7 +116,6 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                   </Badge>
                   <Badge
                     className='mr-1'
-                    variant='primary'
                     style={{
                       backgroundColor: bpmToColor(beatmap.bpm),
                       minWidth: '70px',
@@ -144,11 +138,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                       className='mr-2'
                     />
                   )}
-                  <div className='w-100 mr-2'>
-                    <Truncate lines={1} className='font-weight-bold'>
-                      {beatmap.version}
-                    </Truncate>
-                  </div>
+                  <div className='w-100 mr-2'>{beatmap.version}</div>
                   <Button
                     onClick={() => openInBrowser(beatmap.url)}
                     variant='outline-secondary'
@@ -179,12 +169,8 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
             <Card.ImgOverlay className='py-2 pl-3 pr-1'>
               <div className='d-flex justify-content-between'>
                 <div style={{ width: '100%' }}>
-                  <Card.Title className='my-0 img-overlay-text'>
-                    <Truncate lines={1}>{beatmapset.title}</Truncate>
-                  </Card.Title>
-                  <Card.Text className='img-overlay-text'>
-                    <Truncate lines={1}>{beatmapset.artist}</Truncate>
-                  </Card.Text>
+                  <Card.Title className='my-0 img-overlay-text line-clamp-1'>{beatmapset.title}</Card.Title>
+                  <Card.Text className='img-overlay-text line-clamp-1'>{beatmapset.artist}</Card.Text>
                 </div>
                 <div className='align-self-center'>
                   <button className='media-play-button p-0' onClick={onPlayClick}>
@@ -214,7 +200,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                         <div className='d-flex align-items-center p-0'>
                           <Badge
                             className='mr-1'
-                            variant='secondary'
+                            bg='secondary'
                             style={{
                               minWidth: '50px',
                               height: '24px',
@@ -225,7 +211,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                           </Badge>
                           <Badge
                             className='mr-1'
-                            variant='primary'
+                            bg='default'
                             style={{
                               backgroundColor: bpmToColor(beatmap.bpm),
                               minWidth: '70px',
@@ -248,7 +234,7 @@ function MapsetCard({ beatmapset, beatmaps, className, playing, onPlayClick, onA
                               className='mr-2'
                             />
                           )}
-                          <b className='mr-2'>{beatmap.version}</b>
+                          <b className='mr-2 line-clamp-1'>{beatmap.version}</b>
                           <div className='d-flex align-items-center gap-2 ms-auto'>
                             <Button
                               onClick={() => openInBrowser(beatmap.url)}

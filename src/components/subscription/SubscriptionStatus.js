@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import Badge from 'react-bootstrap/Badge'
 import * as api from '../../utils/api'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Alert, Button, Card, CardBody, Col, Container, Row, Spinner } from '../bootstrap-osu-collector'
 import SubscriptionDetailsModal from '../client/SubscriptionDetailsModal'
 import { openInBrowser } from 'utils/misc'
 
 function SubscriptionStatus({ user, setUser }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [isSubbedToFunOrange, setIsSubbedToFunOrange] = useState(false)
 
@@ -114,7 +114,7 @@ function SubscriptionStatus({ user, setUser }) {
                     </div>
                     <div>
                       <Badge
-                        variant={user?.private?.linkedTwitchAccount?.displayName ? 'info' : 'secondary'}
+                        bg={user?.private?.linkedTwitchAccount?.displayName ? 'info' : 'secondary'}
                         className='py-1 px-2 mr-2'
                       >
                         {linkedTwitchAccountStatus}
@@ -134,7 +134,7 @@ function SubscriptionStatus({ user, setUser }) {
                         )}
                       </Button>
                     )}
-                    {user?.private?.twitchError && user?.private?.linkedTwitchAccount?.displayName && (
+                    {Boolean(user?.private?.twitchError) && user?.private?.linkedTwitchAccount?.displayName && (
                       <small className='text-danger text-sm ml-2'> Please unlink and try again. </small>
                     )}
                     {!user?.private?.linkedTwitchAccount?.displayName && (
@@ -151,7 +151,7 @@ function SubscriptionStatus({ user, setUser }) {
                       Twitch Sub
                     </div>
                     <div>
-                      <Badge variant={isSubbedToFunOrange ? 'success' : 'secondary'} className='py-1 px-2'>
+                      <Badge bg={isSubbedToFunOrange ? 'success' : 'secondary'} className='py-1 px-2'>
                         {twitchSubStatus}
                       </Badge>
                     </div>
@@ -161,6 +161,9 @@ function SubscriptionStatus({ user, setUser }) {
                       An error occurred. Please try to unlink and relink your twitch account.
                     </span>
                   )}
+                  <div style={{ color: 'oklch(0.704 0.191 22.216)', marginTop: '16px' }}>
+                    Deprecated - twitch subs will not work starting April
+                  </div>
                 </Card>
               </Col>
               <Col md={12} lg={6}>
@@ -168,7 +171,7 @@ function SubscriptionStatus({ user, setUser }) {
                   <div className='mb-3 d-flex justify-content-start align-items-center'>
                     <div className='text-right mr-3'>Paid Subscription</div>
                     <Badge
-                      variant={
+                      bg={
                         paidSubscriptionActive(user, paypalSubscription, stripeSubscription) ? 'success' : 'secondary'
                       }
                       className='py-1 px-2 mr-3'

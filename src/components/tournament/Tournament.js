@@ -3,8 +3,7 @@
 import UserChip from 'components/common/UserChip'
 import { useEffect, useState } from 'react'
 import { Download, Globe, Heart, PencilSquare, TrashFill } from 'react-bootstrap-icons'
-import { LinkContainer } from 'react-router-bootstrap'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Breakpoints, getHostname, sleep, useFallbackImg, userOwnsTournament, openInBrowser } from 'utils/misc'
 import * as api from '../../utils/api'
@@ -32,7 +31,7 @@ const { ipcRenderer } = window.require('electron')
 
 function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, setLocalCollections }) {
   const { cache } = useSWRConfig()
-  const history = useHistory()
+  const navigate = useNavigate()
   // @ts-ignore
   let { id } = useParams()
   const { tournament } = api.useTournament(id)
@@ -98,7 +97,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
       // setTimeout(() => (window.location.href = `/tournaments`), 1000)
       await sleep(1000)
       cache.clear()
-      history.push('/tournaments')
+      navigate('/tournaments')
     } else {
       alert('Delete failed. Check console for more info.')
     }
@@ -141,23 +140,26 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
     )
   }
 
-  const favouriteClicked = () => {
+  const [favouriting, setFavouriting] = useState(false)
+  const favouriteClicked = async () => {
     if (!user) return
+    setFavouriting(true)
     if (user.favouriteTournaments?.includes(Number(id))) {
       // remove from favourites
+      await api.favouriteTournament(Number(id), false)
       setUser((prev) => ({
         ...prev,
         favouriteTournaments: user.favouriteTournaments?.filter((tournamentId) => tournamentId !== Number(id)) ?? [],
       }))
-      api.favouriteTournament(Number(id), false)
     } else {
       // add to favourites
       setUser((prev) => ({
         ...prev,
         favouriteTournaments: [...(prev.favouriteTournaments ?? []), Number(id)],
       }))
-      api.favouriteTournament(Number(id), true)
+      await api.favouriteTournament(Number(id), true)
     }
+    setFavouriting(false)
   }
 
   const loading = tournament === undefined
@@ -165,7 +167,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
     <>
       <Container className='pt-4'>
         <Card className='mb-3 shadow'>
-          <ReactPlaceholder ready={!loading} showLoadingAnimation type='rect' style={{ height: '330px' }}>
+          <ReactPlaceholder ready={!loading} showLoadingAnimation type='rect' style={{ height: '330px' }} className=''>
             {tournament && (
               <img
                 className='card-img-top'
@@ -184,12 +186,13 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
                   showLoadingAnimation
                   type='rect'
                   style={{ width: '50%', height: '56px' }}
+                  className=''
                 >
                   {tournament && <h1>{tournament?.name}</h1>}
                 </ReactPlaceholder>
                 {user && tournament && userOwnsTournament(user, tournament) && (
                   <div className='d-flex'>
-                    <LinkContainer to={`/tournaments/${id}/edit`}>
+                    <Link to={`/tournaments/${id}/edit`}>
                       <div>
                         <Button
                           variant='secondary'
@@ -202,7 +205,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
                           <PencilSquare className='svg-shadow' size={18} />
                         </Button>
                       </div>
-                    </LinkContainer>
+                    </Link>
                     <Button
                       variant='danger'
                       onClick={() => setShowDeleteConfirmationModal(true)}
@@ -227,7 +230,13 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
                     xl={{ span: 8, order: 1 }}
                     className='p-0'
                   >
-                    <ReactPlaceholder ready={!loading} showLoadingAnimation className='mt-4 pr-5'>
+                    <ReactPlaceholder
+                      ready={!loading}
+                      type='rect'
+                      style={{}}
+                      showLoadingAnimation
+                      className='mt-4 pr-5'
+                    >
                       {tournament && (
                         <>
                           <div className='d-flex align-items-center mb-2'>
@@ -267,6 +276,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
                       favourites={0}
                       favourited={user?.favouriteTournaments?.includes(Number(id))}
                       onClick={favouriteClicked}
+                      disabled={favouriting}
                     />
                     <div className='d-flex flex-row my-4' style={{ gap: '5px' }}>
                       <Button onClick={downloadButtonClicked}>Download all maps</Button>
@@ -324,13 +334,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
               <div className='d-flex'>
                 <div className='px-2 mr-1' style={{ width: 150 }}>
                   <Nav variant='pills' className='flex-column'>
-                    <ReactPlaceholder
-                      ready={!loading}
-                      type='rect'
-                      showLoadingAnimation
-                      style={{ height: '40px' }}
-                      color='#0D6EFD'
-                    >
+                    <ReactPlaceholder ready={!loading} type='rect' showLoadingAnimation style={{ height: '40px' }}>
                       {tournament?.rounds.map((round, i) => (
                         <Nav.Item key={i}>
                           <Nav.Link eventKey={i}>
@@ -384,13 +388,7 @@ function Tournament({ user, setUser, setDownloadsModalIsOpen, localCollections, 
                 <div className='px-2 mr-1'>
                   <Nav variant='pills'>
                     <div className='d-flex'>
-                      <ReactPlaceholder
-                        ready={!loading}
-                        type='rect'
-                        showLoadingAnimation
-                        style={{ height: '40px' }}
-                        color='#0D6EFD'
-                      >
+                      <ReactPlaceholder ready={!loading} type='rect' showLoadingAnimation style={{ height: '40px' }}>
                         {tournament?.rounds.map((round, i) => (
                           <Nav.Item key={i}>
                             <Nav.Link eventKey={i}>

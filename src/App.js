@@ -1,4 +1,4 @@
-import { Redirect, Route, Router, Switch, useHistory } from 'react-router-dom'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { getOwnUser } from './utils/api'
 import { useState, useEffect } from 'react'
 import { useQuery } from './utils/hooks'
@@ -6,7 +6,6 @@ import { css, ThemeProvider } from 'styled-components'
 import styled from 'styled-components'
 import { colord, extend } from 'colord'
 import mixPlugin from 'colord/plugins/mix'
-
 import Home from './components/home/Home'
 import Collection from './components/collection/Collection'
 import Popular from './components/popular/Popular'
@@ -26,6 +25,7 @@ import Tournament from './components/tournament/Tournament'
 import CreateTournament from './components/tournament/CreateTournament'
 import EditTournament from './components/tournament/EditTournament'
 import SubscriptionStatus from './components/subscription/SubscriptionStatus'
+import TwitchSubEndOfSupportModal from 'components/subscription/TwitchSubEndOfSupportModal'
 
 extend([mixPlugin])
 
@@ -46,7 +46,7 @@ function App() {
   // searchText is shared between NavigationBar and All
   const [searchText, setSearchText] = useState('')
   const query = useQuery()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   // For authentication using OTP (react dev environment, electron app)
   // eslint-disable-next-line no-unused-vars
@@ -65,7 +65,7 @@ function App() {
 
   // get query params on initial page load
   useEffect(() => {
-    ;(async () => {
+    const init = async () => {
       setSearchText(query.get('search') || '')
 
       let user = null
@@ -78,12 +78,12 @@ function App() {
 
       ipcRenderer.send('check-startup-location')
       ipcRenderer.on('open-collection', (_event, collectionId) => {
-        console.log(`history.push('/collections/${collectionId}')`)
-        history.push(`/collections/${collectionId}`)
+        console.log(`navigate('/collections/${collectionId}')`)
+        navigate(`/collections/${collectionId}`)
       })
       ipcRenderer.on('open-tournament', (_event, tournamentId) => {
-        console.log(`history.push('/tournaments/${tournamentId}')`)
-        history.push(`/tournaments/${tournamentId}`)
+        console.log(`navigate('/tournaments/${tournamentId}')`)
+        navigate(`/tournaments/${tournamentId}`)
       })
 
       ipcRenderer.send('reload-preferences')
@@ -94,7 +94,8 @@ function App() {
       ipcRenderer.on('download-progress', (_event, _collectionDownloads) => {
         setCollectionDownloads(_collectionDownloads)
       })
-    })()
+    }
+    init()
   }, [])
 
   const theme = {
@@ -135,75 +136,52 @@ function App() {
           localCollections={localCollections}
           setLocalCollections={setLocalCollections}
         />
+        <TwitchSubEndOfSupportModal user={user} />
         <div style={{ minHeight: 'calc(100vh - 56px)' }}>
           <ScrollToTop />
-          <Switch>
-            <Route exact path='/'>
-              <Home user={user} setUser={setUser} />
-            </Route>
-            <Route path='/all'>
-              <All searchText={searchText} setSearchText={setSearchText} user={user} setUser={setUser} />
-            </Route>
-            <Route path='/popular'>
-              <Popular user={user} setUser={setUser} />
-            </Route>
-            <Route path='/recent'>
-              <Recent user={user} setUser={setUser} />
-            </Route>
-            <Route exact path='/users'>
-              <Users />
-            </Route>
-            {/* use component={...} so that child can access match prop */}
+          <Routes>
+            <Route path='/' element={<Home user={user} setUser={setUser} />} />
             <Route
-              path='/users/:id/favourites'
-              component={(props) => <UserFavourites user={user} setUser={setUser} {...props} />}
+              path='/all'
+              element={<All searchText={searchText} setSearchText={setSearchText} user={user} setUser={setUser} />}
             />
+            <Route path='/popular' element={<Popular user={user} setUser={setUser} />} />
+            <Route path='/recent' element={<Recent user={user} setUser={setUser} />} />
+            <Route path='/users' element={<Users />} />
+            <Route path='/users/:id/favourites' element={<UserFavourites user={user} setUser={setUser} />} />
+            <Route path='/users/:id/uploads' element={<UserUploads user={user} setUser={setUser} />} />
+            <Route path='/tournaments' element={<Tournaments user={user} setUser={setUser} />} />
+            <Route path='/tournaments/create' element={<CreateTournament />} />
             <Route
-              path='/users/:id/uploads'
-              component={(props) => <UserUploads user={user} setUser={setUser} {...props} />}
+              path='/tournaments/:id'
+              element={
+                <Tournament
+                  user={user}
+                  setUser={setUser}
+                  setDownloadsModalIsOpen={setDownloadsModalIsOpen}
+                  localCollections={localCollections}
+                  setLocalCollections={setLocalCollections}
+                />
+              }
             />
-            <Route exact path='/tournaments'>
-              <Tournaments user={user} setUser={setUser} />
-            </Route>
-            <Route exact path='/tournaments/create'>
-              <CreateTournament />
-            </Route>
-            <Route exact path='/tournaments/:id'>
-              <Tournament
-                user={user}
-                setUser={setUser}
-                setDownloadsModalIsOpen={setDownloadsModalIsOpen}
-                localCollections={localCollections}
-                setLocalCollections={setLocalCollections}
-              />
-            </Route>
-            <Route path='/tournaments/:id/edit'>
-              <EditTournament />
-            </Route>
-            <Route path='/login/enterOtp'>
-              <EnterOtp authX={authX} setUser={setUser} />
-            </Route>
-            <Route path='/collections/:id'>
-              <Collection
-                user={user}
-                setUser={setUser}
-                setDownloadsModalIsOpen={setDownloadsModalIsOpen}
-                setShowDownloadTroubleshootText={setShowDownloadTroubleshootText}
-              />
-            </Route>
-            <Route path='/subscription/status'>
-              <SubscriptionStatus user={user} setUser={setUser} />
-            </Route>
-            <Route path='/login/basicAuth'>
-              <BasicAuth setUser={setUser} />
-            </Route>
-            <Route path='/resetPassword'>
-              <ResetPassword />
-            </Route>
-            <Route>
-              <Redirect to='/' />
-            </Route>
-          </Switch>
+            <Route path='/tournaments/:id/edit' element={<EditTournament />} />
+            <Route path='/login/enterOtp' element={<EnterOtp authX={authX} setUser={setUser} />} />
+            <Route
+              path='/collections/:id'
+              element={
+                <Collection
+                  user={user}
+                  setUser={setUser}
+                  setDownloadsModalIsOpen={setDownloadsModalIsOpen}
+                  setShowDownloadTroubleshootText={setShowDownloadTroubleshootText}
+                />
+              }
+            />
+            <Route path='/subscription/status' element={<SubscriptionStatus user={user} setUser={setUser} />} />
+            <Route path='/login/basicAuth' element={<BasicAuth setUser={setUser} />} />
+            <Route path='/resetPassword' element={<ResetPassword />} />
+            <Route element={<Navigate to='/' />} />
+          </Routes>
         </div>
       </StyledApp>
     </ThemeProvider>

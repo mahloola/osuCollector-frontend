@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { Card, Image, ListGroup, ListGroupItem } from '../bootstrap-osu-collector'
-import { LinkContainer } from 'react-router-bootstrap'
+import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { useFallbackImg } from 'utils/misc'
 import slimcoverfallback from '../common/slimcoverfallback.jpg'
@@ -38,7 +38,7 @@ export default function TournamentCard({ user, setUser, tournament }) {
   return (
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       <Card $lightbg className={`mx-3 ${hovered ? 'shadow' : 'shadow-sm'}`}>
-        <LinkContainer to={`/tournaments/${tournament.id}`}>
+        <Link to={`/tournaments/${tournament.id}`}>
           <a className='nostyle'>
             <img
               className='card-img-top'
@@ -47,7 +47,7 @@ export default function TournamentCard({ user, setUser, tournament }) {
               style={{ objectFit: 'cover', width: '100%', height: 140 }}
             />
           </a>
-        </LinkContainer>
+        </Link>
         <ListGroup className='list-group-flush'>
           <ListGroupItem $lightbg>
             <div className='d-flex justify-content-between align-items-center'>
@@ -58,8 +58,8 @@ export default function TournamentCard({ user, setUser, tournament }) {
                     !user
                       ? 'grey-heart-disabled'
                       : user.favouriteTournaments?.includes(tournament?.id)
-                      ? 'red-heart-color'
-                      : 'grey-heart-color'
+                        ? 'red-heart-color'
+                        : 'grey-heart-color'
                   }`}
                   onClick={favouriteClicked}
                 />
@@ -72,9 +72,9 @@ export default function TournamentCard({ user, setUser, tournament }) {
                   src={`https://a.ppy.sh/${tournament.uploader.id}`}
                   roundedCircle
                 />
-                <LinkContainer to={`/users/${tournament.uploader.id}/uploads`}>
+                <Link to={`/users/${tournament.uploader.id}/uploads`}>
                   <a> {tournament.uploader.username} </a>
-                </LinkContainer>
+                </Link>
                 {tournament.uploader.rank > 0 && <small className='text-muted ml-1'>#{tournament.uploader.rank}</small>}
               </div>
               <small className='text-muted'>{relativeDate}</small>

@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import TournamentForm from './TournamentForm'
 import * as api from '../../utils/api'
 import { useState } from 'react'
@@ -6,7 +6,7 @@ import { useSWRConfig } from 'swr'
 
 function CreateTournament() {
   const { cache } = useSWRConfig()
-  const history = useHistory()
+  const navigate = useNavigate()
   const [submitLoading, setSubmitLoading] = useState(false)
   const createTournament = async (createTournamentDto) => {
     try {
@@ -16,7 +16,7 @@ function CreateTournament() {
       localStorage.removeItem('Create Tournament Draft')
       // window.location.href = `/tournaments/${newTournament.id}`
       cache.clear()
-      history.push(`/tournaments/${newTournament.id}`)
+      navigate(`/tournaments/${newTournament.id}`)
     } catch (err) {
       setSubmitLoading(false)
       alert(err.message)

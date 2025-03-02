@@ -2,10 +2,10 @@ import { Card, Container, FormControl } from '../bootstrap-osu-collector'
 import md5 from 'md5'
 import PropTypes from 'prop-types'
 import * as api from '../../utils/api'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 function EnterOtp({ authX, setUser }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const onOtpChanged = async (event) => {
     const inputString = event.target.value
@@ -33,11 +33,11 @@ function EnterOtp({ authX, setUser }) {
       // Get user
       const user = await api.getOwnUser()
       setUser(user)
-      history.push('/')
+      navigate('/')
     } else if (res.status === 440) {
       alert('Login expired, please try to log in again.')
       console.log('Login expired, please try to log in again.')
-      history.push('/')
+      navigate('/')
     } else {
       console.log('OTP auth failed.')
     }

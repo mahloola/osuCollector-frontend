@@ -2,8 +2,8 @@ import { useContext, useState } from 'react'
 import { CloudUpload, LightbulbFill, Moon } from 'react-bootstrap-icons'
 import md5 from 'md5'
 import { useMediaQuery } from 'react-responsive'
-import { LinkContainer } from 'react-router-bootstrap'
-import { useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ThemeContext } from 'styled-components'
 import config from '../../config/config'
 import * as api from '../../utils/api'
@@ -62,11 +62,11 @@ function NavigationBar({
   const [remoteCollections, setRemoteCollections] = useState([])
   const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false)
   const [searchBarInput, setSearchBarInput] = useState('')
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const searchSubmit = (event) => {
     event.preventDefault()
-    history.push(`/all?search=${encodeURIComponent(searchBarInput)}`)
+    navigate(`/all?search=${encodeURIComponent(searchBarInput)}`)
     setSearchText(searchBarInput)
     return false
   }
@@ -80,7 +80,7 @@ function NavigationBar({
     openInNewTab(
       `https://osu.ppy.sh/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${callback}&state=${x}`
     )
-    history.push('/login/enterOtp')
+    navigate('/login/enterOtp')
   }
 
   const getRemoteCollections = async () => {
@@ -116,41 +116,43 @@ function NavigationBar({
 
   const downloadPending = collectionDownloads?.some(({ downloadStatus }) => downloadStatus === 'Downloading...')
 
+  const navLinkStyle = 'text-white-alpha hover:text-white text-decoration-none transition-colors p-2'
+
   return (
     <div className='navbar-sticky'>
-      <Navbar bg='dark' variant='dark' expand='xl' className='pl-3'>
+      <Navbar bg='dark' variant='dark' expand='xl' className='px-3'>
         <ExtraLarge>
           <div className='d-flex' style={{ marginLeft: -8 }}>
-            <div onClick={history.goBack} className='nav-button mx-0'>
+            <div onClick={() => navigate(-1)} className='nav-button mx-0'>
               <ArrowLeftShort style={{ margin: '0 auto' }} size={32} />
             </div>
-            <div onClick={history.goForward} className='nav-button mr-2'>
+            <div onClick={() => navigate(1)} className='nav-button mr-2'>
               <ArrowRightShort style={{ margin: '0 auto' }} size={32} />
             </div>
           </div>
-          <LinkContainer to='/'>
+          <Link to='/'>
             <Navbar.Brand>
               osu!<strong>Collector</strong>
             </Navbar.Brand>
-          </LinkContainer>
+          </Link>
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav' className='justify-content-between'>
             <Nav className='me-auto'>
-              <LinkContainer to='/recent'>
-                <Nav.Link>Recent</Nav.Link>
-              </LinkContainer>
+              <Link to='/recent' className={navLinkStyle}>
+                Recent
+              </Link>
 
-              <LinkContainer to='/popular?range=alltime'>
-                <Nav.Link>Popular</Nav.Link>
-              </LinkContainer>
+              <Link to='/popular?range=alltime' className={navLinkStyle}>
+                Popular
+              </Link>
 
-              <LinkContainer to='/users'>
-                <Nav.Link>Users</Nav.Link>
-              </LinkContainer>
+              <Link to='/users' className={navLinkStyle}>
+                Users
+              </Link>
 
-              <LinkContainer to='/tournaments'>
-                <Nav.Link>Tournaments</Nav.Link>
-              </LinkContainer>
+              <Link to='/tournaments' className={navLinkStyle}>
+                Tournaments
+              </Link>
             </Nav>
 
             <Form onSubmit={searchSubmit} className='ml-3 me-auto'>
@@ -236,29 +238,29 @@ function NavigationBar({
           </Navbar.Collapse>
         </ExtraLarge>
         <Large>
-          <LinkContainer to='/'>
+          <Link to='/'>
             <Navbar.Brand>
               osu!<strong>Collector</strong>
             </Navbar.Brand>
-          </LinkContainer>
+          </Link>
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav' className='justify-content-between'>
             <Nav className='me-auto'>
-              <LinkContainer to='/recent'>
-                <Nav.Link>Recent</Nav.Link>
-              </LinkContainer>
+              <Link to='/recent' className={navLinkStyle}>
+                Recent
+              </Link>
 
-              <LinkContainer to='/popular?range=alltime'>
-                <Nav.Link>Popular</Nav.Link>
-              </LinkContainer>
+              <Link to='/popular?range=alltime' className={navLinkStyle}>
+                Popular
+              </Link>
 
-              <LinkContainer to='/users'>
-                <Nav.Link>Users</Nav.Link>
-              </LinkContainer>
+              <Link to='/users' className={navLinkStyle}>
+                Users
+              </Link>
 
-              <LinkContainer to='/tournaments'>
-                <Nav.Link>Tournaments</Nav.Link>
-              </LinkContainer>
+              <Link to='/tournaments' className={navLinkStyle}>
+                Tournaments
+              </Link>
 
               <Nav.Link onClick={toggleTheme}>
                 {theme.darkMode ? <LightbulbFill className='mr-2' /> : <Moon className='mr-2' />}

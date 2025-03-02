@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Card, Container, Image } from '../bootstrap-osu-collector'
 import { Search } from 'react-bootstrap-icons'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { searchCollections } from '../../utils/api'
 import { useQuery } from '../../utils/hooks'
 import CollectionList from '../common/CollectionList'
@@ -16,7 +16,7 @@ function All({ searchText, setSearchText, user, setUser }) {
   const [collections, setCollections] = useState(new Array(18).fill(null))
   const [queryOpts, setQueryOpts] = useState(null)
   const query = useQuery()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   // get query params on initial page load
   useEffect(() => {
@@ -56,7 +56,7 @@ function All({ searchText, setSearchText, user, setUser }) {
         if (queryOpts.orderBy) {
           qs.push(`orderBy=${queryOpts.orderBy}`)
         }
-        history.push(`/all?${qs.join('&')}`)
+        navigate(`/all?${qs.join('&')}`)
       })
       .catch(console.error)
     return cancel

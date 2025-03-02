@@ -6,7 +6,7 @@ function DifficultyBadge({ className, stars }) {
   return (
     <Badge
       className={className}
-      variant='default'
+      bg='default'
       style={{
         minWidth: '64px',
         backgroundColor: starToColor(stars),

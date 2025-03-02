@@ -9,9 +9,8 @@ import {
   usePopularCollections,
 } from '../../utils/api'
 import './Home.css'
-import 'react-placeholder/lib/reactPlaceholder.css'
 import CollectionCard from '../common/CollectionCard'
-import { LinkContainer } from 'react-router-bootstrap'
+import { Link } from 'react-router-dom'
 import { Alert } from 'react-bootstrap'
 import { changeCollectionFavouritedStatus } from 'utils/misc'
 import { Discord } from 'react-bootstrap-icons'
@@ -78,7 +77,13 @@ function Home({ user, setUser }) {
               <Row>
                 <Col xs={7}>Users</Col>
                 <Col xs={5}>
-                  <ReactPlaceholder className='my-1' ready={!metadataLoading} showLoadingAnimation type='textRow'>
+                  <ReactPlaceholder
+                    className='my-1'
+                    ready={!metadataLoading}
+                    showLoadingAnimation
+                    type='textRow'
+                    style={undefined}
+                  >
                     <b>{metadata?.userCount}</b>
                   </ReactPlaceholder>
                 </Col>
@@ -86,7 +91,13 @@ function Home({ user, setUser }) {
               <Row>
                 <Col xs={7}>Collections</Col>
                 <Col xs={5}>
-                  <ReactPlaceholder className='my-1' ready={!metadataLoading} showLoadingAnimation type='textRow'>
+                  <ReactPlaceholder
+                    className='my-1'
+                    ready={!metadataLoading}
+                    showLoadingAnimation
+                    type='textRow'
+                    style={undefined}
+                  >
                     <b>{metadata?.totalCollections}</b>
                   </ReactPlaceholder>
                 </Col>
@@ -124,6 +135,7 @@ function Home({ user, setUser }) {
                         >
                           <CollectionCard
                             user={user}
+                            setUser={setUser}
                             collection={collection}
                             favouriteButtonClicked={(collectionId, favourited) =>
                               favouriteButtonClicked(collectionId, favourited)
@@ -133,11 +145,11 @@ function Home({ user, setUser }) {
                       </Col>
                     ))}
                   </Row>
-                  <LinkContainer to='/popular?range=week'>
+                  <Link to='/popular?range=week' style={{ textDecoration: 'none' }}>
                     <Card $lightbg className='shadow-sm mt-1 mx-1 p-3 collection-card-clickable text-center'>
-                      <h5 className='mb-0'> See all </h5>
+                      <h5 className='mb-0'>See all</h5>
                     </Card>
-                  </LinkContainer>
+                  </Link>
                 </Container>
               )}
             </Row>
@@ -171,6 +183,7 @@ function Home({ user, setUser }) {
                     >
                       <CollectionCard
                         user={user}
+                        setUser={setUser}
                         collection={collection}
                         favouriteButtonClicked={(collectionId, favourited) =>
                           favouriteButtonClicked(collectionId, favourited)
@@ -180,11 +193,11 @@ function Home({ user, setUser }) {
                   </Col>
                 ))}
               </Row>
-              <LinkContainer to='/recent'>
+              <Link to='/recent' style={{ textDecoration: 'none' }}>
                 <Card $lightbg className='shadow-sm mt-1 mx-1 p-3 collection-card-clickable text-center'>
                   <h5 className='mb-0'> See all </h5>
                 </Card>
-              </LinkContainer>
+              </Link>
             </Container>
           )}
         </Card.Body>

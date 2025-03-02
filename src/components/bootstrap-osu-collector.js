@@ -2,7 +2,6 @@ import * as ReactBootstrap from 'react-bootstrap'
 import { Dropdown } from 'react-bootstrap'
 import styled, { css, ThemeContext } from 'styled-components'
 import ReactBootstrapFloatingLabel from 'react-bootstrap-floating-label'
-import _ReactPlaceholder from 'react-placeholder/lib'
 import { useContext } from 'react'
 
 const backgroundColor = (props) =>
@@ -12,6 +11,7 @@ const backgroundAndBorderColor = (props) =>
   props.theme.darkMode &&
   css`
     background-color: ${backgroundColor};
+    border-color: rgba(0, 0, 0, 0.125);
     color: #f8f8f2;
   `
 
@@ -65,11 +65,14 @@ const FormControl = styled(ReactBootstrap.Form.Control)`
     css`
       background-color: ${({ theme }) => theme.primary20};
       border-color: ${({ theme }) => theme.primary40};
-      color: #f8f8f2;
+      &::placeholder {
+        color: #ffffff44;
+      }
+      color: #f8f8f2 !important;
       &:focus {
         background-color: ${({ theme }) => theme.primary20};
         border: 0;
-        color: #f8f8f2;
+        color: #f8f8f2 !important;
       }
     `}
 `
@@ -97,16 +100,25 @@ const FloatingLabel = styled(ReactBootstrapFloatingLabel)`
     `}
 `
 
-function ReactPlaceholder(props) {
+function ReactPlaceholder({ ready, showLoadingAnimation, type, className, style, children }) {
   const theme = useContext(ThemeContext)
-  if (theme.darkMode) {
-    return (
-      <_ReactPlaceholder {...props} color={props.color || theme.primary30}>
-        {props.children}
-      </_ReactPlaceholder>
-    )
+  const backgroundColor = theme.darkMode ? theme.primary30 : '#f8f8f2'
+  if (ready) {
+    return children
+  } else if (type === 'rect') {
+    return <div className={className} style={{ ...style, backgroundColor }}></div>
   } else {
-    return <_ReactPlaceholder {...props}>{props.children}</_ReactPlaceholder>
+    return (
+      <div className={className} style={style}>
+        {showLoadingAnimation && (
+          <div className='d-flex justify-content-center align-items-center'>
+            <div className='spinner-border' role='status'>
+              <span className='sr-only'>Loading...</span>
+            </div>
+          </div>
+        )}
+      </div>
+    )
   }
 }
 

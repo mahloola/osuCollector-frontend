@@ -1,40 +1,13 @@
-import { useState, useEffect } from 'react'
 import { Card, Container, Image, ReactPlaceholder } from '../bootstrap-osu-collector'
-import { getUserFavourites } from '../../utils/api'
 import CollectionList from '../common/CollectionList'
 import * as api from '../../utils/api'
+import useSWR from 'swr'
+import { useParams } from 'react-router-dom'
 
-function UserFavourites({ user, setUser, match }) {
-  const [pageUser, setPageUser] = useState(null)
-  const [collections, setCollections] = useState(new Array(3).fill(null))
-
-  // run this code on initial page load
-  useEffect(() => {
-    ;(async () => {
-      // get user id from path, eg. /users/123/favourites
-      const _match = match.url.match(/\/users\/(\d+)\/favourites/g)
-      if (!_match) {
-        alert(`User not found.\n${match.url}`)
-        return
-      }
-      const userId = Number(_match[0].replace('/users/', '').replace('/favourites', '').trim())
-
-      // get user from database
-      const user = await api.getUser(userId)
-      if (user) setPageUser(user)
-      else alert(`user with id ${userId} not found`)
-    })()
-  }, [])
-
-  // run this code when page changes
-  useEffect(() => {
-    if (!pageUser) return
-    let cancel
-    getUserFavourites(pageUser.id, (c) => (cancel = c)).then((collections) => {
-      setCollections(collections)
-    })
-    return cancel
-  }, [pageUser])
+function UserFavourites({ user, setUser }) {
+  const { id } = useParams()
+  const { data: pageUser } = useSWR(id && `/api/users/${id}`, () => api.getUser(id))
+  const { data: collections } = useSWR(id && `/api/users/${id}/favourites`, () => api.getUserFavourites(id))
 
   return (
     <Container className='pt-4'>
@@ -63,29 +36,23 @@ function UserFavourites({ user, setUser, match }) {
                 ready={pageUser}
                 showLoadingAnimation
                 type='rect'
+                className=''
                 style={{ width: '300px', height: '40px' }}
               >
                 <h1 className='mb-0'> {pageUser?.osuweb?.username}&apos;s Favourites </h1>
               </ReactPlaceholder>
             </div>
             <ReactPlaceholder
-              ready={collections.length !== 0 && collections[0] !== null}
+              ready={collections?.length !== 0 && collections?.[0] !== null}
               showLoadingAnimation
               type='rect'
               className='ml-2 mb-0 mt-3'
               style={{ width: '140px', height: '30px' }}
             >
-              <h4 className='ml-2 mb-0 mt-3'> {collections.length} collections </h4>
+              <h4 className='ml-2 mb-0 mt-3'> {collections?.length} collections </h4>
             </ReactPlaceholder>
           </div>
-          <CollectionList
-            collections={collections}
-            setCollections={setCollections}
-            hasMore={false}
-            loadMore={() => 0}
-            user={user}
-            setUser={setUser}
-          />
+          <CollectionList collections={collections} hasMore={false} loadMore={() => 0} user={user} setUser={setUser} />
         </Card.Body>
       </Card>
     </Container>
