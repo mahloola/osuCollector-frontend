@@ -123,10 +123,10 @@ function NavigationBar({
       <Navbar bg='dark' variant='dark' expand='xl' className='px-3'>
         <ExtraLarge>
           <div className='d-flex' style={{ marginLeft: -8 }}>
-            <div onClick={history.goBack} className='nav-button mx-0'>
+            <div onClick={() => navigate(-1)} className='nav-button mx-0'>
               <ArrowLeftShort style={{ margin: '0 auto' }} size={32} />
             </div>
-            <div onClick={history.goForward} className='nav-button mr-2'>
+            <div onClick={() => navigate(1)} className='nav-button mr-2'>
               <ArrowRightShort style={{ margin: '0 auto' }} size={32} />
             </div>
           </div>
