@@ -161,6 +161,9 @@ function SubscriptionStatus({ user, setUser }) {
                       An error occurred. Please try to unlink and relink your twitch account.
                     </span>
                   )}
+                  <div style={{ color: 'oklch(0.704 0.191 22.216)', marginTop: '16px' }}>
+                    Deprecated - twitch subs will not work starting April
+                  </div>
                 </Card>
               </Col>
               <Col md={12} lg={6}>

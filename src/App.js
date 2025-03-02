@@ -25,6 +25,7 @@ import Tournament from './components/tournament/Tournament'
 import CreateTournament from './components/tournament/CreateTournament'
 import EditTournament from './components/tournament/EditTournament'
 import SubscriptionStatus from './components/subscription/SubscriptionStatus'
+import TwitchSubEndOfSupportModal from 'components/subscription/TwitchSubEndOfSupportModal'
 
 extend([mixPlugin])
 
@@ -135,6 +136,7 @@ function App() {
           localCollections={localCollections}
           setLocalCollections={setLocalCollections}
         />
+        <TwitchSubEndOfSupportModal user={user} />
         <div style={{ minHeight: 'calc(100vh - 56px)' }}>
           <ScrollToTop />
           <Routes>
